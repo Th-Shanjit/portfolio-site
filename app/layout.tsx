@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navigation from "./Navigation";
+import Navigation from "./data/Navigation";
 import { ArrowRight, MoveUpRight } from "lucide-react";
 import Link from "next/link";
 import { cmsData } from "./data/content";
@@ -36,7 +36,7 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 mb-20">
               <div>
-                <h2 className="text-3xl font-light tracking-tight text-zinc-900 mb-6">Let's build something<br/>meaningful together.</h2>
+                <h2 className="text-3xl font-light tracking-tight text-zinc-900 mb-6">Let&apos;s build something<br/>meaningful together.</h2>
                 <a href={`mailto:${cmsData.site.email}`} className="group inline-flex items-center gap-4 text-sm font-medium uppercase tracking-widest hover:text-zinc-500 transition-colors">
                   Start a conversation 
                   <span className="w-10 h-[1px] bg-zinc-900 group-hover:w-16 group-hover:bg-zinc-400 transition-all duration-500 relative">
