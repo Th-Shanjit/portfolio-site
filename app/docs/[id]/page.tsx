@@ -1,0 +1,35 @@
+import { allDocs } from '../../data/content';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+
+export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const data = allDocs.find((d) => d.id === resolvedParams.id);
+
+  if (!data) return <div className="p-32 text-center text-xl">Document Not Found</div>;
+
+  return (
+    <div className="max-w-3xl mx-auto px-6 py-32 animate-in fade-in duration-1000 min-h-[80vh]">
+      <Link href="/docs" className="group flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-colors mb-12">
+        <ArrowRight size={14} className="rotate-180 transform group-hover:-translate-x-1 transition-transform duration-300" strokeWidth={1.5} /> 
+        Back to Data Room
+      </Link>
+      
+      <div className="flex items-center gap-3 text-[10px] font-medium text-zinc-400 mb-8 uppercase tracking-widest">
+        <span>{data.type}</span>
+        <span className="w-1 h-1 rounded-full bg-zinc-200"></span>
+        <span>{data.readTime}</span>
+        <span className="w-1 h-1 rounded-full bg-zinc-200"></span>
+        <span>{data.date}</span>
+      </div>
+
+      <h1 className="text-4xl md:text-5xl font-light tracking-tight text-zinc-900 mb-16">{data.title}</h1>
+      
+      <div className="flex flex-col gap-6 text-zinc-600 font-light leading-loose text-lg">
+        {data.content.map((paragraph: string, index: number) => (
+          <p key={index}>{paragraph}</p>
+        ))}
+      </div>
+    </div>
+  );
+}
