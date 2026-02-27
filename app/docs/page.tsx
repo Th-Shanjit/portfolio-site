@@ -1,9 +1,10 @@
-import { cmsData } from '../data/content';
+import { getPortfolioData } from '@/lib/content';
 import { FileText, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function DocsIndexPage() {
-  const data = cmsData.documents;
+  const { documents } = getPortfolioData();
+
   return (
     <div className="max-w-5xl mx-auto px-6 py-32 animate-in fade-in duration-1000 relative z-10 min-h-[80vh]">
       <div className="mb-24 max-w-2xl">
@@ -15,15 +16,23 @@ export default function DocsIndexPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
         <div>
-          <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">I. Marketing & Brand</h2>
+          <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">
+            <Link href="/docs/app-docs" className="hover:text-zinc-900 transition-colors">I. App docs (privacy, terms)</Link>
+          </h2>
           <div className="flex flex-col border-t border-zinc-100">
-            {data.marketing.map((doc: any) => <DocRow key={doc.id} doc={doc} />)}
+            {documents.appDocs.map((doc) => <DocRow key={doc.id} doc={doc} />)}
           </div>
         </div>
         <div>
-          <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">II. Legal & Compliance</h2>
+          <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">
+            <Link href="/docs/case-studies" className="hover:text-zinc-900 transition-colors">II. Case studies (breakdowns)</Link>
+          </h2>
           <div className="flex flex-col border-t border-zinc-100">
-            {data.legal.map((doc: any) => <DocRow key={doc.id} doc={doc} />)}
+            {documents.caseStudies.length === 0 ? (
+              <p className="py-5 text-zinc-400 text-sm">None yet.</p>
+            ) : (
+              documents.caseStudies.map((doc) => <DocRow key={doc.id} doc={doc} />)
+            )}
           </div>
         </div>
       </div>
@@ -31,15 +40,17 @@ export default function DocsIndexPage() {
       <div className="border border-zinc-200 bg-zinc-50/50 rounded-2xl p-8 md:p-12 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-96 h-96 bg-zinc-200 rounded-full blur-3xl opacity-20 -mr-32 -mt-32 transition-opacity duration-700 group-hover:opacity-40"></div>
         <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-4">
-            <span className="w-2 h-2 bg-zinc-900 rounded-full"></span>
-            <h2 className="text-2xl font-light text-zinc-900">Paperloop Application</h2>
-          </div>
+          <h2 className="text-2xl font-light text-zinc-900 mb-4">
+            <Link href="/docs/project-docs" className="flex items-center gap-4 hover-trigger">
+              <span className="w-2 h-2 bg-zinc-900 rounded-full"></span>
+              Project docs (app documentations)
+            </Link>
+          </h2>
           <p className="text-sm font-light text-zinc-500 mb-10 max-w-xl leading-relaxed">
-            Official documentation, product requirement documents, and user research assets related to Paperloop.
+            Product requirement documents and project assets.
           </p>
           <div className="flex flex-col border-t border-zinc-200/60">
-            {data.paperloop.map((doc: any) => <DocRow key={doc.id} doc={doc} />)}
+            {documents.projectDocs.map((doc) => <DocRow key={doc.id} doc={doc} />)}
           </div>
         </div>
       </div>
@@ -47,7 +58,7 @@ export default function DocsIndexPage() {
   );
 }
 
-function DocRow({ doc }: { doc: any }) {
+function DocRow({ doc }: { doc: { id: string; title: string; type: string; readTime: string; date: string } }) {
   return (
     <Link href={`/docs/${doc.id}`} className="py-5 border-b border-zinc-200/60 flex items-center justify-between group hover-trigger cursor-pointer">
       <div className="flex items-center gap-6">

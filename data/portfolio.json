@@ -1,0 +1,29 @@
+{
+  "hero": {
+    "tag": "Highlighted Breakdown",
+    "title": "PaperLoop",
+    "description": "A live handwriting-to-text application emphasizing fluid interactions and real-time processing.",
+    "link": "/docs/project-docs/paperloop",
+    "linkText": "Read the Case Study"
+  },
+  "highlightedProjects": [
+    {
+      "id": "recruit-ai",
+      "title": "Recruit-AI",
+      "category": "Project Docs",
+      "year": "2025",
+      "slug": "/docs/project-docs/recruit-ai"
+    },
+    {
+      "id": "retro-camera",
+      "title": "Retro Instant Camera",
+      "category": "Case Studies",
+      "year": "2025",
+      "slug": "/docs/case-studies/retro-camera"
+    }
+  ],
+  "contact": {
+    "heading": "Let's build.",
+    "email": "hello@shanjitthokchom.xyz"
+  }
+}

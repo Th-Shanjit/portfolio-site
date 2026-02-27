@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navigation from "./data/Navigation";
+import Navigation from "./Navigation";
 import { ArrowRight, MoveUpRight } from "lucide-react";
 import Link from "next/link";
-import { cmsData } from "./data/content";
+import { cmsData } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Shanjit Thokchom | AI Product Manager",
@@ -60,8 +60,8 @@ export default function RootLayout({
               <p className="text-zinc-400 text-[10px] tracking-[0.2em] uppercase">© {new Date().getFullYear()} {cmsData.site.name}</p>
               
               <div className="flex gap-6 text-[10px] tracking-[0.2em] uppercase text-zinc-400">
-              <Link href="/docs/privacy" className="hover:text-zinc-900 transition-colors">Privacy Policy</Link>
-              <Link href="/docs/terms" className="hover:text-zinc-900 transition-colors">Terms of Service</Link>
+                <Link href="/docs/privacy" className="hover:text-zinc-900 transition-colors">Privacy Policy</Link>
+                <Link href="/docs/terms" className="hover:text-zinc-900 transition-colors">Terms of Service</Link>
               </div>
             </div>
           </div>

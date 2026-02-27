@@ -1,4 +1,4 @@
-import { cmsData, ExperienceType } from '../data/content';
+import { cmsData, ExperienceType } from '@/lib/content';
 import React from 'react';
 
 export default function AboutPage() {
