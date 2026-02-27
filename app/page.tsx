@@ -57,21 +57,40 @@ const cmsData = {
   },
   legalPages: {
     privacy: {
-      title: "Privacy Policy",
-      lastUpdated: "February 27, 2026",
+      title: "Privacy Policy for PaperLoop",
+      lastUpdated: "27-02-2026",
       paragraphs: [
-        "This is a placeholder for your Privacy Policy. You can replace this text with your actual policy details. We collect information to provide better services to all our users. The information we collect, and how that information is used, depends on how you use our services.",
-        "When you use our services, you’re trusting us with your information. We understand this is a big responsibility and work hard to protect your information and put you in control.",
-        "We build a range of services that help millions of people daily to explore and interact with the world in new ways. Our services include apps, sites, and devices."
+        "1. Introduction: Welcome to PaperLoop ('we,' 'our,' or 'us'). [cite_start]We are committed to protecting your personal information and your right to privacy[cite: 3]. [cite_start]This Privacy Policy explains how we collect, use, and safeguard your information when you use the PaperLoop mobile application (the 'App')[cite: 4].",
+        "2. [cite_start]Information We Collect and How We Use It: PaperLoop is designed to be a local-first application, meaning we do not require you to create an account, and your saved exams remain on your device[cite: 5]. [cite_start]However, to provide our core features, we interact with specific data[cite: 6].",
+        [cite_start]"• Camera and Photo Library: We request access to your device's camera and photo gallery to scan handwritten papers[cite: 8]. [cite_start]This is the core functionality of the App[cite: 9].",
+        [cite_start]"• Al Processing Data: When you scan a paper or a formula, the image is securely transmitted to our third-party Al provider (Google Gemini API) to convert the handwriting into digital text[cite: 10]. [cite_start]These images are processed for text extraction and are not used by us to identify you personally[cite: 11].",
+        [cite_start]"• Local Storage: Your generated exams, settings, and school logos are saved securely within your device's local file system[cite: 12]. [cite_start]We do not sync this data to an external database[cite: 13].",
+        [cite_start]"• Purchase History: If you purchase Scan Tokens, the transaction is processed securely through Google Play and managed via RevenueCat[cite: 14]. [cite_start]We do not collect or store your credit card information[cite: 15]. [cite_start]We only receive an anonymous identifier to credit your device with the purchased tokens[cite: 16].",
+        "3. [cite_start]Third-Party Services: The App utilizes third-party services that may collect information used to identify you or process your requests[cite: 17]. [cite_start]These services include: Google Play Services (for app distribution and payments), RevenueCat (for managing in-app purchases and token balances), and Google Gemini API (for Al handwriting recognition and formatting)[cite: 18, 19].",
+        "4. [cite_start]Data Retention and Deletion: Because PaperLoop stores your exam data locally on your device, you have complete control over it[cite: 20]. [cite_start]You can delete specific questions, sections, or entire exams within the App[cite: 21]. [cite_start]You can also clear the temporary image cache via the App's Settings menu[cite: 22]. [cite_start]Uninstalling the App will delete all locally saved exams and data[cite: 23].",
+        "5. [cite_start]Children's Privacy: Our App is intended for educators, teachers, and professionals[cite: 24]. [cite_start]We do not knowingly collect personally identifiable information from children under 13[cite: 25].",
+        "6. [cite_start]Changes to This Privacy Policy: We may update our Privacy Policy from time to time[cite: 26]. [cite_start]We will notify you of any changes by posting the new Privacy Policy on this page and updating the 'Last Updated' date[cite: 27].",
+        "7. [cite_start]Contact Us: If you have questions or comments about this Privacy Policy, you may contact us at: Developer: Shanjit Thokchom [cite: 28, 29] | [cite_start]Support via Email: th.shanjit@gmail.com [cite: 30] | [cite_start]Support via Phone: +91 62907 39163 [cite: 31] | [cite_start]Website: shanjitthokchom.xyz [cite: 32]"
       ]
     },
     terms: {
-      title: "Terms of Service",
-      lastUpdated: "February 27, 2026",
+      title: "Terms of Service for PaperLoop",
+      lastUpdated: "27-02-2028",
       paragraphs: [
-        "This is a placeholder for your Terms of Service. By using our services, you are agreeing to these terms. Please read them carefully.",
-        "Our services are very diverse, so sometimes additional terms or product requirements may apply. Additional terms will be available with the relevant services, and those additional terms become part of your agreement with us if you use those services.",
-        "Don’t misuse our services. For example, don’t interfere with our services or try to access them using a method other than the interface and the instructions that we provide."
+        "1. [cite_start]Acceptance of Terms: By downloading, installing, or using PaperLoop (the 'App'), you agree to be bound by these Terms of Service[cite: 35]. [cite_start]If you do not agree to these terms, please do not use the App[cite: 36].",
+        "2. [cite_start]Description of Service: PaperLoop provides tools to scan handwritten question papers, format them using Al, and export them as PDF documents[cite: 37]. [cite_start]The quality of the Al transcription depends on the legibility of the handwriting, lighting conditions, and camera quality[cite: 38].",
+        "3. [cite_start]In-App Purchases and 'Scan Tokens': [cite: 39]",
+        "• Consumable Tokens: PaperLoop operates on a 'Scan Token' system. [cite_start]Processing a full page of handwriting consumes one (1) Token[cite: 41].",
+        [cite_start]"• Purchases: Tokens are purchased in packs (e.g., 10 Scans, 50 Scans) via the Google Play Store[cite: 42].",
+        [cite_start]"• Non-Refundable: All purchases of Scan Tokens are final and non-refundable[cite: 43]. [cite_start]Tokens are tied to the device/store account used to purchase them[cite: 44].",
+        [cite_start]"• Failed Scans: If the Al completely fails to detect any text on a page, the App is designed to not deduct a token[cite: 45]. [cite_start]However, if text is detected but requires manual editing by you, the token is considered consumed[cite: 46].",
+        "4. [cite_start]User Content and Responsibility: [cite: 47]",
+        [cite_start]"• Ownership: You retain all rights and ownership to the content (exams, questions, diagrams) you create and export using PaperLoop[cite: 48].",
+        [cite_start]"• Lawful Use: You agree not to use the App to scan, generate, or distribute material that is illegal, infringes on intellectual property rights, or violates the privacy of others[cite: 49]. [cite_start]You are solely responsible for the content of the PDFs you generate[cite: 50].",
+        "5. [cite_start]Disclaimer of Warranties: The App and its Al services are provided 'AS IS' and 'AS AVAILABLE.' [cite: 51] [cite_start]While we strive for accuracy, Al handwriting recognition is not perfect[cite: 52]. [cite_start]We do not warrant that the transcription will be 100% accurate, error-free, or perfectly formatted[cite: 53]. [cite_start]You are expected to review and edit the generated text before exporting your final PDF[cite: 54].",
+        "6. [cite_start]Limitation of Liability: To the maximum extent permitted by law, Shanjit Thokchom and PaperLoop shall not be liable for any indirect, incidental, special, or consequential damages, or any loss of profits or revenues, whether incurred directly or indirectly, resulting from your use of the App, including but not limited to lost data, incorrectly formatted exams, or device issues[cite: 55].",
+        "7. [cite_start]Changes to Terms: We reserve the right to modify these terms at any time[cite: 56]. [cite_start]Your continued use of the App following the posting of changes constitutes your acceptance of such changes[cite: 57].",
+        "8. [cite_start]Contact Information: For any questions regarding these Terms, please contact: Developer: Shanjit Thokchom [cite: 58, 59] | [cite_start]Support via Email: th.shanjit@gmail.com [cite: 60] | [cite_start]Support via Phone: +91 62907 39163 [cite: 61] | [cite_start]Website: shanjitthokchom.xyz [cite: 62]"
       ]
     }
   }
