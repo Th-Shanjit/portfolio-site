@@ -17,10 +17,13 @@ export default function PortfolioHome() {
     <div className="animate-in fade-in duration-1000">
       <section className="relative max-w-7xl mx-auto px-6 pt-32 pb-32 overflow-hidden flex flex-col lg:flex-row items-center gap-20 min-h-[85vh]">
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-          <div className="absolute right-[-10%] top-[-10%] w-[800px] h-[800px] rounded-full border border-zinc-100 text-zinc-100 opacity-50" style={{ transform: `translateY(${scrollY * 0.1}px)` }} />
-          <div className="absolute left-[10%] bottom-[20%]" style={{ transform: `translateY(${scrollY * -0.2}px) rotate(${scrollY * 0.02}deg)` }}>
-            <Plus size={120} className="text-zinc-100" strokeWidth={0.5} />
-          </div>
+        <div className="absolute right-[-10%] top-[-10%] ... transition-transform duration-500 ease-out" style={{ transform: `translateY(${scrollY * 0.1}px)` }} />
+        <div 
+  className="absolute left-[10%] bottom-[20%] transition-transform duration-500 ease-out" 
+  style={{ transform: `translateY(${scrollY * -0.2}px) rotate(${scrollY * 0.02}deg)` }}
+>
+  <Plus size={120} className="text-zinc-100" strokeWidth={0.5} />
+</div>
         </div>
         <div className="relative z-10 w-full lg:w-[50%] flex flex-col items-start">
           <span className="text-zinc-400 text-xs tracking-widest uppercase mb-8 border-b border-zinc-200 pb-2 inline-block">{cmsData.bestProject.tag}</span>

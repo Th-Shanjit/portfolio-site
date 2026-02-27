@@ -64,17 +64,13 @@ export const cmsData = {
       { id: "m2", title: "Media Kit & Bio", type: "Press", readTime: "2 min read", date: "Sep 2024", content: ["..."] },
     ],
     legal: [
-      // Move Privacy and Terms here so they show up in the Data Room index
       { 
         id: "privacy", 
         title: "Privacy Policy", 
         type: "Legal", 
         readTime: "3 min read", 
         date: "Feb 2026", 
-        content: [
-          "This is your official Privacy Policy. We collect information to provide better services to all our users.",
-          "When you use our services, you’re trusting us with your information. We work hard to protect it."
-        ] 
+        content: ["This is your official Privacy Policy...", "We protect your data..."] 
       },
       { 
         id: "terms", 
@@ -82,10 +78,7 @@ export const cmsData = {
         type: "Legal", 
         readTime: "3 min read", 
         date: "Feb 2026", 
-        content: [
-          "By using our services, you are agreeing to these terms. Please read them carefully.",
-          "Our services are diverse, so sometimes additional terms or product requirements may apply."
-        ] 
+        content: ["By using our services, you agree to these terms...", "Additional terms may apply..."] 
       },
       { id: "l1", title: "Standard NDA", type: "Legal", readTime: "5 min read", date: "Jan 2024", content: ["..."] },
       { id: "l2", title: "Consulting Agreement Template", type: "Legal", readTime: "6 min read", date: "Feb 2024", content: ["..."] },
@@ -97,7 +90,7 @@ export const cmsData = {
 };
 
 // This ensures the dynamic [id] page can find the new privacy/terms documents
-export const allDocs: DocType[] = [
+export const allDocs = [
   ...cmsData.documents.marketing,
   ...cmsData.documents.legal,
   ...cmsData.documents.paperloop
