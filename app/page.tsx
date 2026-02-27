@@ -7,9 +7,9 @@ import { ArrowUpRight, FileText, Download, ArrowRight, Plus, Circle, MoveUpRight
 // ==========================================
 const cmsData = {
   site: {
-    name: "Your Name",
-    role: "AI Product Manager",
-    email: "hello@yourdomain.com"
+    name: "Shanjit Thokchom",
+    role: "Product Manager",
+    email: "th.shanjit@gmail.com"
   },
   bestProject: {
     tag: "01 — Featured Capstone",
