@@ -1,4 +1,5 @@
-import { cmsData } from '../data/content';
+import { cmsData, ExperienceType } from '../data/content';
+import React from 'react';
 
 export default function AboutPage() {
   const data = cmsData.about;
@@ -8,7 +9,8 @@ export default function AboutPage() {
         <div className="lg:w-1/2">
           <h1 className="text-5xl font-light tracking-tight text-zinc-900 mb-12">{data.title}</h1>
           <div className="relative pt-2 mb-16">
-            <span className="absolute -top-12 -left-6 text-8xl font-serif text-zinc-100 opacity-50 z-0 select-none">"</span>
+            {/* FIXED: Replaced the raw " with &quot; to satisfy strict linting */}
+            <span className="absolute -top-12 -left-6 text-8xl font-serif text-zinc-100 opacity-50 z-0 select-none">&quot;</span>
             <p className="text-zinc-600 font-light leading-loose text-xl relative z-10">{data.content}</p>
           </div>
           <div className="flex flex-col gap-4 border-t border-zinc-100 pt-8">
@@ -27,7 +29,7 @@ export default function AboutPage() {
         <div className="lg:w-1/2 w-full lg:pl-12 lg:border-l border-zinc-100">
           <span className="text-xs font-medium uppercase tracking-widest text-zinc-400 mb-12 block">Background & Education</span>
           <div className="flex flex-col">
-            {data.experience.map((item: any) => (
+            {data.experience.map((item: ExperienceType) => (
               <div key={item.id} className="group relative pb-12 pl-8 border-l border-zinc-100 last:border-transparent last:pb-0">
                 <div className="absolute left-[-5px] top-1.5 w-2 h-2 rounded-full bg-white border border-zinc-300 group-hover:border-zinc-900 group-hover:bg-zinc-900 transition-all duration-300"></div>
                 <div className="flex flex-col">
