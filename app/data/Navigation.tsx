@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cmsData } from './data/content';
+import { cmsData } from './content';
 
 export default function Navigation() {
   const pathname = usePathname();
