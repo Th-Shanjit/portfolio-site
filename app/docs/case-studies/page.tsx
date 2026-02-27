@@ -1,10 +1,9 @@
-import { getPortfolioData } from '@/lib/content';
+import type { Doc } from '@/lib/content';
 import { FileText, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CaseStudiesPage() {
-  const { documents } = getPortfolioData();
-  const docs = documents.caseStudies;
+  const docs: Doc[] = []; // Optional: filter (data as PortfolioData).docs by category if you add one
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-32 animate-in fade-in duration-1000 min-h-[80vh]">

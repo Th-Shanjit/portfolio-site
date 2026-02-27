@@ -1,9 +1,11 @@
-import { getPortfolioData } from '@/lib/content';
+import data from '@/data/portfolio.json';
+import type { PortfolioData, Doc } from '@/lib/content';
 import { FileText, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function DocsIndexPage() {
-  const { documents } = getPortfolioData();
+  const portfolio = data as PortfolioData;
+  const docs = portfolio.docs;
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-32 animate-in fade-in duration-1000 relative z-10 min-h-[80vh]">
@@ -14,51 +16,21 @@ export default function DocsIndexPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
-        <div>
-          <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">
-            <Link href="/docs/app-docs" className="hover:text-zinc-900 transition-colors">I. App docs (privacy, terms)</Link>
-          </h2>
-          <div className="flex flex-col border-t border-zinc-100">
-            {documents.appDocs.map((doc) => <DocRow key={doc.id} doc={doc} />)}
-          </div>
-        </div>
-        <div>
-          <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">
-            <Link href="/docs/case-studies" className="hover:text-zinc-900 transition-colors">II. Case studies (breakdowns)</Link>
-          </h2>
-          <div className="flex flex-col border-t border-zinc-100">
-            {documents.caseStudies.length === 0 ? (
-              <p className="py-5 text-zinc-400 text-sm">None yet.</p>
-            ) : (
-              documents.caseStudies.map((doc) => <DocRow key={doc.id} doc={doc} />)
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="border border-zinc-200 bg-zinc-50/50 rounded-2xl p-8 md:p-12 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-zinc-200 rounded-full blur-3xl opacity-20 -mr-32 -mt-32 transition-opacity duration-700 group-hover:opacity-40"></div>
-        <div className="relative z-10">
-          <h2 className="text-2xl font-light text-zinc-900 mb-4">
-            <Link href="/docs/project-docs" className="flex items-center gap-4 hover-trigger">
-              <span className="w-2 h-2 bg-zinc-900 rounded-full"></span>
-              Project docs (app documentations)
-            </Link>
-          </h2>
-          <p className="text-sm font-light text-zinc-500 mb-10 max-w-xl leading-relaxed">
-            Product requirement documents and project assets.
-          </p>
-          <div className="flex flex-col border-t border-zinc-200/60">
-            {documents.projectDocs.map((doc) => <DocRow key={doc.id} doc={doc} />)}
-          </div>
+      <div>
+        <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">
+          <Link href="/docs/app-docs" className="hover:text-zinc-900 transition-colors">App docs (privacy, terms)</Link>
+        </h2>
+        <div className="flex flex-col border-t border-zinc-100">
+          {docs.map((doc) => (
+            <DocRow key={doc.id} doc={doc} />
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-function DocRow({ doc }: { doc: { id: string; title: string; type: string; readTime: string; date: string } }) {
+function DocRow({ doc }: { doc: Doc }) {
   return (
     <Link href={`/docs/${doc.id}`} className="py-5 border-b border-zinc-200/60 flex items-center justify-between group hover-trigger cursor-pointer">
       <div className="flex items-center gap-6">

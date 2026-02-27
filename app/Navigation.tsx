@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cmsData } from '@/lib/content';
+import data from '@/data/portfolio.json';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -11,7 +11,7 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <Link href="/" className="font-medium text-sm tracking-wide flex items-center gap-2">
           <span className="w-1.5 h-1.5 bg-zinc-900 rounded-full"></span>
-          {cmsData.site.name} <span className="text-zinc-400 hidden sm:inline ml-2">— {cmsData.site.role}</span>
+          {data.site.name} <span className="text-zinc-400 hidden sm:inline ml-2">— {data.site.role}</span>
         </Link>
         <div className="flex items-center gap-6">
           {[

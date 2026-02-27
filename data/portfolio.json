@@ -1,4 +1,14 @@
 {
+  "site": {
+    "name": "Shanjit Thokchom",
+    "role": "AI Product Manager",
+    "email": "hello@shanjitthokchom.xyz"
+  },
+  "socials": [
+    { "name": "LinkedIn", "url": "#" },
+    { "name": "GitHub", "url": "#" },
+    { "name": "Resume (PDF)", "url": "/resume.pdf" }
+  ],
   "hero": {
     "tag": "Highlighted Breakdown",
     "title": "PaperLoop",
@@ -25,5 +35,32 @@
   "contact": {
     "heading": "Let's build.",
     "email": "hello@shanjitthokchom.xyz"
-  }
+  },
+  "about": {
+    "title": "Profile",
+    "content": "I'm a product manager with a specialized focus on Agentic AI. My background spans both technical execution and user-centric design.",
+    "skills": ["Product Strategy", "LLM Integration", "Prompt Engineering", "User Research"],
+    "experience": [
+      { "id": "exp1", "role": "Diploma in Product Management with Agentic AI", "company": "Product Academy", "year": "2024", "type": "Education" },
+      { "id": "exp2", "role": "Senior Product Manager", "company": "TechNexus Inc.", "year": "2021 — 2023", "type": "Experience" }
+    ]
+  },
+  "docs": [
+    { 
+      "id": "privacy", 
+      "title": "Privacy Policy", 
+      "type": "Legal", 
+      "readTime": "3 min read", 
+      "date": "Feb 2026", 
+      "content": ["This is your official Privacy Policy...", "We protect your data..."] 
+    },
+    { 
+      "id": "terms", 
+      "title": "Terms of Service", 
+      "type": "Legal", 
+      "readTime": "3 min read", 
+      "date": "Feb 2026", 
+      "content": ["By using our services, you agree to these terms...", "Additional terms may apply..."] 
+    }
+  ]
 }

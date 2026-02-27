@@ -1,10 +1,11 @@
-import { getPortfolioData } from '@/lib/content';
+import data from '@/data/portfolio.json';
+import type { PortfolioData, Doc } from '@/lib/content';
 import { FileText, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AppDocsPage() {
-  const { documents } = getPortfolioData();
-  const docs = documents.appDocs;
+  const portfolio = data as PortfolioData;
+  const docs = portfolio.docs;
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-32 animate-in fade-in duration-1000 min-h-[80vh]">

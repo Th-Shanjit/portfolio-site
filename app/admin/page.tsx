@@ -6,9 +6,9 @@ export default function AdminEditor() {
   const [data, setData] = useState<any>(null);
   const [status, setStatus] = useState('');
 
-  // Fetch the current JSON data on load
+  // Load current content from API (reads from data/portfolio.json on the server)
   useEffect(() => {
-    fetch('/data/portfolio.json')
+    fetch('/api/content')
       .then((res) => res.json())
       .then((json) => setData(json));
   }, []);
