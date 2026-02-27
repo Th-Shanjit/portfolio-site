@@ -112,7 +112,6 @@ export default function PortfolioApp() {
   const [activeView, setActiveView] = useState('portfolio');
   const [scrollY, setScrollY] = useState(0);
 
-  // Parallax Event Listener
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -122,7 +121,6 @@ export default function PortfolioApp() {
   return (
     <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-900 selection:text-white flex flex-col overflow-x-hidden relative">
       
-      {/* CSS Animations */}
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes marquee {
           0% { transform: translateX(0%); }
@@ -207,7 +205,8 @@ export default function PortfolioApp() {
 }
 
 // --- PORTFOLIO VIEW ---
-function PortfolioView({ data, scrollY }) {
+// ADDED TYPES HERE: { data: any, scrollY: number }
+function PortfolioView({ data, scrollY }: { data: any, scrollY: number }) {
   return (
     <div className="animate-in fade-in duration-1000">
       
@@ -242,7 +241,7 @@ function PortfolioView({ data, scrollY }) {
           </p>
           
           <div className="flex flex-col gap-3 mb-16">
-            {data.bestProject.metrics.map((metric, i) => (
+            {data.bestProject.metrics.map((metric: string, i: number) => (
               <div key={i} className="text-sm font-medium text-zinc-600 flex items-center gap-4">
                 <span className="w-6 h-[1px] bg-zinc-300"></span>
                 {metric}
@@ -294,7 +293,7 @@ function PortfolioView({ data, scrollY }) {
         </div>
         
         <div className="flex flex-col">
-          {data.projects.map((project, index) => (
+          {data.projects.map((project: any, index: number) => (
             <a key={project.id} href={project.link} className="group flex flex-col md:flex-row md:items-center py-10 border-b border-zinc-100 hover:border-zinc-300 transition-colors relative">
               <div className="absolute inset-0 bg-zinc-50 scale-y-0 origin-bottom group-hover:scale-y-100 transition-transform duration-500 -z-10"></div>
               <div className="md:w-1/6 mb-4 md:mb-0">
@@ -322,7 +321,8 @@ function PortfolioView({ data, scrollY }) {
 }
 
 // --- DOCUMENT HOST VIEW ---
-function DocumentView({ data }) {
+// ADDED TYPES HERE
+function DocumentView({ data }: { data: any }) {
   return (
     <div className="max-w-5xl mx-auto px-6 py-32 animate-in fade-in duration-1000 relative z-10 min-h-[80vh]">
       <div className="mb-24 max-w-2xl">
@@ -337,13 +337,13 @@ function DocumentView({ data }) {
         <div>
           <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">I. Marketing & Brand</h2>
           <div className="flex flex-col border-t border-zinc-100">
-            {data.marketing.map((doc) => <DocRow key={doc.id} doc={doc} />)}
+            {data.marketing.map((doc: any) => <DocRow key={doc.id} doc={doc} />)}
           </div>
         </div>
         <div>
           <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">II. Legal & Compliance</h2>
           <div className="flex flex-col border-t border-zinc-100">
-            {data.legal.map((doc) => <DocRow key={doc.id} doc={doc} />)}
+            {data.legal.map((doc: any) => <DocRow key={doc.id} doc={doc} />)}
           </div>
         </div>
       </div>
@@ -351,7 +351,8 @@ function DocumentView({ data }) {
   );
 }
 
-function DocRow({ doc }) {
+// ADDED TYPES HERE
+function DocRow({ doc }: { doc: any }) {
   return (
     <div className="py-5 border-b border-zinc-100 flex items-center justify-between group hover-trigger cursor-pointer">
       <div className="flex items-center gap-6">
@@ -377,7 +378,8 @@ function DocRow({ doc }) {
 }
 
 // --- ABOUT VIEW ---
-function AboutView({ data }) {
+// ADDED TYPES HERE
+function AboutView({ data }: { data: any }) {
   return (
     <div className="animate-in fade-in duration-1000 max-w-7xl mx-auto px-6 py-32 relative z-10 min-h-[80vh]">
       <div className="flex flex-col lg:flex-row gap-20 items-start">
@@ -390,7 +392,7 @@ function AboutView({ data }) {
           <div className="flex flex-col gap-4 border-t border-zinc-100 pt-8">
             <span className="text-xs font-medium uppercase tracking-widest text-zinc-400 mb-2">Core Competencies</span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {data.skills.map((skill, i) => (
+              {data.skills.map((skill: string, i: number) => (
                 <div key={i} className="flex items-center gap-3 group">
                   <span className="w-4 h-[1px] bg-zinc-200 group-hover:w-8 group-hover:bg-zinc-400 transition-all duration-500"></span>
                   <span className="text-sm font-light text-zinc-600 group-hover:text-zinc-900 transition-colors">{skill}</span>
@@ -403,7 +405,7 @@ function AboutView({ data }) {
         <div className="lg:w-1/2 w-full lg:pl-12 lg:border-l border-zinc-100">
           <span className="text-xs font-medium uppercase tracking-widest text-zinc-400 mb-12 block">Background & Education</span>
           <div className="flex flex-col">
-            {data.experience.map((item, index) => (
+            {data.experience.map((item: any, index: number) => (
               <div key={item.id} className="group relative pb-12 pl-8 border-l border-zinc-100 last:border-transparent last:pb-0">
                 <div className="absolute left-[-5px] top-1.5 w-2 h-2 rounded-full bg-white border border-zinc-300 group-hover:border-zinc-900 group-hover:bg-zinc-900 transition-all duration-300"></div>
                 <div className="flex flex-col">
