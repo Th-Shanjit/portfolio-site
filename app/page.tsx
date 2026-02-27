@@ -1,65 +1,421 @@
-import Image from "next/image";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { ArrowUpRight, FileText, Download, ArrowRight, Plus, Circle, MoveUpRight } from 'lucide-react';
 
-export default function Home() {
+// ==========================================
+// 🗄️ YOUR CONTENT DATA (EDIT THIS ANYTIME)
+// ==========================================
+const cmsData = {
+  site: {
+    name: "Your Name",
+    role: "AI Product Manager",
+    email: "hello@yourdomain.com"
+  },
+  bestProject: {
+    tag: "01 — Featured Capstone",
+    title: "Project Nexus: Enterprise AI Orchestration",
+    description: "A comprehensive platform enabling cross-functional teams to deploy, monitor, and iterate on multi-agent workflows. Built with a focus on observability and human-in-the-loop fallback mechanisms.",
+    metrics: ["Increased automation by 65%", "Zero critical failures in beta", "Adopted by 3 enterprise clients"],
+    linkText: "Read Case Study",
+    linkUrl: "#"
+  },
+  about: {
+    title: "Profile",
+    content: "I'm a product manager with a specialized focus on Agentic AI. My background spans both technical execution and user-centric design, giving me a unique perspective on how to build intelligent systems that truly serve human needs. I believe the best AI products augment human capabilities rather than replace them, which requires rigorous attention to UX, safety, and observability.",
+    skills: ["Product Strategy", "LLM Integration", "Prompt Engineering", "User Research", "Agile Methodologies", "Stakeholder Management"],
+    experience: [
+      {
+        id: "exp1",
+        role: "Diploma in Product Management with Agentic AI",
+        company: "Product Academy",
+        year: "2024",
+        type: "Education"
+      },
+      {
+        id: "exp2",
+        role: "Senior Product Manager",
+        company: "TechNexus Inc.",
+        year: "2021 — 2023",
+        type: "Experience"
+      },
+      {
+        id: "exp3",
+        role: "Product Owner",
+        company: "DataFlow Systems",
+        year: "2019 — 2021",
+        type: "Experience"
+      }
+    ]
+  },
+  socials: [
+    { name: "LinkedIn", url: "#" },
+    { name: "GitHub", url: "#" },
+    { name: "Resume (PDF)", url: "#" }
+  ],
+  projects: [
+    {
+      id: "p1",
+      title: "Agent Orchestrator",
+      type: "Capstone Project",
+      year: "2024",
+      description: "Comprehensive product lifecycle management for an AI agent orchestration tool. Includes market research, user personas, and technical requirements.",
+      metric: "Validated with 15 beta testers",
+      link: "#"
+    },
+    {
+      id: "p2",
+      title: "Smart Triage Assistant",
+      type: "Side Project & Prototype",
+      year: "2024",
+      description: "An interactive prototype demonstrating an AI-driven ticket routing system for customer support teams. Built to validate UX hypotheses.",
+      metric: "Simulated 30% reduction in resolution time",
+      link: "#"
+    },
+    {
+      id: "p3",
+      title: "Context-Aware Search",
+      type: "PRD",
+      year: "2023",
+      description: "A detailed Product Requirements Document for implementing RAG (Retrieval-Augmented Generation) based search in an existing enterprise SaaS.",
+      metric: "Targeted 50% increase in search success",
+      link: "#"
+    },
+    {
+      id: "p4",
+      title: "Automated Data Extraction",
+      type: "PRD",
+      year: "2023",
+      description: "Technical PRD outlining the integration of LLMs to parse and structure unstructured invoice data, including edge-case handling and feedback loops.",
+      metric: "Designed for 99.9% extraction accuracy",
+      link: "#"
+    }
+  ],
+  documents: {
+    marketing: [
+      { id: "m1", title: "Personal Brand Guidelines", type: "PDF", size: "1.2 MB", date: "Oct 2024" },
+      { id: "m2", title: "Media Kit & Headshots", type: "ZIP", size: "8.5 MB", date: "Sep 2024" },
+      { id: "m3", title: "Speaking Engagement Deck", type: "PPTX", size: "4.1 MB", date: "Nov 2024" },
+    ],
+    legal: [
+      { id: "l1", title: "Standard NDA", type: "PDF", size: "45 KB", date: "Jan 2024" },
+      { id: "l2", title: "Consulting Agreement Template", type: "DOCX", size: "120 KB", date: "Feb 2024" },
+      { id: "l3", title: "Privacy Policy (Draft)", type: "PDF", size: "60 KB", date: "Jan 2024" },
+    ]
+  }
+};
+
+// ==========================================
+// 🎨 PORTFOLIO COMPONENTS
+// ==========================================
+
+export default function PortfolioApp() {
+  const [activeView, setActiveView] = useState('portfolio');
+  const [scrollY, setScrollY] = useState(0);
+
+  // Parallax Event Listener
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-900 selection:text-white flex flex-col overflow-x-hidden relative">
+      
+      {/* CSS Animations */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          display: inline-block;
+          white-space: nowrap;
+          animation: marquee 30s linear infinite;
+        }
+        .hover-trigger .hover-target {
+          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hover-trigger:hover .hover-target {
+          transform: translateX(4px) translateY(-4px);
+        }
+      `}} />
+
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100 transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="font-medium text-sm tracking-wide flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-zinc-900 rounded-full"></span>
+            {cmsData.site.name} <span className="text-zinc-400 hidden sm:inline ml-2">— {cmsData.site.role}</span>
+          </div>
+          <div className="flex items-center gap-6">
+            {['portfolio', 'about', 'documents'].map((view) => (
+              <button 
+                key={view}
+                onClick={() => setActiveView(view)}
+                className={`text-sm tracking-wide capitalize transition-all duration-300 relative py-2
+                  ${activeView === view ? 'text-zinc-900' : 'text-zinc-400 hover:text-zinc-900'}`}
+              >
+                {view === 'documents' ? 'Docs' : view}
+                <span className={`absolute bottom-0 left-0 w-full h-[1px] bg-zinc-900 transform origin-left transition-transform duration-300 ${activeView === view ? 'scale-x-100' : 'scale-x-0'}`}></span>
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      </nav>
+
+      {/* Main Content Area */}
+      <main className="flex-grow relative z-10 pt-20">
+        {activeView === 'portfolio' && <PortfolioView data={cmsData} scrollY={scrollY} />}
+        {activeView === 'about' && <AboutView data={cmsData.about} />}
+        {activeView === 'documents' && <DocumentView data={cmsData.documents} />}
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-100 bg-white pt-20 pb-12 relative z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 mb-20">
+            <div>
+              <h2 className="text-3xl font-light tracking-tight text-zinc-900 mb-6">Let's build something<br/>meaningful together.</h2>
+              <a href={`mailto:${cmsData.site.email}`} className="group inline-flex items-center gap-4 text-sm font-medium uppercase tracking-widest hover:text-zinc-500 transition-colors">
+                Start a conversation 
+                <span className="w-10 h-[1px] bg-zinc-900 group-hover:w-16 group-hover:bg-zinc-400 transition-all duration-500 relative">
+                  <ArrowRight size={14} className="absolute right-[-4px] top-[-6px] text-zinc-900 group-hover:text-zinc-400 group-hover:translate-x-2 transition-all duration-500" strokeWidth={1.5} />
+                </span>
+              </a>
+            </div>
+            
+            <div className="flex flex-col gap-4">
+              <span className="text-xs tracking-widest uppercase text-zinc-400 mb-2">Connect</span>
+              {cmsData.socials.map((social, index) => (
+                <a key={index} href={social.url} className="text-sm font-light text-zinc-600 hover:text-zinc-900 transition-colors hover-trigger flex items-center gap-2 group">
+                  {social.name}
+                  <MoveUpRight size={12} className="text-zinc-300 group-hover:text-zinc-900 transition-colors hover-target" strokeWidth={1.5} />
+                </a>
+              ))}
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-8 border-t border-zinc-100">
+            <p className="text-zinc-400 text-[10px] tracking-[0.2em] uppercase">© {new Date().getFullYear()} {cmsData.site.name}</p>
+            <p className="text-zinc-400 text-[10px] tracking-[0.2em] uppercase">Minimalist Architecture</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+// --- PORTFOLIO VIEW ---
+function PortfolioView({ data, scrollY }) {
+  return (
+    <div className="animate-in fade-in duration-1000">
+      
+      {/* Hero Section */}
+      <section className="relative max-w-7xl mx-auto px-6 pt-32 pb-32 overflow-hidden flex flex-col lg:flex-row items-center gap-20 min-h-[85vh]">
+        
+        {/* Abstract Minimal Parallax Shapes */}
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          <div 
+            className="absolute right-[-10%] top-[-10%] w-[800px] h-[800px] rounded-full border border-zinc-100 text-zinc-100 opacity-50"
+            style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+          />
+          <div 
+            className="absolute left-[10%] bottom-[20%]"
+            style={{ transform: `translateY(${scrollY * -0.2}px) rotate(${scrollY * 0.02}deg)` }}
+          >
+            <Plus size={120} className="text-zinc-100" strokeWidth={0.5} />
+          </div>
+        </div>
+
+        {/* Left Side: Project Info */}
+        <div className="relative z-10 w-full lg:w-[50%] flex flex-col items-start">
+          <span className="text-zinc-400 text-xs tracking-widest uppercase mb-8 border-b border-zinc-200 pb-2 inline-block">
+            {data.bestProject.tag}
+          </span>
+          
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-zinc-900 leading-[1.05] mb-8">
+            {data.bestProject.title}
+          </h1>
+          <p className="text-lg md:text-xl font-light text-zinc-500 leading-relaxed mb-12 max-w-lg">
+            {data.bestProject.description}
+          </p>
+          
+          <div className="flex flex-col gap-3 mb-16">
+            {data.bestProject.metrics.map((metric, i) => (
+              <div key={i} className="text-sm font-medium text-zinc-600 flex items-center gap-4">
+                <span className="w-6 h-[1px] bg-zinc-300"></span>
+                {metric}
+              </div>
+            ))}
+          </div>
+          
+          <a href={data.bestProject.linkUrl} className="group inline-flex items-center gap-4 text-sm font-medium uppercase tracking-widest hover:text-zinc-500 transition-colors">
+            {data.bestProject.linkText} 
+            <span className="w-10 h-[1px] bg-zinc-900 group-hover:w-16 group-hover:bg-zinc-400 transition-all duration-500 relative">
+              <ArrowRight size={14} className="absolute right-[-4px] top-[-6px] text-zinc-900 group-hover:text-zinc-400 group-hover:translate-x-2 transition-all duration-500" strokeWidth={1.5} />
+            </span>
+          </a>
+        </div>
+
+        {/* Right Side: Architectural Wireframe Placeholder */}
+        <div className="relative z-10 w-full lg:w-[50%] flex justify-center lg:justify-end">
+           <div className="relative w-full max-w-lg aspect-[4/5] group cursor-pointer">
+              <div className="absolute inset-0 bg-[#fafafa] border border-zinc-200 flex flex-col items-center justify-center text-center transition-all duration-700 group-hover:border-zinc-300 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] overflow-hidden">
+                <svg className="absolute inset-0 w-full h-full text-zinc-100 z-0" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="0" y1="100%" x2="100%" y2="0" stroke="currentColor" strokeWidth="1" />
+                </svg>
+                <div className="relative z-10 flex flex-col items-center transform transition-transform duration-700 group-hover:scale-105">
+                  <Circle size={40} className="text-zinc-300 mb-6 group-hover:text-zinc-900 transition-colors duration-500" strokeWidth={0.5} />
+                  <p className="text-zinc-400 tracking-widest text-[10px] uppercase font-medium">Visual Assets Pending</p>
+                </div>
+              </div>
+           </div>
+        </div>
+      </section>
+
+      {/* Ultra Subtle Marquee */}
+      <div className="w-full border-y border-zinc-100 bg-white py-6 overflow-hidden relative z-20 flex items-center">
+        <div className="animate-marquee opacity-40">
+          <span className="text-xs font-light uppercase tracking-[0.2em] mx-8 text-zinc-500">
+            Agentic AI <span className="mx-4 font-thin text-zinc-300">/</span> User Research <span className="mx-4 font-thin text-zinc-300">/</span> Product Strategy <span className="mx-4 font-thin text-zinc-300">/</span> Prototypes <span className="mx-4 font-thin text-zinc-300">/</span> Systems Scaling
+          </span>
+          <span className="text-xs font-light uppercase tracking-[0.2em] mx-8 text-zinc-500">
+            Agentic AI <span className="mx-4 font-thin text-zinc-300">/</span> User Research <span className="mx-4 font-thin text-zinc-300">/</span> Product Strategy <span className="mx-4 font-thin text-zinc-300">/</span> Prototypes <span className="mx-4 font-thin text-zinc-300">/</span> Systems Scaling
+          </span>
+        </div>
+      </div>
+
+      {/* Project Index */}
+      <section className="max-w-7xl mx-auto px-6 pb-40 pt-32 relative z-10">
+        <div className="flex items-end justify-between mb-16 border-b border-zinc-900 pb-6">
+          <h2 className="text-3xl font-light tracking-tight text-zinc-900">Selected Works</h2>
+          <span className="text-xs tracking-widest text-zinc-400 uppercase">[ {data.projects.length} ]</span>
+        </div>
+        
+        <div className="flex flex-col">
+          {data.projects.map((project, index) => (
+            <a key={project.id} href={project.link} className="group flex flex-col md:flex-row md:items-center py-10 border-b border-zinc-100 hover:border-zinc-300 transition-colors relative">
+              <div className="absolute inset-0 bg-zinc-50 scale-y-0 origin-bottom group-hover:scale-y-100 transition-transform duration-500 -z-10"></div>
+              <div className="md:w-1/6 mb-4 md:mb-0">
+                <span className="text-xs text-zinc-400 tracking-widest">0{index + 1}</span>
+              </div>
+              <div className="md:w-2/6 mb-4 md:mb-0 pr-8">
+                <h3 className="text-2xl font-light text-zinc-900 group-hover:text-zinc-600 transition-colors">{project.title}</h3>
+                <span className="text-[10px] uppercase tracking-widest text-zinc-400 mt-2 block">{project.type} • {project.year}</span>
+              </div>
+              <div className="md:w-2/6 mb-4 md:mb-0 pr-8">
+                <p className="text-sm font-light text-zinc-500 leading-relaxed">{project.description}</p>
+              </div>
+              <div className="md:w-1/6 flex justify-between items-center md:justify-end gap-4">
+                <div className="text-[10px] font-medium text-zinc-500 border border-zinc-200 px-3 py-1.5 rounded-full md:hidden lg:block">{project.metric}</div>
+                <div className="w-10 h-10 rounded-full border border-zinc-200 flex items-center justify-center group-hover:bg-zinc-900 group-hover:border-zinc-900 transition-all duration-300 text-zinc-400 group-hover:text-white">
+                  <ArrowUpRight size={16} strokeWidth={1.5} className="transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// --- DOCUMENT HOST VIEW ---
+function DocumentView({ data }) {
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-32 animate-in fade-in duration-1000 relative z-10 min-h-[80vh]">
+      <div className="mb-24 max-w-2xl">
+        <h1 className="text-5xl font-light tracking-tight text-zinc-900 mb-8">Data Room</h1>
+        <p className="text-lg font-light text-zinc-500 leading-relaxed">
+          A centralized repository for marketing assets, brand guidelines, and legal templates. 
+          Built for seamless, transparent sharing.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div>
+          <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">I. Marketing & Brand</h2>
+          <div className="flex flex-col border-t border-zinc-100">
+            {data.marketing.map((doc) => <DocRow key={doc.id} doc={doc} />)}
+          </div>
+        </div>
+        <div>
+          <h2 className="text-xs font-medium uppercase tracking-widest mb-8 text-zinc-400 border-b border-zinc-100 pb-4">II. Legal & Compliance</h2>
+          <div className="flex flex-col border-t border-zinc-100">
+            {data.legal.map((doc) => <DocRow key={doc.id} doc={doc} />)}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DocRow({ doc }) {
+  return (
+    <div className="py-5 border-b border-zinc-100 flex items-center justify-between group hover-trigger cursor-pointer">
+      <div className="flex items-center gap-6">
+        <div className="text-zinc-300 group-hover:text-zinc-900 transition-colors">
+          <FileText size={20} strokeWidth={1} />
+        </div>
+        <div>
+          <h4 className="font-light text-base text-zinc-900 group-hover:text-zinc-600 transition-colors">{doc.title}</h4>
+          <div className="flex items-center gap-3 text-[10px] font-medium text-zinc-400 mt-2 uppercase tracking-widest">
+            <span>{doc.type}</span>
+            <span className="w-1 h-1 rounded-full bg-zinc-200"></span>
+            <span>{doc.size}</span>
+            <span className="w-1 h-1 rounded-full bg-zinc-200"></span>
+            <span>{doc.date}</span>
+          </div>
+        </div>
+      </div>
+      <button className="text-zinc-300 group-hover:text-zinc-900 transition-colors p-2" title="Download Document">
+        <Download size={18} strokeWidth={1} className="hover-target" />
+      </button>
+    </div>
+  );
+}
+
+// --- ABOUT VIEW ---
+function AboutView({ data }) {
+  return (
+    <div className="animate-in fade-in duration-1000 max-w-7xl mx-auto px-6 py-32 relative z-10 min-h-[80vh]">
+      <div className="flex flex-col lg:flex-row gap-20 items-start">
+        <div className="lg:w-1/2">
+          <h1 className="text-5xl font-light tracking-tight text-zinc-900 mb-12">{data.title}</h1>
+          <div className="relative pt-2 mb-16">
+            <span className="absolute -top-12 -left-6 text-8xl font-serif text-zinc-100 opacity-50 z-0 select-none">"</span>
+            <p className="text-zinc-600 font-light leading-loose text-xl relative z-10">{data.content}</p>
+          </div>
+          <div className="flex flex-col gap-4 border-t border-zinc-100 pt-8">
+            <span className="text-xs font-medium uppercase tracking-widest text-zinc-400 mb-2">Core Competencies</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {data.skills.map((skill, i) => (
+                <div key={i} className="flex items-center gap-3 group">
+                  <span className="w-4 h-[1px] bg-zinc-200 group-hover:w-8 group-hover:bg-zinc-400 transition-all duration-500"></span>
+                  <span className="text-sm font-light text-zinc-600 group-hover:text-zinc-900 transition-colors">{skill}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="lg:w-1/2 w-full lg:pl-12 lg:border-l border-zinc-100">
+          <span className="text-xs font-medium uppercase tracking-widest text-zinc-400 mb-12 block">Background & Education</span>
+          <div className="flex flex-col">
+            {data.experience.map((item, index) => (
+              <div key={item.id} className="group relative pb-12 pl-8 border-l border-zinc-100 last:border-transparent last:pb-0">
+                <div className="absolute left-[-5px] top-1.5 w-2 h-2 rounded-full bg-white border border-zinc-300 group-hover:border-zinc-900 group-hover:bg-zinc-900 transition-all duration-300"></div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-widest text-zinc-400 mb-2">{item.year} • {item.type}</span>
+                  <h3 className="text-lg font-light text-zinc-900 group-hover:text-zinc-600 transition-colors mb-1">{item.role}</h3>
+                  <span className="text-sm font-light text-zinc-500">{item.company}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
