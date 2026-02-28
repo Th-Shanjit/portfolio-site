@@ -70,6 +70,21 @@ export default function AdminDashboard() {
     </div>
   );
 
+  // 🚀 NEW: Catch API errors before they crash the page
+  if (data.error) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f5f5f7] text-red-500 font-mono text-sm px-6 text-center gap-4">
+      <span className="font-bold text-lg uppercase tracking-widest">Database Error</span>
+      {data.error}
+    </div>
+  );
+
+  // 🚀 NEW: Failsafe in case 'docs' is still somehow missing from your JSON
+  if (!data.docs) return (
+    <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] text-red-500 font-mono text-sm">
+      Data Room is missing from portfolio.json!
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#f5f5f7] pb-32 font-sans selection:bg-zinc-300">
       
