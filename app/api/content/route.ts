@@ -2,25 +2,26 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-const dataPath = path.join(process.cwd(), 'data', 'portfolio.json');
+// Helper to get the absolute path to your JSON file
+const getFilePath = () => path.join(process.cwd(), 'data', 'portfolio.json');
 
+// GET request: Fetches the latest JSON data
 export async function GET() {
   try {
-    const raw = fs.readFileSync(dataPath, 'utf-8');
-    const data = JSON.parse(raw);
-    return NextResponse.json(data);
-  } catch (e) {
-    return NextResponse.json({ error: 'Failed to read content' }, { status: 500 });
+    const fileContents = fs.readFileSync(getFilePath(), 'utf8');
+    return NextResponse.json(JSON.parse(fileContents));
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to read data' }, { status: 500 });
   }
 }
 
+// POST request: Overwrites the JSON file with your new edits
 export async function POST(request: Request) {
   try {
     const newData = await request.json();
-    fs.writeFileSync(dataPath, JSON.stringify(newData, null, 2), 'utf8');
-    
+    fs.writeFileSync(getFilePath(), JSON.stringify(newData, null, 2), 'utf8');
     return NextResponse.json({ message: 'Content updated successfully' });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update content' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to save data' }, { status: 500 });
   }
 }

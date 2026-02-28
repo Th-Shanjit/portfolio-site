@@ -1,8 +1,8 @@
 import data from '@/data/portfolio.json';
 import Link from 'next/link';
 
-export default function ProjectDocsPage() {
-  // Filter only the documents that belong to this category
+export default function CaseStudiesPage() {
+  // Filter only the documents that belong to the Case Studies category
   const caseStudies = data.docs.filter((doc: any) => doc.type === 'Case Studies');
 
   return (
@@ -16,7 +16,7 @@ export default function ProjectDocsPage() {
 
       <div className="flex flex-col">
         {caseStudies.length === 0 ? (
-          <p className="text-zinc-400 italic">No documents uploaded yet.</p>
+          <p className="text-zinc-400 italic">No case studies uploaded yet.</p>
         ) : (
           caseStudies.map((doc: any) => (
             <Link 

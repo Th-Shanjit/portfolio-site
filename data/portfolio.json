@@ -5,9 +5,18 @@
     "email": "hello@shanjitthokchom.xyz"
   },
   "socials": [
-    { "name": "LinkedIn", "url": "#" },
-    { "name": "GitHub", "url": "#" },
-    { "name": "Resume (PDF)", "url": "/resume.pdf" }
+    {
+      "name": "LinkedIn",
+      "url": "#"
+    },
+    {
+      "name": "GitHub",
+      "url": "#"
+    },
+    {
+      "name": "Resume (PDF)",
+      "url": "/resume.pdf"
+    }
   ],
   "hero": {
     "tag": "Highlighted Breakdown",
@@ -40,32 +49,61 @@
     "title": "Profile",
     "heading": "AI Product Manager & Builder",
     "content": "I'm a product manager with a specialized focus on Agentic AI. My background spans both technical execution and user-centric design.",
-    "skills": ["Product Strategy", "LLM Integration", "Prompt Engineering", "User Research"],
+    "skills": [
+      "Product Strategy",
+      "LLM Integration",
+      "Prompt Engineering",
+      "User Research"
+    ],
     "bio": [
       "I'm a product manager with a specialized focus on Agentic AI. My background spans both technical execution and user-centric design.",
       "I build tools that emphasize fluid interactions and real-time processing, ensuring complex AI workflows feel intuitive to the end user."
     ],
     "experience": [
-      { "role": "Senior Product Manager", "company": "TechNexus", "year": "2021 — Present" },
-      { "role": "Diploma in Agentic AI", "company": "Product Academy", "year": "2024" }
+      {
+        "role": "Senior Product Manager",
+        "company": "TechNexus",
+        "year": "2021 — Present"
+      },
+      {
+        "role": "Diploma in Agentic AI",
+        "company": "Product Academy",
+        "year": "2024"
+      }
     ]
   },
   "docs": [
-    { 
-      "id": "privacy", 
-      "title": "Privacy Policy", 
-      "type": "Legal", 
-      "readTime": "3 min read", 
-      "date": "Feb 2026", 
-      "content": ["This is your official Privacy Policy...", "We protect your data..."] 
+    {
+      "id": "new-doc-1772261999610",
+      "title": "New Document",
+      "type": "Project Docs",
+      "readTime": "5 min read",
+      "date": "Feb 2026",
+      "content": [
+        "Start typing your content here...saxasxasx"
+      ]
     },
-    { 
-      "id": "terms", 
-      "title": "Terms of Service", 
-      "type": "Legal", 
-      "readTime": "3 min read", 
-      "date": "Feb 2026", 
-      "content": ["By using our services, you agree to these terms...", "Additional terms may apply..."] 
+    {
+      "id": "privacy",
+      "title": "Privacy Policy",
+      "type": "Legal",
+      "readTime": "3 min read",
+      "date": "Feb 2026",
+      "content": [
+        "This is your official Privacy Policy...",
+        "We protect your data..."
+      ]
+    },
+    {
+      "id": "terms",
+      "title": "Terms of Service",
+      "type": "Legal",
+      "readTime": "3 min read",
+      "date": "Feb 2026",
+      "content": [
+        "By using our services, you agree to these terms...",
+        "Additional terms may apply..."
+      ]
     }
   ]
 }

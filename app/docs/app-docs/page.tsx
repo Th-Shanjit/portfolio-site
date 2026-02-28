@@ -1,9 +1,9 @@
 import data from '@/data/portfolio.json';
 import Link from 'next/link';
 
-export default function ProjectDocsPage() {
-  // Filter only the documents that belong to this category
-  const appDocs = data.docs.filter((doc: any) => doc.type === 'App Docs');
+export default function AppDocsPage() {
+  // Filter only the documents that belong to the Legal/App Docs category
+  const appDocs = data.docs.filter((doc: any) => doc.type === 'Legal');
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-40 min-h-[80vh] font-light">
@@ -11,7 +11,7 @@ export default function ProjectDocsPage() {
         <span className="text-xs uppercase tracking-[0.3em] text-zinc-400 mb-8 block">
           Directory
         </span>
-        <h1 className="text-5xl tracking-tight text-zinc-900">App Docs</h1>
+        <h1 className="text-5xl tracking-tight text-zinc-900">App Docs & Legal</h1>
       </div>
 
       <div className="flex flex-col">
