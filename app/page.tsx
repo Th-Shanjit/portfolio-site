@@ -6,7 +6,7 @@ export default function Home() {
   const portfolio = data;
 
   return (
-    <main className="max-w-5xl mx-auto px-6 font-light text-zinc-900 selection:bg-zinc-200">
+    <main className="max-w-5xl mx-auto px-6 font-light text-zinc-900 selection:bg-zinc-200 animate-in fade-in duration-1000">
       
       {/* HERO SECTION */}
       <section className="min-h-[80vh] flex flex-col justify-center py-40">
@@ -33,17 +33,34 @@ export default function Home() {
       {/* HIGHLIGHTED PROJECTS / BREAKDOWNS */}
       <section className="py-40 border-t border-zinc-100">
         <div className="flex flex-col gap-24">
-          {portfolio.highlightedProjects.map((project: any, i: number) => (
-            <Link key={project.id} href={project.slug} className="group flex flex-col md:flex-row md:items-baseline justify-between">
-              <div className="flex flex-col">
-                <span className="text-xs text-zinc-400 mb-4 tracking-widest uppercase">0{i + 1} — {project.category}</span>
-                <h2 className="text-4xl tracking-tight group-hover:text-zinc-400 transition-colors duration-500">
-                  {project.title}
-                </h2>
-              </div>
-              <span className="text-sm text-zinc-400 mt-4 md:mt-0">{project.year}</span>
-            </Link>
-          ))}
+          {portfolio.highlightedProjects.map((project: any, i: number) => {
+            
+            // THE MAGIC: Find the actual document from your Data Room using the ID
+            const realDoc = portfolio.docs.find((d: any) => d.id === project.id);
+            
+            // If the document exists in your Admin Editor, use its live data. 
+            // If not, fall back gracefully to the placeholder data in the JSON.
+            const title = realDoc ? realDoc.title : project.title;
+            const category = realDoc ? realDoc.type : project.category;
+            
+            // Extracts just the year from a date string like "Feb 2026"
+            const year = realDoc ? realDoc.date.split(' ').pop() : project.year; 
+            
+            // Forces the link to map cleanly to our dynamic route
+            const targetUrl = `/docs/${project.id}`;
+
+            return (
+              <Link key={project.id} href={targetUrl} className="group flex flex-col md:flex-row md:items-baseline justify-between">
+                <div className="flex flex-col">
+                  <span className="text-xs text-zinc-400 mb-4 tracking-widest uppercase">0{i + 1} — {category}</span>
+                  <h2 className="text-4xl tracking-tight group-hover:text-zinc-400 transition-colors duration-500">
+                    {title}
+                  </h2>
+                </div>
+                <span className="text-sm text-zinc-400 mt-4 md:mt-0">{year}</span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
