@@ -36,36 +36,55 @@ function ScrollReveal({ children, delay = 0, className = "" }: { children: React
 }
 
 export default function Home() {
-  // "as any" tells TypeScript not to panic if dynamic properties are missing
   const portfolio = data as any; 
   const hotProject = portfolio.hero;
 
   return (
-    <main className="w-full pb-40 pt-24 relative z-10 selection:bg-zinc-300">
+    <main className="w-full pb-40 pt-12 relative z-10 selection:bg-zinc-300">
       
       {/* 1. HERO: STATIC LAPTOP UI WITH ROTATED DP */}
-      <section className="mb-40 flex justify-center px-12 md:px-24 pt-16">
+      <section className="mb-40 flex justify-center px-12 md:px-24 pt-12">
         <ScrollReveal className="w-full max-w-4xl relative">
           
-          {/* THE DP: Layered on top-left, rotated 25 degrees */}
-          <div className="absolute -top-12 -left-8 md:-top-16 md:-left-16 z-50 w-28 h-28 md:w-36 md:h-36 rounded-full border-[6px] border-[#f5f5f7] shadow-2xl overflow-hidden bg-zinc-200 flex items-center justify-center rotate-[-25deg] hover:rotate-0 transition-transform duration-700 ease-out cursor-pointer group">
-            {/* 🚀 DYNAMIC DP LOGIC */}
+          {/* 🚀 NEW: 3x Larger, edge-to-edge watermark typography */}
+          <div className="w-full mb-16 md:mb-20">
+            <h1 
+              className="text-2xl md:text-4xl lg:text-4xl font-bold uppercase text-zinc-500 flex justify-between w-full select-none"
+              aria-label={portfolio.site?.name || "Shanjit Thokchom"}
+            >
+              {Array.from(portfolio.site?.name || "Shanjit Thokchom").map((char: any, i: number) => (
+                char === ' ' ? (
+                  // If it's a space between names, create a larger gap
+                  <span key={i} className="w-4 md:w-8 lg:w-12"></span>
+                ) : (
+                  // If it's a letter, render it perfectly justified
+                  <span key={i} aria-hidden="true">{char}</span>
+                )
+              ))}
+            </h1>
+          </div>
+
+          {/* THE STATIC DP: Layered on top-left, rotated -25 degrees */}
+          <div className="absolute top-8 -left-8 md:top-8 md:-left-16 z-50 w-28 h-28 md:w-36 md:h-36 rounded-full border-[6px] border-[#f5f5f7] shadow-xl overflow-hidden bg-zinc-200 flex items-center justify-center rotate-[-25deg]">
             {portfolio.site?.dpUrl ? (
-              <img src={portfolio.site.dpUrl} alt="Profile" className="absolute inset-0 w-full h-full object-cover" />
+              <img 
+                src="/profile.jpg"
+                alt="Profile" 
+                className="absolute inset-0 w-full h-full object-cover" 
+              />
             ) : (
-              <span className="text-zinc-400 text-xs md:text-sm font-medium tracking-widest uppercase group-hover:opacity-0 transition-opacity">DP</span>
+              <span className="text-zinc-400 text-xs md:text-sm font-medium tracking-widest uppercase">DP</span>
             )}
           </div>
 
           {/* Laptop Screen Bezel */}
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-4 bg-zinc-900 rounded-b-xl z-20 flex justify-center items-end pb-1">
+          <div className="absolute top-28 left-1/2 -translate-x-1/2 w-32 h-4 bg-zinc-900 rounded-b-xl z-20 flex justify-center items-end pb-1 md:top-[8.5rem] lg:top-[9rem]">
             <div className="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
           </div>
 
-          {/* Laptop Screen Content (Static, no hover pop) */}
+          {/* Laptop Screen Content */}
           <div className="relative w-full aspect-[16/10] bg-zinc-900 rounded-t-3xl border-[12px] border-zinc-900 shadow-2xl overflow-hidden flex flex-col p-8 md:p-12 items-start justify-end">
             
-            {/* Dynamic Wallpaper from Admin */}
             {hotProject.coverImage && (
               <div className="absolute inset-0 z-0">
                 <img 
@@ -76,11 +95,9 @@ export default function Home() {
               </div>
             )}
 
-            {/* Glossy Screen Reflection */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50 pointer-events-none z-10"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/30 to-transparent pointer-events-none z-10"></div>
             
-            {/* Hero Text Content */}
             <div className="relative z-20 text-white w-full max-w-2xl">
               <span className="text-[10px] md:text-xs font-mono text-zinc-300 mb-6 block uppercase tracking-widest px-4 py-2 bg-white/10 rounded-full backdrop-blur-md w-max border border-white/10">
                 Primary Case Study
@@ -103,15 +120,14 @@ export default function Home() {
       </section>
 
       {/* 2. CENTERED 2x2 BENTO BOX GRID */}
-      {/* max-w-3xl keeps the grid tighter and more centered */}
       <section className="mb-40 max-w-3xl mx-auto px-6">
         <ScrollReveal>
-          <div className="flex items-center justify-between mb-12">
-            <h2 className="text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase">Architecture & Case Studies</h2>
+          {/* 🚀 FIX: Centered, larger H2 heading */}
+          <div className="flex items-center justify-center mb-12">
+            <h2 className="text-3xl font-semibold text-zinc-900 tracking-tight">Architecture & Case Studies</h2>
           </div>
         </ScrollReveal>
         
-        {/* Strictly defined 2-column grid with consistent gap */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {portfolio.highlightedProjects.map((project: any, index: number) => {
             const realDoc = portfolio.docs.find((d: any) => d.id === project.id);
@@ -125,7 +141,6 @@ export default function Home() {
 
             return (
               <ScrollReveal key={project.id} delay={index * 150}>
-                {/* aspect-square forces the bento boxes to be perfectly symmetrical */}
                 <Link href={targetUrl} className="group relative glass-panel rounded-[2.5rem] hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col p-10 aspect-square justify-between overflow-hidden">
                   <div>
                     <div className="flex justify-between items-start mb-6">

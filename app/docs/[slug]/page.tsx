@@ -2,38 +2,45 @@ import Link from 'next/link';
 import { ArrowLeft, Clock, Calendar, Hash } from 'lucide-react';
 import data from '@/data/portfolio.json';
 
-// Ensure Next.js can generate these pages if needed
+// Ensure Next.js can generate these pages
 export function generateStaticParams() {
   return data.docs.map((doc: any) => ({
     slug: doc.id,
   }));
 }
 
+// 🚀 THE PARSER: Translates Markdown tags into styled HTML
+const formatText = (text: string) => {
+  let formatted = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-zinc-900">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em class="italic text-zinc-800">$1</em>')
+    .replace(/`(.*?)`/g, '<code class="bg-zinc-100 text-zinc-800 px-1.5 py-0.5 rounded-md font-mono text-sm border border-zinc-200 shadow-sm">$1</code>');
+  return { __html: formatted };
+};
+
 export default function DocumentReader({ params }: { params: { slug: string } }) {
-  // Find the exact document from your database
   const doc = data.docs.find((d: any) => d.id === params.slug);
 
-  // If someone types a wrong URL, show a clean 404
   if (!doc) {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center bg-[#f5f5f7] selection:bg-zinc-300">
         <h1 className="text-2xl font-semibold text-zinc-900 mb-4">Document Not Found</h1>
-        <Link href="/" className="text-sm text-zinc-500 hover:text-zinc-900 flex items-center gap-2 transition-colors">
-          <ArrowLeft size={16} /> Return to Portfolio
+        <Link href="/docs" className="text-sm text-zinc-500 hover:text-zinc-900 flex items-center gap-2 transition-colors">
+          <ArrowLeft size={16} /> Return to Data Room
         </Link>
       </main>
     );
   }
 
   return (
-    <main className="w-full pb-40 pt-24 relative z-10 selection:bg-zinc-300">
+    <main className="w-full pb-40 pt-24 relative z-10 selection:bg-zinc-300 min-h-screen">
       
       <article className="max-w-3xl mx-auto px-6">
         
         {/* 1. BACK BUTTON & METADATA */}
         <div className="mb-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-colors mb-12">
-            <ArrowLeft size={14} /> Back to Architecture
+          <Link href="/docs" className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-colors mb-12">
+            <ArrowLeft size={14} /> Back to Data Room
           </Link>
 
           <div className="flex flex-wrap gap-3 mb-8">
@@ -65,25 +72,51 @@ export default function DocumentReader({ params }: { params: { slug: string } })
           </div>
         )}
 
-        {/* 4. THE EDITORIAL CONTENT */}
-        <div className="prose prose-zinc prose-lg max-w-none prose-p:font-light prose-p:leading-relaxed prose-p:text-zinc-600 prose-headings:font-medium prose-headings:tracking-tight animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 fill-mode-both ease-[cubic-bezier(0.16,1,0.3,1)]">
+        {/* 🚀 4. NEW: OPTIONAL PDF EMBED */}
+        {doc.pdfUrl && (
+          <div className="w-full h-[600px] md:h-[800px] mb-16 rounded-[2rem] overflow-hidden border-[6px] border-white shadow-xl bg-zinc-100 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200 fill-mode-both ease-[cubic-bezier(0.16,1,0.3,1)] relative group">
+            <iframe 
+              src={`${doc.pdfUrl}#toolbar=0`} 
+              className="w-full h-full"
+              title={`${doc.title} PDF Document`}
+            />
+            {/* Download Button Overlay */}
+            <a href={doc.pdfUrl} download className="absolute bottom-6 right-6 bg-zinc-900/90 backdrop-blur-md text-white px-6 py-3 rounded-full text-xs font-semibold tracking-wide shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+              Download PDF
+            </a>
+          </div>
+        )}
+
+        {/* 5. THE EDITORIAL CONTENT (WITH MARKDOWN PARSER) */}
+        <div className="prose prose-zinc prose-lg max-w-none prose-p:font-light prose-p:leading-relaxed prose-p:text-zinc-600 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 fill-mode-both ease-[cubic-bezier(0.16,1,0.3,1)]">
           {doc.content.map((paragraph: string, index: number) => {
             
-            // Magic formatting: If a paragraph starts with "###", turn it into an H3 heading automatically!
+            // Renders H3 Headings
             if (paragraph.startsWith('### ')) {
-              return <h3 key={index} className="text-2xl text-zinc-900 mt-12 mb-4">{paragraph.replace('### ', '')}</h3>;
+              return (
+                <h3 key={index} className="text-2xl md:text-3xl font-medium tracking-tight text-zinc-900 mt-16 mb-6">
+                  {paragraph.replace('### ', '')}
+                </h3>
+              );
             }
             
-            // Standard paragraph
+            // Renders Blockquotes (like Medium)
+            if (paragraph.startsWith('> ')) {
+              return (
+                <blockquote key={index} className="border-l-[3px] border-zinc-900 pl-6 py-1 my-10 text-xl font-serif italic text-zinc-700">
+                  <span dangerouslySetInnerHTML={formatText(paragraph.replace('> ', ''))} />
+                </blockquote>
+              );
+            }
+            
+            // Renders Standard Paragraphs with inline bold/italic/code
             return (
-              <p key={index} className="mb-8">
-                {paragraph}
-              </p>
+              <p key={index} className="mb-8" dangerouslySetInnerHTML={formatText(paragraph)} />
             );
           })}
         </div>
 
-        {/* 5. FOOTER CALL TO ACTION */}
+        {/* 6. FOOTER CALL TO ACTION */}
         <div className="mt-24 pt-12 border-t border-zinc-200 animate-in fade-in duration-1000 delay-500 fill-mode-both">
           <div className="glass-panel rounded-[2rem] p-8 md:p-12 text-center bg-white/40">
             <h3 className="text-xl font-medium text-zinc-900 mb-3">Discuss this architecture</h3>

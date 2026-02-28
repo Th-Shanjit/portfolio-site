@@ -1,39 +1,44 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function proxy(req: NextRequest) {
+// 🚀 NEXT.JS 16 CONVENTION: Exporting as default function 'proxy'
+export default function proxy(req: NextRequest) {
   const basicAuth = req.headers.get('authorization');
   const url = req.nextUrl;
 
+  // Protect the Command Center UI and the Content API
   if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/content')) {
     
-    // 🚀 FIX 1: Safely load and trim hidden spaces/characters from env vars
+    // Safely load and trim environment variables
     const expectedUser = process.env.ADMIN_USER?.trim();
     const expectedPass = process.env.ADMIN_PASS?.trim();
 
-    // 🚀 FIX 2: If the env vars aren't loaded, throw a 500 error instead of an infinite 401 loop
+    // Safety check for environment variables
     if (!expectedUser || !expectedPass) {
-      console.error("🚨 SECURITY ERROR: ADMIN_USER or ADMIN_PASS is missing in .env.local!");
-      return new NextResponse('Server Configuration Error: Missing Environment Variables. Check your terminal.', { status: 500 });
+      console.error("🚨 SECURITY ERROR: ADMIN_USER or ADMIN_PASS is missing in your environment variables!");
+      return new NextResponse('Server Configuration Error: Missing Environment Variables.', { status: 500 });
     }
 
     if (basicAuth) {
-      const authValue = basicAuth.split(' ')[1];
-      const decodedString = atob(authValue);
-      
-      // 🚀 FIX 3: Safely extract user and pass even if the password contains a colon
-      const colonIndex = decodedString.indexOf(':');
-      const providedUser = decodedString.substring(0, colonIndex);
-      const providedPass = decodedString.substring(colonIndex + 1);
+      try {
+        const authValue = basicAuth.split(' ')[1];
+        const decodedString = atob(authValue);
+        
+        const colonIndex = decodedString.indexOf(':');
+        const providedUser = decodedString.substring(0, colonIndex);
+        const providedPass = decodedString.substring(colonIndex + 1);
 
-      if (providedUser === expectedUser && providedPass === expectedPass) {
-        return NextResponse.next(); // Success! Let them in.
-      } else {
-        // 🚀 FIX 4: Print exactly what went wrong to your terminal
-        console.error(`🚨 LOGIN FAILED: Expected user '${expectedUser}', but got '${providedUser}'`);
+        if (providedUser === expectedUser && providedPass === expectedPass) {
+          return NextResponse.next(); // Success!
+        } else {
+          console.error(`🚨 LOGIN FAILED: Invalid credentials provided for ${providedUser}`);
+        }
+      } catch (e) {
+        console.error("🚨 AUTH ERROR: Failed to decode authorization header");
       }
     }
 
+    // Trigger the browser's native login popup
     return new NextResponse('Authentication required', {
       status: 401,
       headers: {
@@ -45,6 +50,7 @@ export function proxy(req: NextRequest) {
   return NextResponse.next();
 }
 
+// matcher ensures this logic only runs on the paths we want to secure
 export const config = {
   matcher: [
     '/admin/:path*', 

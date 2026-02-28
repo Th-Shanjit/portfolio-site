@@ -8,8 +8,8 @@ export default function Navigation() {
   return (
     <nav className="fixed top-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-1000">
       
-      {/* 🚀 FIX: Darkened the border (border-zinc-200) and increased opacity (bg-white/70) for high visibility */}
-      <div className="bg-white/70 backdrop-blur-2xl border border-zinc-200 shadow-xl shadow-zinc-200/50 rounded-full px-8 py-3 flex items-center gap-8 transition-all duration-300">
+      {/* 🚀 FIX: Ultra-clean transparent glass pill */}
+      <div className="bg-white/20 backdrop-blur-md border border-white/50 shadow-lg shadow-zinc-200/20 rounded-full px-8 py-3 flex items-center gap-8 transition-all duration-300">
         
       {[
           { name: 'about', path: '/about' },
@@ -40,4 +40,4 @@ export default function Navigation() {
       </div>
     </nav>
   );
-} 
+}

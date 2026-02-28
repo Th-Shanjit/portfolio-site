@@ -2,7 +2,8 @@
   "site": {
     "name": "Shanjit Thokchom",
     "role": "AI Product Manager",
-    "email": "hello@shanjitthokchom.xyz"
+    "email": "hello@shanjitthokchom.xyz",
+    "dpUrl": "https://photos.app.goo.gl/qwGUJQWjXenXj9dZ9"
   },
   "socials": [
     {
@@ -24,9 +25,8 @@
     "description": "Your project description...",
     "link": "/docs/project-id",
     "linkText": "View Case Study",
-    "coverImage": "" 
+    "coverImage": ""
   },
-
   "highlightedProjects": [
     {
       "id": "recruit-ai",
@@ -41,14 +41,14 @@
       "category": "Case Studies",
       "year": "2025",
       "slug": "/docs/case-studies/retro-camera"
-    }, 
-    { "id": "subsentry", 
+    },
+    {
+      "id": "subsentry",
       "title": "Subsentry",
-      "category": "FinTech", 
+      "category": "FinTech",
       "year": "2025",
-      "slug": "/docs/case-studies/subsentry" 
+      "slug": "/docs/case-studies/subsentry"
     }
-
   ],
   "contact": {
     "heading": "Let's build.",
@@ -63,8 +63,7 @@
     "educationTitle": "Product Management & Agentic AI",
     "educationSubtitle": "Masai School × IIT Patna",
     "focusTitle": "Agentic AI & Systems",
-    "focusText": "Currently building multi-agent AI systems, utilizing the Cursor IDE to accelerate development. My approach is heavily influenced by development economics and minimalist design—creating highly scalable, high-impact products like SubSentry and PaperLoop without the visual clutter."
-  },
+    "focusText": "Currently building multi-agent AI systems, utilizing the Cursor IDE to accelerate development. My approach is heavily influenced by development economics and minimalist design—creating highly scalable, high-impact products like SubSentry and PaperLoop without the visual clutter.",
     "bio": [
       "I'm a product manager with a specialized focus on Agentic AI. My background spans both technical execution and user-centric design.",
       "I build tools that emphasize fluid interactions and real-time processing, ensuring complex AI workflows feel intuitive to the end user."

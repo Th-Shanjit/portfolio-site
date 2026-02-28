@@ -1,13 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Save, Plus, Trash2, ChevronDown, ChevronUp, ImageIcon, FileText, Settings, LayoutTemplate } from 'lucide-react';
+import { 
+  Save, Plus, Trash2, ChevronDown, ChevronUp, ImageIcon, 
+  FileText, Settings, LayoutTemplate, Bold, Italic, 
+  Heading3, Quote, Code, Tag 
+} from 'lucide-react';
 
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-  const [openSection, setOpenSection] = useState<string>('docs'); // 'site', 'about', 'hero', 'docs'
+  const [openSection, setOpenSection] = useState<string>('docs'); 
   const [openDocIndex, setOpenDocIndex] = useState<number | null>(null);
+
+  // 🚀 File Upload Engine State
+  const [uploadingState, setUploadingState] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     fetch('/api/content')
@@ -35,10 +42,11 @@ export default function AdminDashboard() {
     const newDoc = {
       id: `new-doc-${Date.now()}`,
       title: "New Case Study",
-      type: "Product Management",
+      type: "Drafts",
       date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
       readTime: "5 min read",
       coverImage: "",
+      pdfUrl: "",
       content: ["Start writing your architecture breakdown here..."]
     };
     setData({ ...data, docs: [newDoc, ...data.docs] });
@@ -64,13 +72,49 @@ export default function AdminDashboard() {
     setData({ ...data, docs: newDocs });
   };
 
+  // 🚀 The File Upload Engine
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldPath: string, docIndex?: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Show loading state for this specific input
+    setUploadingState(prev => ({ ...prev, [fieldPath]: true }));
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const responseData = await res.json();
+      
+      if (responseData.url) {
+        // If it's a document update
+        if (docIndex !== undefined) {
+          updateDoc(docIndex, fieldPath, responseData.url);
+        } 
+        // If it's a global site update (DP, Hero Cover)
+        else {
+          const keys = fieldPath.split('.'); // e.g., 'site.dpUrl'
+          setData({
+            ...data,
+            [keys[0]]: { ...data[keys[0]], [keys[1]]: responseData.url }
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Upload failed", err);
+      alert("Failed to upload file.");
+    } finally {
+      setUploadingState(prev => ({ ...prev, [fieldPath]: false }));
+    }
+  };
+
   if (!data) return (
     <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] text-zinc-400 uppercase tracking-widest text-xs">
       Loading Command Center...
     </div>
   );
 
-  // 🚀 NEW: Catch API errors before they crash the page
   if (data.error) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#f5f5f7] text-red-500 font-mono text-sm px-6 text-center gap-4">
       <span className="font-bold text-lg uppercase tracking-widest">Database Error</span>
@@ -78,12 +122,14 @@ export default function AdminDashboard() {
     </div>
   );
 
-  // 🚀 NEW: Failsafe in case 'docs' is still somehow missing from your JSON
   if (!data.docs) return (
     <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] text-red-500 font-mono text-sm">
       Data Room is missing from portfolio.json!
     </div>
   );
+
+  // 🚀 MAGIC TAGS: Extract every unique category from your database
+  const allCategories = Array.from(new Set(data.docs.map((doc: any) => doc.type))).filter(Boolean) as string[];
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] pb-32 font-sans selection:bg-zinc-300">
@@ -139,9 +185,15 @@ export default function AdminDashboard() {
                 <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Contact Email</label>
                 <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} />
               </div>
+              
+              {/* DP Uploader */}
               <div>
-                <label className="flex items-center gap-2 text-[10px] text-zinc-500 mb-2 uppercase tracking-widest"><ImageIcon size={12}/> Display Picture URL</label>
-                <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" placeholder="https://..." value={data.site.dpUrl || ''} onChange={e => setData({...data, site: {...data.site, dpUrl: e.target.value}})} />
+                <label className="flex items-center gap-2 text-[10px] text-zinc-500 mb-2 uppercase tracking-widest"><ImageIcon size={12}/> Display Picture</label>
+                <div className="flex items-center gap-4 p-3 bg-zinc-50 border border-zinc-200 rounded-lg">
+                  {data.site.dpUrl && <img src={data.site.dpUrl} alt="DP" className="w-8 h-8 rounded-full object-cover shadow-sm" />}
+                  <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'site.dpUrl')} className="text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-zinc-200 file:text-zinc-700 hover:file:bg-zinc-300 transition-all cursor-pointer w-full" />
+                  {uploadingState['site.dpUrl'] && <span className="text-xs text-zinc-400 animate-pulse whitespace-nowrap">Uploading...</span>}
+                </div>
               </div>
             </div>
           )}
@@ -207,9 +259,15 @@ export default function AdminDashboard() {
                 <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Short Description (Max 160 chars)</label>
                 <textarea className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm h-24 resize-none focus:outline-none focus:border-zinc-400" value={data.hero.description} onChange={e => setData({...data, hero: {...data.hero, description: e.target.value}})} />
               </div>
+              
+              {/* Hero Wallpaper Uploader */}
               <div>
-                <label className="flex items-center gap-2 text-[10px] text-zinc-500 mb-2 uppercase tracking-widest"><ImageIcon size={12}/> Laptop Wallpaper URL</label>
-                <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" placeholder="https://..." value={data.hero.coverImage || ''} onChange={e => setData({...data, hero: {...data.hero, coverImage: e.target.value}})} />
+                <label className="flex items-center gap-2 text-[10px] text-zinc-500 mb-2 uppercase tracking-widest"><ImageIcon size={12}/> Laptop Wallpaper</label>
+                <div className="flex items-center gap-4 p-3 bg-zinc-50 border border-zinc-200 rounded-lg">
+                  {data.hero.coverImage && <img src={data.hero.coverImage} alt="Hero Cover" className="w-16 h-10 rounded object-cover shadow-sm" />}
+                  <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'hero.coverImage')} className="text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-zinc-200 file:text-zinc-700 hover:file:bg-zinc-300 transition-all cursor-pointer w-full" />
+                  {uploadingState['hero.coverImage'] && <span className="text-xs text-zinc-400 animate-pulse whitespace-nowrap">Uploading...</span>}
+                </div>
               </div>
             </div>
           )}
@@ -250,6 +308,8 @@ export default function AdminDashboard() {
 
                     {openDocIndex === index && (
                       <div className="p-6 bg-zinc-50 border-t border-zinc-100 grid gap-6">
+                        
+                        {/* Title and ID Row */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Document Title</label>
@@ -259,38 +319,135 @@ export default function AdminDashboard() {
                             <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">URL Slug (ID)</label>
                             <input className="w-full p-3 bg-white border border-zinc-200 rounded-lg text-sm font-mono focus:outline-none focus:border-zinc-400" value={doc.id} onChange={e => updateDoc(index, 'id', e.target.value)} />
                           </div>
+                        </div>
+
+                        {/* The Dynamic Tag Builder */}
+                        <div className="p-5 bg-white border border-zinc-200 rounded-xl shadow-sm">
+                          <label className="flex items-center gap-2 text-[10px] text-zinc-500 mb-4 uppercase tracking-widest">
+                            <Tag size={12} /> Category / Tag Builder
+                          </label>
                           
-                          <div>
-                            <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Domain / Category</label>
-                            <select 
-                              className="w-full p-3 bg-white border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400 appearance-none"
+                          {/* 1. Quick Select Existing Tags */}
+                          {allCategories.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-5">
+                              {allCategories.map((category: string) => (
+                                <button
+                                  key={category}
+                                  type="button"
+                                  onClick={() => updateDoc(index, 'type', category)}
+                                  className={`text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full border transition-all ${
+                                    doc.type === category 
+                                      ? 'bg-zinc-900 text-white border-zinc-900 shadow-md scale-105' 
+                                      : 'bg-zinc-50 text-zinc-500 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900'
+                                  }`}
+                                >
+                                  {category}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* 2. Create Custom Tag Input */}
+                          <div className="flex items-center gap-3">
+                            <input 
+                              className="flex-1 p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400 focus:bg-white transition-colors"
                               value={doc.type}
+                              placeholder="Type a new tag to instantly create and assign it..."
                               onChange={e => updateDoc(index, 'type', e.target.value)}
-                            >
-                              <option value="EdTech">EdTech</option>
-                              <option value="FinTech">FinTech</option>
-                              <option value="AI/HR">AI/HR</option>
-                              <option value="Legal Tech">Legal Tech</option>
-                              <option value="Product Management">Product Management</option>
-                            </select>
+                            />
                           </div>
-                          
+                        </div>
+                        
+                        {/* File Uploaders (Cover Image & PDF) */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Image Upload */}
                           <div>
-                            <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Cover Image URL</label>
-                            <input className="w-full p-3 bg-white border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" placeholder="Optional" value={doc.coverImage || ''} onChange={e => updateDoc(index, 'coverImage', e.target.value)} />
+                            <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Cover Image</label>
+                            <div className="flex flex-col gap-3 p-3 bg-white border border-zinc-200 rounded-lg h-full justify-center">
+                              {doc.coverImage && <img src={doc.coverImage} className="w-full h-24 object-cover rounded-md shadow-sm border border-zinc-100" />}
+                              <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'coverImage', index)} className="text-xs text-zinc-500 file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-zinc-200 file:text-zinc-700 hover:file:bg-zinc-300 cursor-pointer" />
+                              {uploadingState['coverImage'] && <span className="text-xs text-zinc-400 animate-pulse">Uploading Image...</span>}
+                            </div>
+                          </div>
+
+                          {/* PDF Upload */}
+                          <div>
+                            <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Embed PDF Document</label>
+                            <div className="flex flex-col gap-3 p-3 bg-white border border-zinc-200 rounded-lg h-full justify-center">
+                              {doc.pdfUrl && <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-md border border-emerald-100 truncate w-full text-center">PDF Attached: {doc.pdfUrl.split('/').pop()}</span>}
+                              <input type="file" accept="application/pdf" onChange={e => handleFileUpload(e, 'pdfUrl', index)} className="text-xs text-zinc-500 file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-zinc-200 file:text-zinc-700 hover:file:bg-zinc-300 cursor-pointer" />
+                              {uploadingState['pdfUrl'] && <span className="text-xs text-zinc-400 animate-pulse">Uploading PDF...</span>}
+                            </div>
                           </div>
                         </div>
 
-                        <div>
-                          <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest flex justify-between">
+                        {/* THE ZEN EDITOR & TYPE TOOLKIT */}
+                        <div className="flex flex-col gap-3 mt-4">
+                          <label className="block text-[10px] text-zinc-500 uppercase tracking-widest flex justify-between items-end">
                             <span>Document Body</span>
-                            <span className="text-zinc-400 lowercase normal-case tracking-normal">Separate paragraphs with a double line break (Enter twice)</span>
+                            <span className="text-zinc-400 normal-case tracking-normal">Markdown supported. Separate paragraphs with Enter.</span>
                           </label>
-                          <textarea 
-                            className="w-full p-4 bg-white border border-zinc-200 rounded-lg text-sm h-64 focus:outline-none focus:border-zinc-400 resize-y leading-relaxed" 
-                            value={Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content} 
-                            onChange={e => updateDoc(index, 'content', e.target.value)} 
-                          />
+                          
+                          <div className="border border-zinc-200 rounded-xl overflow-hidden bg-white focus-within:border-zinc-400 focus-within:ring-4 focus-within:ring-zinc-100 transition-all duration-300 shadow-sm">
+                            
+                            {/* The Glass Toolkit */}
+                            <div className="flex items-center gap-1 p-2 bg-zinc-50/80 border-b border-zinc-100 backdrop-blur-md">
+                              <button 
+                                type="button"
+                                title="Section Header"
+                                onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + '\n\n### ')} 
+                                className="p-2 hover:bg-zinc-200 rounded-md text-zinc-500 hover:text-zinc-900 transition-all"
+                              >
+                                <Heading3 size={16}/>
+                              </button>
+                              <div className="w-px h-4 bg-zinc-200 mx-1"></div>
+                              <button 
+                                type="button"
+                                title="Bold"
+                                onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + '**Bold Text**')} 
+                                className="p-2 hover:bg-zinc-200 rounded-md text-zinc-500 hover:text-zinc-900 transition-all"
+                              >
+                                <Bold size={16}/>
+                              </button>
+                              <button 
+                                type="button"
+                                title="Italic"
+                                onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + '*Italic Text*')} 
+                                className="p-2 hover:bg-zinc-200 rounded-md text-zinc-500 hover:text-zinc-900 transition-all"
+                              >
+                                <Italic size={16}/>
+                              </button>
+                              <div className="w-px h-4 bg-zinc-200 mx-1"></div>
+                              <button 
+                                type="button"
+                                title="Blockquote"
+                                onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + '\n\n> ')} 
+                                className="p-2 hover:bg-zinc-200 rounded-md text-zinc-500 hover:text-zinc-900 transition-all"
+                              >
+                                <Quote size={16}/>
+                              </button>
+                              <button 
+                                type="button"
+                                title="Code Snippet"
+                                onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + ' `code` ')} 
+                                className="p-2 hover:bg-zinc-200 rounded-md text-zinc-500 hover:text-zinc-900 transition-all"
+                              >
+                                <Code size={16}/>
+                              </button>
+                            </div>
+
+                            {/* The Auto-Expanding Canvas */}
+                            <textarea 
+                              className="w-full p-6 bg-transparent text-sm min-h-[300px] focus:outline-none resize-y leading-relaxed text-zinc-700 font-serif placeholder:font-sans placeholder:text-zinc-300 selection:bg-zinc-200" 
+                              placeholder="Start writing your architectural breakdown..."
+                              value={Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content} 
+                              onChange={(e) => {
+                                e.target.style.height = 'auto';
+                                e.target.style.height = e.target.scrollHeight + 'px';
+                                updateDoc(index, 'content', e.target.value);
+                              }} 
+                            />
+                          </div>
                         </div>
 
                         <div className="flex justify-end pt-4 border-t border-zinc-200 mt-2">
