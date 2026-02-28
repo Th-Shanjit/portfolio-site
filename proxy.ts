@@ -1,58 +1,37 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// 🚀 NEXT.JS 16 CONVENTION: Exporting as default function 'proxy'
+// 🚀 Use 'export default' so Next.js recognizes the proxy handler
 export default function proxy(req: NextRequest) {
-  const basicAuth = req.headers.get('authorization');
   const url = req.nextUrl;
 
-  // Protect the Command Center UI and the Content API
+  // Protect Admin UI and Content API
   if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/content')) {
     
-    // Safely load and trim environment variables
-    const expectedUser = process.env.ADMIN_USER?.trim();
+    // Check for the session cookie set by your /api/login route
+    const session = req.cookies.get('admin_session')?.value;
     const expectedPass = process.env.ADMIN_PASS?.trim();
 
-    // Safety check for environment variables
-    if (!expectedUser || !expectedPass) {
-      console.error("🚨 SECURITY ERROR: ADMIN_USER or ADMIN_PASS is missing in your environment variables!");
-      return new NextResponse('Server Configuration Error: Missing Environment Variables.', { status: 500 });
-    }
-
-    if (basicAuth) {
-      try {
-        const authValue = basicAuth.split(' ')[1];
-        const decodedString = atob(authValue);
-        
-        const colonIndex = decodedString.indexOf(':');
-        const providedUser = decodedString.substring(0, colonIndex);
-        const providedPass = decodedString.substring(colonIndex + 1);
-
-        if (providedUser === expectedUser && providedPass === expectedPass) {
-          return NextResponse.next(); // Success!
-        } else {
-          console.error(`🚨 LOGIN FAILED: Invalid credentials provided for ${providedUser}`);
-        }
-      } catch (e) {
-        console.error("🚨 AUTH ERROR: Failed to decode authorization header");
+    // If no valid session exists, enforce protection
+    if (!session || session !== expectedPass) {
+      
+      // If they are trying to view the Admin UI, redirect to your /login page
+      if (url.pathname.startsWith('/admin')) {
+        return NextResponse.redirect(new URL('/login', req.url));
       }
-    }
 
-    // Trigger the browser's native login popup
-    return new NextResponse('Authentication required', {
-      status: 401,
-      headers: {
-        'WWW-Authenticate': 'Basic realm="Secure Command Center"',
-      },
-    });
+      // If they are trying to hit the API directly, return a 401
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
   }
 
   return NextResponse.next();
 }
 
-// matcher ensures this logic only runs on the paths we want to secure
+// 🚀 Matcher must include the base '/admin' to catch the dashboard load
 export const config = {
   matcher: [
+    '/admin', 
     '/admin/:path*', 
     '/api/content/:path*'
   ],

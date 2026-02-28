@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   const { password } = await request.json();
 
-  if (password === process.env.ADMIN_PASSWORD) {
+  if (password === process.env.ADMIN_PASS) {
     const response = NextResponse.json({ success: true });
     
     // Set a secure, HTTP-only cookie that lasts for 7 days
