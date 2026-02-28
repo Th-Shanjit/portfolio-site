@@ -4,7 +4,9 @@ import Link from 'next/link';
 
 export default async function DocPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const docData = data.docs.find((d: any) => d.id === slug);
+  
+  // 🚀 FIX: Added ": any" here so TypeScript stops strictly checking the JSON structure
+  const docData: any = data.docs.find((d: any) => d.id === slug);
 
   if (!docData) return <div className="p-32 text-center text-xl font-light">Document Not Found</div>;
 
@@ -31,7 +33,7 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
         {docData.title}
       </h1>
 
-      {/* OPTIONAL COVER IMAGE: Renders only if you added an image URL in the admin editor */}
+      {/* OPTIONAL COVER IMAGE */}
       {docData.coverImage && (
         <div className="w-full aspect-[16/9] md:aspect-[21/9] mb-20 bg-zinc-50 border border-zinc-100 overflow-hidden group">
           <img 
