@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
 import data from '@/data/portfolio.json';
 import { useEffect, useRef, useState } from 'react';
 
@@ -43,21 +43,19 @@ export default function Home() {
     <main className="w-full pb-40 pt-12 relative z-10 selection:bg-zinc-300">
       
       {/* 1. HERO: STATIC LAPTOP UI WITH ROTATED DP */}
-      <section className="mb-40 flex justify-center px-12 md:px-24 pt-12">
+      <section className="mb-40 flex justify-center px-12 md:px-24 pt-8">
         <ScrollReveal className="w-full max-w-4xl relative">
           
-          {/* 🚀 NEW: 3x Larger, edge-to-edge watermark typography */}
+          {/* 🚀 3x Larger, edge-to-edge watermark typography */}
           <div className="w-full mb-16 md:mb-20">
             <h1 
-              className="text-2xl md:text-4xl lg:text-4xl font-bold uppercase text-zinc-500 flex justify-between w-full select-none"
+              className="text-4xl md:text-5xl lg:text-7xl font-bold uppercase text-zinc-300 flex justify-between w-full select-none"
               aria-label={portfolio.site?.name || "Shanjit Thokchom"}
             >
               {Array.from(portfolio.site?.name || "Shanjit Thokchom").map((char: any, i: number) => (
                 char === ' ' ? (
-                  // If it's a space between names, create a larger gap
                   <span key={i} className="w-4 md:w-8 lg:w-12"></span>
                 ) : (
-                  // If it's a letter, render it perfectly justified
                   <span key={i} aria-hidden="true">{char}</span>
                 )
               ))}
@@ -68,7 +66,7 @@ export default function Home() {
           <div className="absolute top-8 -left-8 md:top-8 md:-left-16 z-50 w-28 h-28 md:w-36 md:h-36 rounded-full border-[6px] border-[#f5f5f7] shadow-xl overflow-hidden bg-zinc-200 flex items-center justify-center rotate-[-25deg]">
             {portfolio.site?.dpUrl ? (
               <img 
-                src="/profile.jpg"
+                src="/profile.jpg" 
                 alt="Profile" 
                 className="absolute inset-0 w-full h-full object-cover" 
               />
@@ -100,7 +98,7 @@ export default function Home() {
             
             <div className="relative z-20 text-white w-full max-w-2xl">
               <span className="text-[10px] md:text-xs font-mono text-zinc-300 mb-6 block uppercase tracking-widest px-4 py-2 bg-white/10 rounded-full backdrop-blur-md w-max border border-white/10">
-                Primary Case Study
+                {hotProject.tag || "Primary Case Study"}
               </span>
               <h2 className="text-4xl md:text-6xl font-medium mb-6 tracking-tight leading-[1.1]">{hotProject.title}</h2>
               <p className="text-zinc-400 mb-10 text-base md:text-lg font-light leading-relaxed line-clamp-2">
@@ -122,7 +120,6 @@ export default function Home() {
       {/* 2. CENTERED 2x2 BENTO BOX GRID */}
       <section className="mb-40 max-w-3xl mx-auto px-6">
         <ScrollReveal>
-          {/* 🚀 FIX: Centered, larger H2 heading */}
           <div className="flex items-center justify-center mb-12">
             <h2 className="text-3xl font-semibold text-zinc-900 tracking-tight">Architecture & Case Studies</h2>
           </div>
@@ -131,10 +128,13 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {portfolio.highlightedProjects.map((project: any, index: number) => {
             const realDoc = portfolio.docs.find((d: any) => d.id === project.id);
+            
+            // 🚀 DRAFT FILTER: Don't show projects that aren't published
+            if (realDoc && realDoc.published === false) return null;
+
             const title = realDoc ? realDoc.title : project.title;
             const category = realDoc ? realDoc.type : project.category;
             const targetUrl = `/docs/${project.id}`;
-            
             const description = realDoc && realDoc.content[0] 
               ? realDoc.content[0] 
               : "Detailed breakdown of system logic and execution.";
@@ -161,7 +161,6 @@ export default function Home() {
             );
           })}
           
-          {/* Final square slot: Full Archive link */}
           <ScrollReveal delay={450}>
             <Link href="/docs" className="glass-panel rounded-[2.5rem] p-10 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col items-center justify-center text-center aspect-square border-dashed border-2 border-zinc-200 bg-transparent">
               <div className="w-12 h-12 bg-zinc-900 rounded-full flex items-center justify-center mb-6 shadow-md group-hover:scale-110 transition-transform duration-500">
@@ -174,7 +173,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. CONTACT GLASS CARD */}
+      {/* 🚀 3. INTERACTIVE ROADMAP SECTION */}
+      <section className="mb-40 max-w-3xl mx-auto px-6">
+        <ScrollReveal>
+          <div className="flex flex-col items-center mb-12">
+            <h2 className="text-3xl font-semibold text-zinc-900 tracking-tight">Project Roadmap</h2>
+            <p className="text-zinc-400 text-[10px] mt-2 uppercase tracking-[0.2em] font-bold">Building in Public</p>
+          </div>
+        </ScrollReveal>
+
+        <div className="space-y-4">
+          {portfolio.roadmap?.map((item: string, i: number) => {
+            if (!item.trim()) return null;
+            return (
+              <ScrollReveal key={i} delay={i * 100}>
+                <div className="flex items-center gap-4 p-6 glass-panel rounded-2xl group border-zinc-100/50 hover:bg-white/60 transition-colors">
+                  <div className="w-2 h-2 rounded-full bg-zinc-900 group-hover:scale-150 transition-transform duration-500"></div>
+                  <span className="text-sm font-light text-zinc-600 tracking-wide">{item}</span>
+                </div>
+              </ScrollReveal>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 4. CONTACT GLASS CARD */}
       <section className="flex justify-center px-6">
         <ScrollReveal>
           <div className="glass-panel rounded-[2.5rem] p-12 md:p-16 text-center max-w-2xl w-full flex flex-col items-center shadow-xl border border-white/60 bg-white/30 backdrop-blur-xl">

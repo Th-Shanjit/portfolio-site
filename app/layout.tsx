@@ -5,8 +5,25 @@ import { ArrowRight, MoveUpRight } from "lucide-react";
 import data from "@/data/portfolio.json";
 
 export const metadata: Metadata = {
+  // 🚀 SEO UPGRADE: Pulling dynamic values from portfolio.json
   title: `${data.site.name} | ${data.site.role}`,
-  description: "Portfolio and Data Room",
+  description: "Portfolio and Data Room centered on Product Management and Agentic AI workflows.",
+  
+  // 🚀 SOCIAL PREVIEW: OpenGraph tags for LinkedIn/Facebook
+  openGraph: {
+    title: `${data.site.name} | Portfolio`,
+    description: "Architecting the future of Product & AI through system design and technical strategy.",
+    images: ["/profile.jpg"], // Ensure profile.jpg exists in your /public folder
+    type: "website",
+  },
+  
+  // 🚀 SOCIAL PREVIEW: Twitter Card tags
+  twitter: {
+    card: "summary_large_image",
+    title: data.site.name,
+    description: "Product Management & Agentic AI Portfolio",
+    images: ["/profile.jpg"],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
@@ -23,7 +40,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </main>
         
         {/* Global Footer (Socials & Contact Only) */}
-        {/* Note: Removed bg-white and border-t so it blends into the glass theme */}
         <footer className="pt-12 pb-24 relative z-10">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
