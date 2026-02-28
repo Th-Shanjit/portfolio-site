@@ -19,12 +19,14 @@
     }
   ],
   "hero": {
-    "tag": "Highlighted Breakdown",
-    "title": "PaperLoop",
-    "description": "A live handwriting-to-text application emphasizing fluid interactions and real-time processing.",
-    "link": "/docs/project-docs/paperloop",
-    "linkText": "Read the Case Study"
+    "tag": "Primary Case Study",
+    "title": "Your Project Title",
+    "description": "Your project description...",
+    "link": "/docs/project-id",
+    "linkText": "View Case Study",
+    "coverImage": "" 
   },
+
   "highlightedProjects": [
     {
       "id": "recruit-ai",
