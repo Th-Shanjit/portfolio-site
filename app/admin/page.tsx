@@ -6,19 +6,20 @@ import { Save, Plus, Trash2, ChevronDown, ChevronUp, ImageIcon, FileText, Settin
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-  const [openSection, setOpenSection] = useState<string>('docs'); // 'site', 'hero', 'docs'
+  const [openSection, setOpenSection] = useState<string>('docs'); // 'site', 'about', 'hero', 'docs'
   const [openDocIndex, setOpenDocIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('/api/content') // <--- MUST BE '/api/content'
+    fetch('/api/content')
       .then(res => res.json())
-      .then(json => setData(json));
+      .then(json => setData(json))
+      .catch(err => console.error("Failed to fetch data:", err));
   }, []);
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      await fetch('/api/content', { // <--- MUST BE '/api/content'
+      await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -41,7 +42,7 @@ export default function AdminDashboard() {
       content: ["Start writing your architecture breakdown here..."]
     };
     setData({ ...data, docs: [newDoc, ...data.docs] });
-    setOpenDocIndex(0); // Open the newly created doc automatically
+    setOpenDocIndex(0); 
   };
 
   const deleteDoc = (index: number) => {
@@ -56,7 +57,6 @@ export default function AdminDashboard() {
   const updateDoc = (index: number, field: string, value: any) => {
     const newDocs = [...data.docs];
     if (field === 'content') {
-      // Split textarea by double line breaks to maintain the JSON array structure
       newDocs[index][field] = value.split('\n\n');
     } else {
       newDocs[index][field] = value;
@@ -120,15 +120,56 @@ export default function AdminDashboard() {
                 <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Global Role</label>
                 <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" value={data.site.role} onChange={e => setData({...data, site: {...data.site, role: e.target.value}})} />
               </div>
-              <div className="md:col-span-2">
+              <div>
                 <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Contact Email</label>
                 <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} />
+              </div>
+              <div>
+                <label className="flex items-center gap-2 text-[10px] text-zinc-500 mb-2 uppercase tracking-widest"><ImageIcon size={12}/> Display Picture URL</label>
+                <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" placeholder="https://..." value={data.site.dpUrl || ''} onChange={e => setData({...data, site: {...data.site, dpUrl: e.target.value}})} />
               </div>
             </div>
           )}
         </div>
 
-        {/* 3. HERO SECTION ACCORDION */}
+        {/* 3. ABOUT PAGE ACCORDION */}
+        <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
+          <button 
+            onClick={() => setOpenSection(openSection === 'about' ? '' : 'about')}
+            className="w-full flex justify-between items-center p-6 bg-zinc-50/50 hover:bg-zinc-50 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <FileText size={18} className="text-zinc-400" />
+              <h2 className="text-sm font-semibold tracking-wide text-zinc-900 uppercase">About Page Content</h2>
+            </div>
+            {openSection === 'about' ? <ChevronUp size={18} className="text-zinc-400"/> : <ChevronDown size={18} className="text-zinc-400"/>}
+          </button>
+          
+          {openSection === 'about' && (
+            <div className="p-6 grid gap-6 border-t border-zinc-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Page Heading</label>
+                  <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" value={data.about.heading} onChange={e => setData({...data, about: {...data.about, heading: e.target.value}})} />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Location</label>
+                  <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" value={data.about.location} onChange={e => setData({...data, about: {...data.about, location: e.target.value}})} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Origin Narrative</label>
+                <textarea className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm h-32 resize-none focus:outline-none focus:border-zinc-400" value={data.about.originText} onChange={e => setData({...data, about: {...data.about, originText: e.target.value}})} />
+              </div>
+              <div>
+                <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Current Focus</label>
+                <textarea className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm h-32 resize-none focus:outline-none focus:border-zinc-400" value={data.about.focusText} onChange={e => setData({...data, about: {...data.about, focusText: e.target.value}})} />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 4. HERO SECTION ACCORDION */}
         <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
           <button 
             onClick={() => setOpenSection(openSection === 'hero' ? '' : 'hero')}
@@ -159,7 +200,7 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* 4. DATA ROOM ACCORDION (LIST FIRST) */}
+        {/* 5. DATA ROOM ACCORDION */}
         <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
           <button 
             onClick={() => setOpenSection(openSection === 'docs' ? '' : 'docs')}
@@ -174,12 +215,10 @@ export default function AdminDashboard() {
           
           {openSection === 'docs' && (
             <div className="border-t border-zinc-100">
-              {/* Document List */}
               <div className="divide-y divide-zinc-100">
                 {data.docs.map((doc: any, index: number) => (
                   <div key={doc.id} className="flex flex-col">
                     
-                    {/* The Row */}
                     <button 
                       onClick={() => setOpenDocIndex(openDocIndex === index ? null : index)}
                       className="flex items-center justify-between p-4 px-6 hover:bg-zinc-50 transition-colors text-left"
@@ -194,7 +233,6 @@ export default function AdminDashboard() {
                       <ChevronDown size={16} className={`text-zinc-400 transition-transform ${openDocIndex === index ? 'rotate-180' : ''}`} />
                     </button>
 
-                    {/* The Editor Suite */}
                     {openDocIndex === index && (
                       <div className="p-6 bg-zinc-50 border-t border-zinc-100 grid gap-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -207,7 +245,6 @@ export default function AdminDashboard() {
                             <input className="w-full p-3 bg-white border border-zinc-200 rounded-lg text-sm font-mono focus:outline-none focus:border-zinc-400" value={doc.id} onChange={e => updateDoc(index, 'id', e.target.value)} />
                           </div>
                           
-                          {/* SMART CATEGORY TOGGLE */}
                           <div>
                             <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Domain / Category</label>
                             <select 

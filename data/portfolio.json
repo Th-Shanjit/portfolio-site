@@ -55,15 +55,16 @@
     "email": "hello@shanjitthokchom.xyz"
   },
   "about": {
-    "title": "Profile",
-    "heading": "AI Product Manager & Builder",
-    "content": "I'm a product manager with a specialized focus on Agentic AI. My background spans both technical execution and user-centric design.",
-    "skills": [
-      "Product Strategy",
-      "LLM Integration",
-      "Prompt Engineering",
-      "User Research"
-    ],
+    "heading": "The Architecture of a PM",
+    "subheading": "Deconstructing systems, whether legal, narrative, or algorithmic.",
+    "originTitle": "The Non-Linear Path",
+    "originText": "I started in law, dissecting complex regulatory logic. As a professional content writer and troupe member, I mastered narrative flow. Today, I combine these disciplines. Product management is just applied logic and clear communication—bridging the gap between raw engineering and human experience.",
+    "location": "Shillong, India",
+    "educationTitle": "Product Management & Agentic AI",
+    "educationSubtitle": "Masai School × IIT Patna",
+    "focusTitle": "Agentic AI & Systems",
+    "focusText": "Currently building multi-agent AI systems, utilizing the Cursor IDE to accelerate development. My approach is heavily influenced by development economics and minimalist design—creating highly scalable, high-impact products like SubSentry and PaperLoop without the visual clutter."
+  },
     "bio": [
       "I'm a product manager with a specialized focus on Agentic AI. My background spans both technical execution and user-centric design.",
       "I build tools that emphasize fluid interactions and real-time processing, ensuring complex AI workflows feel intuitive to the end user."

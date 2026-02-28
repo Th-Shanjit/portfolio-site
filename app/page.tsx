@@ -36,7 +36,7 @@ function ScrollReveal({ children, delay = 0, className = "" }: { children: React
 }
 
 export default function Home() {
-  // 🚀 FIX: "as any" tells TypeScript not to panic if properties are missing
+  // "as any" tells TypeScript not to panic if dynamic properties are missing
   const portfolio = data as any; 
   const hotProject = portfolio.hero;
 
@@ -49,8 +49,12 @@ export default function Home() {
           
           {/* THE DP: Layered on top-left, rotated 25 degrees */}
           <div className="absolute -top-12 -left-8 md:-top-16 md:-left-16 z-50 w-28 h-28 md:w-36 md:h-36 rounded-full border-[6px] border-[#f5f5f7] shadow-2xl overflow-hidden bg-zinc-200 flex items-center justify-center rotate-[-25deg] hover:rotate-0 transition-transform duration-700 ease-out cursor-pointer group">
-            <span className="text-zinc-400 text-xs md:text-sm font-medium tracking-widest uppercase group-hover:opacity-0 transition-opacity">DP</span>
-            {/* <img src="/my-photo.jpg" alt="Profile" className="absolute inset-0 w-full h-full object-cover" /> */}
+            {/* 🚀 DYNAMIC DP LOGIC */}
+            {portfolio.site?.dpUrl ? (
+              <img src={portfolio.site.dpUrl} alt="Profile" className="absolute inset-0 w-full h-full object-cover" />
+            ) : (
+              <span className="text-zinc-400 text-xs md:text-sm font-medium tracking-widest uppercase group-hover:opacity-0 transition-opacity">DP</span>
+            )}
           </div>
 
           {/* Laptop Screen Bezel */}
