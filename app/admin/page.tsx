@@ -10,18 +10,16 @@ export default function AdminDashboard() {
   const [openDocIndex, setOpenDocIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    // 🚀 FIX: Changed from '/api/portfolio' to '/api/content'
-    fetch('/api/content')
+    fetch('/api/content') // <--- Change 'portfolio' to 'content' here
       .then(res => res.json())
       .then(json => setData(json))
-      .catch(err => console.error("Failed to fetch data:", err)); // Added error logging just in case!
+      .catch(err => console.error(err));
   }, []);
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      // 🚀 FIX: Changed from '/api/portfolio' to '/api/content'
-      await fetch('/api/content', {
+      await fetch('/api/content', { // <--- Change 'portfolio' to 'content' here
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

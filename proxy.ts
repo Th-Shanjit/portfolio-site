@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// 🚀 Explicitly named and exported middleware function
-export function middleware(req: NextRequest) {
+// 🚀 FIX: The function must now be explicitly named "proxy" for Next.js 16
+export function proxy(req: NextRequest) {
   const basicAuth = req.headers.get('authorization');
   const url = req.nextUrl;
 
@@ -30,7 +30,7 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// 🚀 Next.js Config to optimize when the middleware runs
+// 🚀 Next.js Config to optimize when the proxy runs
 export const config = {
   matcher: [
     '/admin/:path*', 
