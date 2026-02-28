@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f4f2; 
-  --foreground: #1c1c1a;
+  /* Locked to our clean minimalist light theme */
+  --background: #ffffff;
+  --foreground: #18181b; /* matches text-zinc-900 */
 }
 
 @theme inline {
