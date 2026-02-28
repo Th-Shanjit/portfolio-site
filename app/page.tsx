@@ -9,7 +9,8 @@ export default function Home() {
     <main className="max-w-5xl mx-auto px-6 font-light text-zinc-900 selection:bg-zinc-200 animate-in fade-in duration-1000">
       
       {/* HERO SECTION */}
-      <section className="min-h-[80vh] flex flex-col justify-center py-40">
+      {/* Changed 'py-40' to 'pt-12 pb-40' to pull the content up into the visible window */}
+      <section className="min-h-[80vh] flex flex-col justify-center pt-12 pb-40">
         <span className="text-xs uppercase tracking-[0.3em] text-zinc-400 mb-12 block">
           {portfolio.hero.tag}
         </span>
