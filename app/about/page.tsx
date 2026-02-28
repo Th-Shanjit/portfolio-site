@@ -3,50 +3,35 @@ import type { PortfolioData, Experience } from '@/lib/content';
 import React from 'react';
 
 export default function AboutPage() {
-  const portfolio = data as PortfolioData;
-  const data_ = portfolio.about;
-
-  if (!data_) {
-    return (
-      <div className="max-w-7xl mx-auto px-6 py-32">
-        <p className="text-zinc-500">About content not configured.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="animate-in fade-in duration-1000 max-w-7xl mx-auto px-6 py-32 relative z-10 min-h-[80vh]">
-      <div className="flex flex-col lg:flex-row gap-20 items-start">
-        <div className="lg:w-1/2">
-          <h1 className="text-5xl font-light tracking-tight text-zinc-900 mb-12">{data_.title}</h1>
-          <div className="relative pt-2 mb-16">
-            <span className="absolute -top-12 -left-6 text-8xl font-serif text-zinc-100 opacity-50 z-0 select-none">&quot;</span>
-            <p className="text-zinc-600 font-light leading-loose text-xl relative z-10">{data_.content}</p>
-          </div>
-          <div className="flex flex-col gap-4 border-t border-zinc-100 pt-8">
-            <span className="text-xs font-medium uppercase tracking-widest text-zinc-400 mb-2">Core Competencies</span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {data_.skills.map((skill: string, i: number) => (
-                <div key={i} className="flex items-center gap-3 group">
-                  <span className="w-4 h-[1px] bg-zinc-200 group-hover:w-8 group-hover:bg-zinc-400 transition-all duration-500"></span>
-                  <span className="text-sm font-light text-zinc-600 group-hover:text-zinc-900 transition-colors">{skill}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+    <div className="max-w-5xl mx-auto px-6 py-40 min-h-[80vh] font-light text-zinc-900">
+      <span className="text-xs uppercase tracking-[0.3em] text-zinc-400 mb-12 block">
+        About Me
+      </span>
+      
+      <h1 className="text-5xl md:text-7xl tracking-tighter mb-24 leading-[1]">
+        {data.about.heading}
+      </h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
+        <div className="flex flex-col gap-6 text-xl text-zinc-500 leading-relaxed">
+          {data.about.bio.map((paragraph, i) => (
+            <p key={i}>{paragraph}</p>
+          ))}
         </div>
 
-        <div className="lg:w-1/2 w-full lg:pl-12 lg:border-l border-zinc-100">
-          <span className="text-xs font-medium uppercase tracking-widest text-zinc-400 mb-12 block">Background & Education</span>
-          <div className="flex flex-col">
-            {data_.experience.map((item: Experience) => (
-              <div key={item.id} className="group relative pb-12 pl-8 border-l border-zinc-100 last:border-transparent last:pb-0">
-                <div className="absolute left-[-5px] top-1.5 w-2 h-2 rounded-full bg-white border border-zinc-300 group-hover:border-zinc-900 group-hover:bg-zinc-900 transition-all duration-300"></div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] uppercase tracking-widest text-zinc-400 mb-2">{item.year} • {item.type}</span>
-                  <h3 className="text-lg font-light text-zinc-900 group-hover:text-zinc-600 transition-colors mb-1">{item.role}</h3>
-                  <span className="text-sm font-light text-zinc-500">{item.company}</span>
+        <div>
+          <span className="text-xs uppercase tracking-[0.3em] text-zinc-400 mb-8 block">
+            Experience & Education
+          </span>
+          <div className="flex flex-col gap-8 border-t border-zinc-100 pt-8">
+            {data.about.experience.map((exp: any, i: number) => (
+              <div key={i} className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+                <div>
+                  <h3 className="text-lg text-zinc-900">{exp.role}</h3>
+                  <p className="text-sm text-zinc-500">{exp.company}</p>
                 </div>
+                <span className="text-xs text-zinc-400 font-mono">{exp.year}</span>
               </div>
             ))}
           </div>

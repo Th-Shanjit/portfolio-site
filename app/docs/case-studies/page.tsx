@@ -1,40 +1,41 @@
-import type { Doc } from '@/lib/content';
-import { FileText, ArrowRight } from 'lucide-react';
+import data from '@/data/portfolio.json';
 import Link from 'next/link';
 
-export default function CaseStudiesPage() {
-  const docs: Doc[] = []; // Optional: filter (data as PortfolioData).docs by category if you add one
+export default function ProjectDocsPage() {
+  // Filter only the documents that belong to this category
+  const caseStudies = data.docs.filter((doc: any) => doc.type === 'Case Studies');
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-32 animate-in fade-in duration-1000 min-h-[80vh]">
-      <div className="mb-16 max-w-2xl">
-        <h1 className="text-5xl font-light tracking-tight text-zinc-900 mb-4">Case studies</h1>
-        <p className="text-lg font-light text-zinc-500">Breakdowns and deep dives.</p>
+    <div className="max-w-5xl mx-auto px-6 py-40 min-h-[80vh] font-light">
+      <div className="mb-24">
+        <span className="text-xs uppercase tracking-[0.3em] text-zinc-400 mb-8 block">
+          Directory
+        </span>
+        <h1 className="text-5xl tracking-tight text-zinc-900">Case Studies</h1>
       </div>
-      {docs.length === 0 ? (
-        <p className="text-zinc-500 font-light">No case studies yet.</p>
-      ) : (
-        <div className="flex flex-col border-t border-zinc-100">
-          {docs.map((doc) => (
-            <Link key={doc.id} href={`/docs/${doc.id}`} className="py-5 border-b border-zinc-200/60 flex items-center justify-between group hover-trigger cursor-pointer">
-              <div className="flex items-center gap-6">
-                <FileText size={20} strokeWidth={1} className="text-zinc-300 group-hover:text-zinc-900 transition-colors" />
-                <div>
-                  <h4 className="font-light text-base text-zinc-900 group-hover:text-zinc-600 transition-colors">{doc.title}</h4>
-                  <div className="flex items-center gap-3 text-[10px] font-medium text-zinc-400 mt-2 uppercase tracking-widest">
-                    <span>{doc.type}</span>
-                    <span className="w-1 h-1 rounded-full bg-zinc-200"></span>
-                    <span>{doc.readTime}</span>
-                    <span className="w-1 h-1 rounded-full bg-zinc-200"></span>
-                    <span>{doc.date}</span>
-                  </div>
+
+      <div className="flex flex-col">
+        {caseStudies.length === 0 ? (
+          <p className="text-zinc-400 italic">No documents uploaded yet.</p>
+        ) : (
+          caseStudies.map((doc: any) => (
+            <Link 
+              key={doc.id} 
+              href={`/docs/${doc.id}`}
+              className="group flex flex-col sm:flex-row sm:items-center justify-between py-8 border-b border-zinc-100 hover:border-zinc-400 transition-colors"
+            >
+              <div>
+                <h2 className="text-2xl text-zinc-900 group-hover:text-zinc-500 transition-colors">{doc.title}</h2>
+                <div className="flex gap-3 text-xs text-zinc-400 mt-2 tracking-widest uppercase">
+                  <span>{doc.date}</span>
+                  <span>•</span>
+                  <span>{doc.readTime}</span>
                 </div>
               </div>
-              <ArrowRight size={18} strokeWidth={1.5} className="text-zinc-300 group-hover:text-zinc-900 transition-transform duration-300 group-hover:translate-x-2 p-2" />
             </Link>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }

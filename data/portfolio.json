@@ -38,11 +38,16 @@
   },
   "about": {
     "title": "Profile",
+    "heading": "AI Product Manager & Builder",
     "content": "I'm a product manager with a specialized focus on Agentic AI. My background spans both technical execution and user-centric design.",
     "skills": ["Product Strategy", "LLM Integration", "Prompt Engineering", "User Research"],
+    "bio": [
+      "I'm a product manager with a specialized focus on Agentic AI. My background spans both technical execution and user-centric design.",
+      "I build tools that emphasize fluid interactions and real-time processing, ensuring complex AI workflows feel intuitive to the end user."
+    ],
     "experience": [
-      { "id": "exp1", "role": "Diploma in Product Management with Agentic AI", "company": "Product Academy", "year": "2024", "type": "Education" },
-      { "id": "exp2", "role": "Senior Product Manager", "company": "TechNexus Inc.", "year": "2021 — 2023", "type": "Experience" }
+      { "role": "Senior Product Manager", "company": "TechNexus", "year": "2021 — Present" },
+      { "role": "Diploma in Agentic AI", "company": "Product Academy", "year": "2024" }
     ]
   },
   "docs": [
