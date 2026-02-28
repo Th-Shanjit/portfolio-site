@@ -84,7 +84,8 @@ export default function AdminEditor() {
   // --- UI: LOGIN SCREEN ---
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center font-light text-zinc-900 px-6 bg-white absolute inset-0 z-[100]">
+      // 🚀 Changed "absolute" to "fixed" so it covers the entire browser window
+      <div className="min-h-screen flex items-center justify-center font-light text-zinc-900 px-6 bg-white fixed inset-0 z-[100]">
         <form onSubmit={handleLogin} className="w-full max-w-xs flex flex-col items-center animate-in fade-in zoom-in-95 duration-500">
           <Lock size={24} className="text-zinc-300 mb-8" strokeWidth={1} />
           <h1 className="text-2xl tracking-tight mb-8">Admin Access</h1>
