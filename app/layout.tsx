@@ -14,7 +14,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-900 selection:text-white flex flex-col overflow-x-hidden relative">
-        {/* ... styles and Navigation ... */}
+        
+        {/* Global Navigation */}
+        <Navigation />
+        
+        {/* Page Content Injection */}
+        <main className="flex-grow relative z-10 pt-20">
+          {children}
+        </main>
         
         {/* Global Footer */}
         <footer className="border-t border-zinc-100 bg-white pt-20 pb-12 relative z-10">
@@ -24,7 +31,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <h2 className="text-3xl font-light tracking-tight text-zinc-900 mb-6">Let&apos;s build something<br/>meaningful together.</h2>
                 <a href={`mailto:${data.site.email}`} className="group inline-flex items-center gap-4 text-sm font-medium uppercase tracking-widest hover:text-zinc-500 transition-colors">
                   Start a conversation 
-                  {/* ... arrow svg ... */}
+                  <span className="w-10 h-[1px] bg-zinc-900 group-hover:w-16 group-hover:bg-zinc-400 transition-all duration-500 relative">
+                    <ArrowRight size={14} className="absolute right-[-4px] top-[-6px] text-zinc-900 group-hover:text-zinc-400 group-hover:translate-x-2 transition-all duration-500" strokeWidth={1.5} />
+                  </span>
                 </a>
               </div>
               

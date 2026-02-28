@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import data from '@/data/portfolio.json';
-import type { PortfolioData } from '@/lib/content';
 
 export default function Home() {
-  const portfolio = data as PortfolioData;
+  const portfolio = data;
 
   return (
     <main className="max-w-5xl mx-auto px-6 font-light text-zinc-900 selection:bg-zinc-200">
