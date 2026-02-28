@@ -27,7 +27,7 @@ export default function AdminEditor() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 🔒 CHANGE YOUR PASSWORD HERE 
+    // 🔒 Password matches your custom update
     if (passwordInput === 'lifeistender') {
       setIsAuthenticated(true);
       setAuthError('');
@@ -218,9 +218,13 @@ export default function AdminEditor() {
                       value={doc.type}
                       onChange={(e) => handleDocChange(index, 'type', e.target.value)}
                     >
+                      {/* THIS IS WHERE THE DROP DOWN CATEGORIES LIVE */}
                       <option value="Project Docs">Project Docs</option>
                       <option value="Case Studies">Case Studies</option>
                       <option value="Legal">Legal</option>
+                      
+                      {/* 🚀 New Category Added Here! */}
+                      <option value="New App Docs">New App Docs</option>
                     </select>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
