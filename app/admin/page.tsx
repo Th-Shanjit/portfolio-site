@@ -10,20 +10,22 @@ export default function AdminDashboard() {
   const [openDocIndex, setOpenDocIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('/api/portfolio')
+    // 🚀 FIX: Changed from '/api/portfolio' to '/api/content'
+    fetch('/api/content')
       .then(res => res.json())
-      .then(json => setData(json));
+      .then(json => setData(json))
+      .catch(err => console.error("Failed to fetch data:", err)); // Added error logging just in case!
   }, []);
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      await fetch('/api/portfolio', {
+      // 🚀 FIX: Changed from '/api/portfolio' to '/api/content'
+      await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      // Small delay to let the button show the "Saving..." state
       setTimeout(() => setSaving(false), 800);
     } catch (error) {
       console.error('Failed to save', error);
