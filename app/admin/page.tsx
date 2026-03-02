@@ -35,14 +35,19 @@ export default function AdminDashboard() {
       });
       
       if (res.ok) {
-        // 🚀 Trigger the success modal after a short delay for better UX
         setTimeout(() => {
           setSaving(false);
           setShowModal(true);
         }, 800);
+      } else {
+        // 🚀 NEW: Catch the Vercel read-only error and stop spinning
+        const errorData = await res.json();
+        alert(`Failed to save: Vercel is Read-Only. Please run locally or set up a Cloud DB.`);
+        setSaving(false);
       }
     } catch (error) {
       console.error('Failed to save', error);
+      alert('Network error occurred.');
       setSaving(false);
     }
   };
