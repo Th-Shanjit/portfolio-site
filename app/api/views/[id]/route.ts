@@ -1,20 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
 const getFilePath = () => path.join(process.cwd(), 'data', 'portfolio.json');
 
 export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> } // 🚀 FIX: Must be a Promise
+  request: NextRequest, // 🚀 FIX: Must strictly be NextRequest in Next 15
+  context: { params: Promise<{ id: string }> } // 🚀 FIX: Must use context wrapper
 ) {
   try {
-    const resolvedParams = await params; // 🚀 FIX: Unwrap the Promise
+    // Unwrap the promise
+    const resolvedParams = await context.params;
     const id = resolvedParams.id;
 
     const fileContents = fs.readFileSync(getFilePath(), 'utf8');
     const data = JSON.parse(fileContents);
     
+    // Find the document and increment views
     const docIndex = data.docs.findIndex((d: any) => d.id === id);
     
     if (docIndex !== -1) {
