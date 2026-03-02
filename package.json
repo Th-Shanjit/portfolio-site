@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@upstash/redis": "^1.36.3",
+    "@vercel/blob": "^2.3.0",
     "framer-motion": "^12.34.3",
     "lucide-react": "latest",
     "next": "16.1.6",

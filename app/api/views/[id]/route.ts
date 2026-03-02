@@ -1,25 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { Redis } from '@upstash/redis';
 
-const getFilePath = () => path.join(process.cwd(), 'data', 'portfolio.json');
+const redis = Redis.fromEnv();
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> } 
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const resolvedParams = await params; 
+    const resolvedParams = await context.params;
     const id = resolvedParams.id;
 
-    const fileContents = fs.readFileSync(getFilePath(), 'utf8');
-    const data = JSON.parse(fileContents);
+    // Fetch the live database from Upstash
+    let data: any = await redis.get('portfolio_data');
     
+    if (!data) return NextResponse.json({ error: 'Database empty' }, { status: 404 });
+
+    // Find the document and increment views
     const docIndex = data.docs.findIndex((d: any) => d.id === id);
     
     if (docIndex !== -1) {
       data.docs[docIndex].views = (data.docs[docIndex].views || 0) + 1;
-      fs.writeFileSync(getFilePath(), JSON.stringify(data, null, 2), 'utf8');
+      
+      // Save the new view count back to the cloud
+      await redis.set('portfolio_data', data);
+      
       return NextResponse.json({ views: data.docs[docIndex].views });
     }
 
