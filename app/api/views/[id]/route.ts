@@ -5,18 +5,16 @@ import path from 'path';
 const getFilePath = () => path.join(process.cwd(), 'data', 'portfolio.json');
 
 export async function POST(
-  request: NextRequest, // 🚀 FIX: Must strictly be NextRequest in Next 15
-  context: { params: Promise<{ id: string }> } // 🚀 FIX: Must use context wrapper
+  request: NextRequest, 
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Unwrap the promise
     const resolvedParams = await context.params;
     const id = resolvedParams.id;
 
     const fileContents = fs.readFileSync(getFilePath(), 'utf8');
     const data = JSON.parse(fileContents);
     
-    // Find the document and increment views
     const docIndex = data.docs.findIndex((d: any) => d.id === id);
     
     if (docIndex !== -1) {
