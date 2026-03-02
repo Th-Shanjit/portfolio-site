@@ -282,7 +282,7 @@ export default function AdminDashboard() {
             <div className="border-t border-zinc-100">
               <div className="divide-y divide-zinc-100">
                 {data.docs.map((doc: any, index: number) => (
-                  <div key={doc.id} className="flex flex-col">
+                <div key={index} className="flex flex-col">
                     
                     <button 
                       onClick={() => setOpenDocIndex(openDocIndex === index ? null : index)}
