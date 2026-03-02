@@ -5,11 +5,11 @@ import path from 'path';
 const getFilePath = () => path.join(process.cwd(), 'data', 'portfolio.json');
 
 export async function POST(
-  request: NextRequest, 
-  context: { params: Promise<{ id: string }> }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> } 
 ) {
   try {
-    const resolvedParams = await context.params;
+    const resolvedParams = await params; 
     const id = resolvedParams.id;
 
     const fileContents = fs.readFileSync(getFilePath(), 'utf8');
