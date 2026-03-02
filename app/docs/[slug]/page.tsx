@@ -139,22 +139,24 @@ export default function DocumentReader({ params }: { params: { slug: string } })
           })}
         </div>
 
-        {/* 5. FOOTER CALL-TO-ACTION */}
-        <div className="mt-32 pt-16 border-t border-zinc-200">
-          <div className="glass-panel rounded-[3rem] p-10 md:p-16 text-center bg-white/40 border border-white/60 shadow-xl">
-            <div className="w-12 h-1 bg-zinc-900 rounded-full mx-auto mb-8"></div>
-            <h3 className="text-2xl md:text-3xl font-medium text-zinc-900 mb-4 tracking-tight">Discuss this architecture</h3>
-            <p className="text-zinc-500 font-light mb-10 max-w-md mx-auto leading-relaxed">
-              Have questions about the logic or implementation? Let's connect and dive deeper into the technical execution.
-            </p>
-            <a 
-              href={`mailto:${(data as any).contact.email}?subject=Feedback: ${doc.title}`}
-              className="inline-flex bg-zinc-900 text-white px-10 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-700 hover:scale-105 transition-all shadow-lg"
-            >
-              Start a Conversation
-            </a>
-          </div>
-        </div>
+       {/* 5. FOOTER CALL-TO-ACTION */}
+<div className="mt-32 pt-16 border-t border-zinc-200">
+  <div className="glass-panel rounded-[3rem] p-10 md:p-16 text-center bg-white/40 border border-white/60 shadow-xl">
+    <div className="w-12 h-1 bg-[#0a66c2] rounded-full mx-auto mb-8"></div>
+    <h3 className="text-2xl md:text-3xl font-medium text-zinc-900 mb-4 tracking-tight">Discuss this architecture</h3>
+    <p className="text-zinc-500 font-light mb-10 max-w-md mx-auto leading-relaxed">
+      Have questions about the logic or implementation? Let's connect on LinkedIn and dive deeper into the technical execution.
+    </p>
+    <a 
+      href={(data as any).site.linkedinUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex bg-[#0a66c2] text-white px-10 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-blue-700 hover:scale-105 transition-all shadow-lg"
+    >
+      Discuss on LinkedIn
+    </a>
+  </div>
+</div>
 
       </article>
     </main>

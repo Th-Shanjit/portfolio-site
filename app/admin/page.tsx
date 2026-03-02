@@ -46,7 +46,8 @@ export default function AdminDashboard() {
       readTime: "5 min read",
       coverImage: "",
       pdfUrl: "",
-      published: false, // Initialized as draft
+      published: false,
+      views: 0, // 🚀 NEW: Initialize views for analytics
       content: ["Start writing your architecture breakdown here..."]
     };
     setData({ ...data, docs: [newDoc, ...data.docs] });
@@ -114,6 +115,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-[#f5f5f7] pb-32 font-sans selection:bg-zinc-300">
       
+      {/* 1. STICKY PUBLISH HEADER */}
       <div className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-zinc-200 shadow-sm px-6 py-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-zinc-900 text-white rounded-lg flex items-center justify-center shadow-md">
@@ -137,18 +139,22 @@ export default function AdminDashboard() {
 
       <div className="max-w-4xl mx-auto px-6 mt-12 space-y-6">
 
-        {/* SITE SETTINGS */}
+        {/* 2. SITE SETTINGS ACCORDION */}
         <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
           <button 
             onClick={() => setOpenSection(openSection === 'site' ? '' : 'site')}
             className="w-full flex justify-between items-center p-6 bg-zinc-50/50 hover:bg-zinc-50 transition-colors"
           >
-            <div className="flex items-center gap-3">
-              <Settings size={18} className="text-zinc-400" />
-              <h2 className="text-sm font-semibold tracking-wide text-zinc-900 uppercase">Global Settings & Contact</h2>
-            </div>
-            {openSection === 'site' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-          </button>
+            <div>
+              
+        <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">LinkedIn URL</label>
+        <input 
+          className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" 
+          placeholder="https://linkedin.com/in/..."
+          value={data.site.linkedinUrl || ''} 
+          onChange={e => setData({...data, site: {...data.site, linkedinUrl: e.target.value}})} 
+        />
+      </div>
           
           {openSection === 'site' && (
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-zinc-100">
@@ -164,18 +170,20 @@ export default function AdminDashboard() {
                 <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Contact Email</label>
                 <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} />
               </div>
+              
               <div>
                 <label className="flex items-center gap-2 text-[10px] text-zinc-500 mb-2 uppercase tracking-widest"><ImageIcon size={12}/> Display Picture</label>
                 <div className="flex items-center gap-4 p-3 bg-zinc-50 border border-zinc-200 rounded-lg">
                   {data.site.dpUrl && <img src={data.site.dpUrl} alt="DP" className="w-8 h-8 rounded-full object-cover shadow-sm" />}
                   <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'site.dpUrl')} className="text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-zinc-200 file:text-zinc-700 hover:file:bg-zinc-300 transition-all cursor-pointer w-full" />
+                  {uploadingState['site.dpUrl'] && <span className="text-xs text-zinc-400 animate-pulse whitespace-nowrap">Uploading...</span>}
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* ROADMAP SECTION */}
+        {/* 3. INTERACTIVE ROADMAP ACCORDION */}
         <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
           <button 
             onClick={() => setOpenSection(openSection === 'roadmap' ? '' : 'roadmap')}
@@ -185,7 +193,7 @@ export default function AdminDashboard() {
               <Sparkles size={18} className="text-zinc-400" />
               <h2 className="text-sm font-semibold tracking-wide text-zinc-900 uppercase">Project Roadmap</h2>
             </div>
-            {openSection === 'roadmap' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+            {openSection === 'roadmap' ? <ChevronUp size={18} className="text-zinc-400"/> : <ChevronDown size={18} className="text-zinc-400"/>}
           </button>
           
           {openSection === 'roadmap' && (
@@ -201,7 +209,7 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* DATA ROOM */}
+        {/* 4. DATA ROOM ACCORDION */}
         <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
           <button 
             onClick={() => setOpenSection(openSection === 'docs' ? '' : 'docs')}
@@ -211,7 +219,7 @@ export default function AdminDashboard() {
               <FileText size={18} className="text-zinc-400" />
               <h2 className="text-sm font-semibold tracking-wide text-zinc-900 uppercase">Data Room (Case Studies)</h2>
             </div>
-            {openSection === 'docs' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+            {openSection === 'docs' ? <ChevronUp size={18} className="text-zinc-400"/> : <ChevronDown size={18} className="text-zinc-400"/>}
           </button>
           
           {openSection === 'docs' && (
@@ -219,6 +227,7 @@ export default function AdminDashboard() {
               <div className="divide-y divide-zinc-100">
                 {data.docs.map((doc: any, index: number) => (
                   <div key={doc.id} className="flex flex-col">
+                    
                     <button 
                       onClick={() => setOpenDocIndex(openDocIndex === index ? null : index)}
                       className="flex items-center justify-between p-4 px-6 hover:bg-zinc-50 transition-colors text-left"
@@ -227,9 +236,15 @@ export default function AdminDashboard() {
                         <div className={`w-2 h-2 rounded-full ${doc.published ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-zinc-300'}`}></div>
                         <div>
                           <p className="text-sm font-semibold text-zinc-900">{doc.title}</p>
-                          <p className="text-[10px] tracking-widest uppercase text-zinc-400">
-                            {doc.type} • {doc.published ? 'Live' : 'Draft'}
-                          </p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <p className="text-[10px] tracking-widest uppercase text-zinc-400">
+                              {doc.type} • {doc.published ? 'Live' : 'Draft'}
+                            </p>
+                            {/* 🚀 VIEW COUNTER BADGE */}
+                            <span className="flex items-center gap-1 text-[9px] bg-zinc-100 text-zinc-500 px-1.5 py-0.5 rounded-md font-mono border border-zinc-200" title="Total page views">
+                              <Eye size={10} /> {doc.views || 0}
+                            </span>
+                          </div>
                         </div>
                       </div>
                       <ChevronDown size={16} className={`text-zinc-400 transition-transform ${openDocIndex === index ? 'rotate-180' : ''}`} />
@@ -237,7 +252,8 @@ export default function AdminDashboard() {
 
                     {openDocIndex === index && (
                       <div className="p-6 bg-zinc-50 border-t border-zinc-100 grid gap-6">
-                        {/* Visibility Toggle */}
+                        
+                        {/* 🚀 Visibility Toggle */}
                         <div className="flex items-center gap-3 p-4 bg-white border border-zinc-200 rounded-xl shadow-sm">
                           {doc.published ? <Eye size={16} className="text-emerald-500" /> : <EyeOff size={16} className="text-zinc-400" />}
                           <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
@@ -270,29 +286,48 @@ export default function AdminDashboard() {
                           </label>
                           <div className="flex flex-wrap gap-2 mb-4">
                             {allCategories.map((category: string) => (
-                              <button key={category} type="button" onClick={() => updateDoc(index, 'type', category)} className={`text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full border transition-all ${doc.type === category ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-zinc-50 text-zinc-500 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900'}`}>{category}</button>
+                              <button
+                                key={category}
+                                type="button"
+                                onClick={() => updateDoc(index, 'type', category)}
+                                className={`text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full border transition-all ${
+                                  doc.type === category 
+                                    ? 'bg-zinc-900 text-white border-zinc-900 shadow-md' 
+                                    : 'bg-zinc-50 text-zinc-500 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900'
+                                }`}
+                              >
+                                {category}
+                              </button>
                             ))}
                           </div>
-                          <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" value={doc.type} placeholder="Type a new tag..." onChange={e => updateDoc(index, 'type', e.target.value)} />
+                          <input 
+                            className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400 focus:bg-white transition-colors"
+                            value={doc.type}
+                            placeholder="Type a new tag..."
+                            onChange={e => updateDoc(index, 'type', e.target.value)}
+                          />
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Cover Image</label>
                             <div className="flex flex-col gap-3 p-3 bg-white border border-zinc-200 rounded-lg">
-                              {doc.coverImage && <img src={doc.coverImage} className="w-full h-24 object-cover rounded-md" />}
-                              <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'coverImage', index)} className="text-xs text-zinc-500" />
+                              {doc.coverImage && <img src={doc.coverImage} className="w-full h-24 object-cover rounded-md border border-zinc-100" />}
+                              <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'coverImage', index)} className="text-xs text-zinc-500 file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-zinc-200 file:text-zinc-700 hover:file:bg-zinc-300 cursor-pointer" />
+                              {uploadingState['coverImage'] && <span className="text-xs text-zinc-400 animate-pulse">Uploading Image...</span>}
                             </div>
                           </div>
                           <div>
                             <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Embed PDF</label>
                             <div className="flex flex-col gap-3 p-3 bg-white border border-zinc-200 rounded-lg h-full justify-center">
-                              {doc.pdfUrl && <span className="text-[10px] font-bold text-emerald-600 truncate">Attached: {doc.pdfUrl.split('/').pop()}</span>}
-                              <input type="file" accept="application/pdf" onChange={e => handleFileUpload(e, 'pdfUrl', index)} className="text-xs text-zinc-500" />
+                              {doc.pdfUrl && <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-md border border-emerald-100 truncate w-full text-center">Attached: {doc.pdfUrl.split('/').pop()}</span>}
+                              <input type="file" accept="application/pdf" onChange={e => handleFileUpload(e, 'pdfUrl', index)} className="text-xs text-zinc-500 file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-zinc-200 file:text-zinc-700 hover:file:bg-zinc-300 cursor-pointer" />
+                              {uploadingState['pdfUrl'] && <span className="text-xs text-zinc-400 animate-pulse">Uploading PDF...</span>}
                             </div>
                           </div>
                         </div>
 
+                        {/* ZEN EDITOR */}
                         <div className="flex flex-col gap-3 mt-4">
                           <label className="block text-[10px] text-zinc-500 uppercase tracking-widest flex justify-between items-end">
                             <span>Document Body</span>
