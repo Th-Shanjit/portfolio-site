@@ -10,12 +10,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    // 🚀 Uploads the file to Vercel Blob Storage permanently
+    // 🚀 Uploads the file to Vercel's permanent cloud storage instead of local 'fs'
     const blob = await put(file.name, file, {
-      access: 'public', // Makes the PDF viewable to users reading your site
+      access: 'public', 
     });
 
-    // Hands the permanent link back to the Editor
+    // Returns the permanent Vercel Cloud URL back to the editor
     return NextResponse.json({ url: blob.url });
     
   } catch (error: any) {

@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect, use } from 'react'; // 🚀 FIX: Import use
+import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Clock, Calendar, Hash, FileText, Download } from 'lucide-react';
-import data from '@/data/portfolio.json';
 
 const formatText = (text: string) => {
   let formatted = text
@@ -13,14 +12,30 @@ const formatText = (text: string) => {
   return { __html: formatted };
 };
 
-export default function DocumentReader({ params }: { params: Promise<{ slug: string }> }) { // 🚀 FIX: Promise
+export default function DocumentReader({ params }: { params: Promise<{ slug: string }> }) {
   const [progress, setProgress] = useState(0);
-  const resolvedParams = use(params); // 🚀 FIX: Unwrap Promise
-  const doc = (data as any).docs.find((d: any) => d.id === resolvedParams.slug);
+  const [data, setData] = useState<any>(null); // 🚀 NEW: State to hold our live cloud data
+  const [isLoading, setIsLoading] = useState(true); // 🚀 NEW: Loading state
+
+  const resolvedParams = use(params);
 
   useEffect(() => {
+    // 🚀 NEW: Fetch the live data from Upstash instead of the static file
+    fetch('/api/content')
+      .then(res => res.json())
+      .then(json => {
+        setData(json);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch document", err);
+        setIsLoading(false);
+      });
+
+    // Fire the view tracker
     fetch(`/api/views/${resolvedParams.slug}`, { method: 'POST' }).catch(() => {});
     
+    // Scroll progress tracker
     const updateProgress = () => {
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (scrollHeight > 0) setProgress((window.scrollY / scrollHeight) * 100);
@@ -29,6 +44,14 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
     window.addEventListener('scroll', updateProgress);
     return () => window.removeEventListener('scroll', updateProgress);
   }, [resolvedParams.slug]);
+
+  // 🚀 NEW: Show a loading screen while fetching from the cloud
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] text-zinc-400 uppercase tracking-widest text-xs">Loading Architecture...</div>;
+  }
+
+  // 🚀 NEW: Safely find the document once data has loaded
+  const doc = data?.docs?.find((d: any) => d.id === resolvedParams.slug);
 
   if (!doc) {
     return (
@@ -83,7 +106,7 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
           <div className="glass-panel rounded-[3rem] p-10 md:p-16 text-center bg-white/40 border border-white/60 shadow-xl">
             <div className="w-12 h-1 bg-[#0a66c2] rounded-full mx-auto mb-8"></div>
             <h3 className="text-2xl md:text-3xl font-medium text-zinc-900 mb-4 tracking-tight">Discuss this architecture</h3>
-            <a href={(data as any).site.linkedinUrl} target="_blank" className="inline-flex bg-[#0a66c2] text-white px-10 py-4 rounded-full text-xs font-bold uppercase tracking-widest mt-6">Discuss on LinkedIn</a>
+            <a href={(data as any)?.site?.linkedinUrl || '#'} target="_blank" className="inline-flex bg-[#0a66c2] text-white px-10 py-4 rounded-full text-xs font-bold uppercase tracking-widest mt-6">Discuss on LinkedIn</a>
           </div>
         </div>
       </article>

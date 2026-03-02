@@ -84,7 +84,7 @@ export default function AdminDashboard() {
   };
 
   const updateDoc = (index: number, field: string, value: any) => {
-    // 🚀 FIX 3: Safe updating so PDF uploads don't erase what you just typed
+    // 🚀 FIX: Use 'prev' to ensure we never overwrite new documents with stale state
     setData((prev: any) => {
       if (!prev) return prev;
       const newDocs = [...prev.docs];
@@ -111,18 +111,15 @@ export default function AdminDashboard() {
       
       if (responseData.url) {
         if (docIndex !== undefined) {
-          // This now safely calls our fixed updateDoc!
           updateDoc(docIndex, fieldPath, responseData.url);
         } else {
           const keys = fieldPath.split('.');
-          // 🚀 FIX 4: Safe global settings update
+          // 🚀 FIX: Use 'prev' for global settings as well
           setData((prev: any) => ({
             ...prev,
             [keys[0]]: { ...prev[keys[0]], [keys[1]]: responseData.url }
           }));
         }
-      } else {
-        alert("Upload failed: " + (responseData.error || "Unknown error"));
       }
     } catch (err) {
       console.error("Upload failed", err);
