@@ -65,27 +65,36 @@ export default function AdminDashboard() {
       views: 0,
       content: ["Start writing your architecture breakdown here..."]
     };
-    setData({ ...data, docs: [newDoc, ...data.docs] });
+    
+    // 🚀 FIX 1: Use 'prev' to safely inject the document without overwriting uploads
+    setData((prev: any) => ({ ...prev, docs: [newDoc, ...prev.docs] }));
     setOpenDocIndex(0); 
   };
 
   const deleteDoc = (index: number) => {
     if (confirm("Are you sure you want to delete this document?")) {
-      const newDocs = [...data.docs];
-      newDocs.splice(index, 1);
-      setData({ ...data, docs: newDocs });
+      // 🚀 FIX 2: Safe deletion
+      setData((prev: any) => {
+        const newDocs = [...prev.docs];
+        newDocs.splice(index, 1);
+        return { ...prev, docs: newDocs };
+      });
       setOpenDocIndex(null);
     }
   };
 
   const updateDoc = (index: number, field: string, value: any) => {
-    const newDocs = [...data.docs];
-    if (field === 'content') {
-      newDocs[index][field] = value.split('\n\n');
-    } else {
-      newDocs[index][field] = value;
-    }
-    setData({ ...data, docs: newDocs });
+    // 🚀 FIX 3: Safe updating so PDF uploads don't erase what you just typed
+    setData((prev: any) => {
+      if (!prev) return prev;
+      const newDocs = [...prev.docs];
+      if (field === 'content') {
+        newDocs[index][field] = value.split('\n\n');
+      } else {
+        newDocs[index][field] = value;
+      }
+      return { ...prev, docs: newDocs };
+    });
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldPath: string, docIndex?: number) => {
@@ -102,14 +111,18 @@ export default function AdminDashboard() {
       
       if (responseData.url) {
         if (docIndex !== undefined) {
+          // This now safely calls our fixed updateDoc!
           updateDoc(docIndex, fieldPath, responseData.url);
         } else {
           const keys = fieldPath.split('.');
-          setData({
-            ...data,
-            [keys[0]]: { ...data[keys[0]], [keys[1]]: responseData.url }
-          });
+          // 🚀 FIX 4: Safe global settings update
+          setData((prev: any) => ({
+            ...prev,
+            [keys[0]]: { ...prev[keys[0]], [keys[1]]: responseData.url }
+          }));
         }
+      } else {
+        alert("Upload failed: " + (responseData.error || "Unknown error"));
       }
     } catch (err) {
       console.error("Upload failed", err);
