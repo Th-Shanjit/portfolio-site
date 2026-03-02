@@ -1,9 +1,9 @@
 'use client';
 
-// 🚀 MUST import 'use' from react to fix the Next.js 15 routing error
-import { useState, useEffect, use } from 'react'; 
+import { useState, useEffect, use } from 'react'; // 🚀 FIX: Import use
 import Link from 'next/link';
 import { ArrowLeft, Clock, Calendar, Hash, FileText, Download } from 'lucide-react';
+import data from '@/data/portfolio.json';
 
 const formatText = (text: string) => {
   let formatted = text
@@ -13,39 +13,22 @@ const formatText = (text: string) => {
   return { __html: formatted };
 };
 
-// 🚀 Update type to Promise<{slug: string}>
-export default function DocumentReader({ params }: { params: Promise<{ slug: string }> }) {
+export default function DocumentReader({ params }: { params: Promise<{ slug: string }> }) { // 🚀 FIX: Promise
   const [progress, setProgress] = useState(0);
-  const [data, setData] = useState<any>(null);
-
-  // 🚀 UNWRAP THE PARAMS PROMISE HERE
-  const resolvedParams = use(params);
+  const resolvedParams = use(params); // 🚀 FIX: Unwrap Promise
+  const doc = (data as any).docs.find((d: any) => d.id === resolvedParams.slug);
 
   useEffect(() => {
-    // 🚀 FETCH LIVE DATA instead of caching
-    fetch('/api/content')
-      .then(res => res.json())
-      .then(json => setData(json))
-      .catch(err => console.error("Failed to load document", err));
-
-    // Trigger View Analytics
     fetch(`/api/views/${resolvedParams.slug}`, { method: 'POST' }).catch(() => {});
-
-    // Scroll Progress Tracker
+    
     const updateProgress = () => {
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollHeight > 0) {
-        setProgress((window.scrollY / scrollHeight) * 100);
-      }
+      if (scrollHeight > 0) setProgress((window.scrollY / scrollHeight) * 100);
     };
 
     window.addEventListener('scroll', updateProgress);
     return () => window.removeEventListener('scroll', updateProgress);
   }, [resolvedParams.slug]);
-
-  if (!data) return <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] text-zinc-400 uppercase tracking-widest text-xs">Loading Architecture...</div>;
-
-  const doc = data.docs.find((d: any) => d.id === resolvedParams.slug);
 
   if (!doc) {
     return (
@@ -65,57 +48,33 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
       </div>
 
       <article className="max-w-3xl mx-auto px-6">
-        
         <div className="mb-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Link href="/docs" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-zinc-900 transition-colors mb-12">
             <ArrowLeft size={14} /> Back to Data Room
           </Link>
-
           <div className="flex flex-wrap gap-3 mb-8">
-            <span className="flex items-center gap-1.5 text-[9px] font-bold text-zinc-500 tracking-widest uppercase bg-white/80 px-3 py-2 rounded-full border border-zinc-100 shadow-sm backdrop-blur-md">
-              <Hash size={12} /> {doc.type}
-            </span>
-            <span className="flex items-center gap-1.5 text-[9px] font-bold text-zinc-500 tracking-widest uppercase bg-white/80 px-3 py-2 rounded-full border border-zinc-100 shadow-sm backdrop-blur-md">
-              <Calendar size={12} /> {doc.date}
-            </span>
-            <span className="flex items-center gap-1.5 text-[9px] font-bold text-zinc-500 tracking-widest uppercase bg-white/80 px-3 py-2 rounded-full border border-zinc-100 shadow-sm backdrop-blur-md">
-              <Clock size={12} /> {doc.readTime}
-            </span>
+            <span className="flex items-center gap-1.5 text-[9px] font-bold text-zinc-500 tracking-widest uppercase bg-white/80 px-3 py-2 rounded-full border border-zinc-100 shadow-sm backdrop-blur-md"><Hash size={12} /> {doc.type}</span>
+            <span className="flex items-center gap-1.5 text-[9px] font-bold text-zinc-500 tracking-widest uppercase bg-white/80 px-3 py-2 rounded-full border border-zinc-100 shadow-sm backdrop-blur-md"><Calendar size={12} /> {doc.date}</span>
+            <span className="flex items-center gap-1.5 text-[9px] font-bold text-zinc-500 tracking-widest uppercase bg-white/80 px-3 py-2 rounded-full border border-zinc-100 shadow-sm backdrop-blur-md"><Clock size={12} /> {doc.readTime}</span>
           </div>
-
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-medium tracking-tight text-zinc-900 leading-[1.05] mb-8">
-            {doc.title}
-          </h1>
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-medium tracking-tight text-zinc-900 leading-[1.05] mb-8">{doc.title}</h1>
         </div>
 
         {doc.coverImage && (
-          <div className="w-full aspect-[21/9] mb-12 rounded-[2.5rem] overflow-hidden border-[8px] border-white shadow-2xl bg-zinc-100 animate-in fade-in slide-in-from-bottom-12 duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]">
-            <img src={doc.coverImage} alt={doc.title} className="w-full h-full object-cover" />
-          </div>
+          <div className="w-full aspect-[21/9] mb-12 rounded-[2.5rem] overflow-hidden border-[8px] border-white shadow-2xl bg-zinc-100"><img src={doc.coverImage} alt={doc.title} className="w-full h-full object-cover" /></div>
         )}
 
         {doc.pdfUrl && (
-          <div className="w-full h-[600px] md:h-[850px] mb-16 rounded-[2.5rem] overflow-hidden border-[8px] border-white shadow-2xl bg-zinc-100 relative group animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200 ease-[cubic-bezier(0.16,1,0.3,1)]">
+          <div className="w-full h-[600px] md:h-[850px] mb-16 rounded-[2.5rem] overflow-hidden border-[8px] border-white shadow-2xl bg-zinc-100 relative group">
             <iframe src={`${doc.pdfUrl}#toolbar=0`} className="w-full h-full" title="Technical Document"/>
-            <div className="absolute inset-0 pointer-events-none border-[1px] border-black/5 rounded-[2.5rem]"></div>
-            <a href={doc.pdfUrl} download className="absolute bottom-8 right-8 pointer-events-auto bg-zinc-900 text-white px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 hover:scale-105 active:scale-95">
-              <Download size={14} /> Download PDF
-            </a>
+            <a href={doc.pdfUrl} download className="absolute bottom-8 right-8 bg-zinc-900 text-white px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl flex items-center gap-2"><Download size={14} /> Download PDF</a>
           </div>
         )}
 
-        <div className="prose prose-zinc prose-lg max-w-none animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
+        <div className="prose prose-zinc prose-lg max-w-none">
           {doc.content.map((paragraph: string, index: number) => {
-            if (paragraph.startsWith('### ')) {
-              return <h3 key={index} className="text-2xl md:text-4xl font-semibold tracking-tight text-zinc-900 mt-20 mb-8 border-t border-zinc-100 pt-12">{paragraph.replace('### ', '')}</h3>;
-            }
-            if (paragraph.startsWith('> ')) {
-              return (
-                <blockquote key={index} className="border-l-[4px] border-zinc-900 pl-8 py-2 my-12 text-2xl font-serif italic text-zinc-700 leading-relaxed">
-                  <span dangerouslySetInnerHTML={formatText(paragraph.replace('> ', ''))} />
-                </blockquote>
-              );
-            }
+            if (paragraph.startsWith('### ')) return <h3 key={index} className="text-2xl md:text-4xl font-semibold tracking-tight text-zinc-900 mt-20 mb-8 border-t border-zinc-100 pt-12">{paragraph.replace('### ', '')}</h3>;
+            if (paragraph.startsWith('> ')) return <blockquote key={index} className="border-l-[4px] border-zinc-900 pl-8 py-2 my-12 text-2xl font-serif italic text-zinc-700"><span dangerouslySetInnerHTML={formatText(paragraph.replace('> ', ''))} /></blockquote>;
             return <p key={index} className="text-zinc-600 font-light text-lg md:text-xl leading-relaxed mb-8" dangerouslySetInnerHTML={formatText(paragraph)} />;
           })}
         </div>
@@ -124,15 +83,9 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
           <div className="glass-panel rounded-[3rem] p-10 md:p-16 text-center bg-white/40 border border-white/60 shadow-xl">
             <div className="w-12 h-1 bg-[#0a66c2] rounded-full mx-auto mb-8"></div>
             <h3 className="text-2xl md:text-3xl font-medium text-zinc-900 mb-4 tracking-tight">Discuss this architecture</h3>
-            <p className="text-zinc-500 font-light mb-10 max-w-md mx-auto leading-relaxed">
-              Have questions about the logic or implementation? Let's connect on LinkedIn and dive deeper into the technical execution.
-            </p>
-            <a href={(data as any).site.linkedinUrl} target="_blank" rel="noopener noreferrer" className="inline-flex bg-[#0a66c2] text-white px-10 py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-blue-700 hover:scale-105 transition-all shadow-lg">
-              Discuss on LinkedIn
-            </a>
+            <a href={(data as any).site.linkedinUrl} target="_blank" className="inline-flex bg-[#0a66c2] text-white px-10 py-4 rounded-full text-xs font-bold uppercase tracking-widest mt-6">Discuss on LinkedIn</a>
           </div>
         </div>
-
       </article>
     </main>
   );
