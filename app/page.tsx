@@ -28,9 +28,9 @@ function ScrollReveal({ children, delay = 0, className = "" }: { children: React
 export default function Home() {
   const [portfolio, setPortfolio] = useState<any>(null);
 
-  // 🚀 FETCH LIVE DATA (Fixes the static cache issue)
   useEffect(() => {
-    fetch('/api/content')
+    // 🚀 FIX: Add timestamp & no-store to destroy the cache
+    fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(json => setPortfolio(json))
       .catch(err => console.error(err));

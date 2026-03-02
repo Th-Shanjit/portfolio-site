@@ -30,10 +30,11 @@ export default function DocsArchive() {
   const [data, setData] = useState<any>(null); // 🚀 FIX: Live Fetching State
 
   useEffect(() => {
-    fetch('/api/content')
+    // 🚀 FIX: Add timestamp & no-store to destroy the cache
+    fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(json => setData(json))
-      .catch(err => console.error(err));
+      .catch(err => console.error("Failed to fetch Data Room contents:", err));
   }, []);
 
   if (!data) return <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] text-zinc-400 uppercase tracking-widest text-xs">Loading Data Room...</div>;

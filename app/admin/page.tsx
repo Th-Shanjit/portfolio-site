@@ -19,7 +19,8 @@ export default function AdminDashboard() {
   const [uploadingState, setUploadingState] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
-    fetch('/api/content')
+    // 🚀 FIX: Add timestamp & no-store to destroy the cache
+    fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(json => setData(json))
       .catch(err => console.error("Failed to fetch data:", err));
