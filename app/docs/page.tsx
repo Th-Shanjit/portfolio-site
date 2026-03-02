@@ -37,18 +37,23 @@ function ScrollReveal({ children, delay = 0, className = "" }: { children: React
 
 export default function DocsArchive() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeFilter, setActiveFilter] = useState('All'); // 🚀 NEW: Filter State
+  const [activeFilter, setActiveFilter] = useState('All'); 
   
   // Safely load all documents from the JSON database
-  const docs = (data as any).docs || [];
+  const allDocs = (data as any).docs || [];
 
-  // 🚀 MAGIC TAGS: Automatically extract every unique category from your database
-  const allCategories = ['All', ...Array.from(new Set(docs.map((doc: any) => doc.type))) as string[]];
+  // 🚀 SECURITY FILTER: Only show documents that are marked as Published
+  const publishedDocs = allDocs.filter((doc: any) => doc.published !== false);
+
+  // 🚀 DYNAMIC TAGS: Extract unique categories only from published documents
+  const categories = Array.from(new Set(publishedDocs.map((doc: any) => doc.type))) as string[];
+  const allCategories = ['All', ...categories];
 
   // 🚀 DUAL-FILTER LOGIC: Filter by Search Term AND Active Tag
-  const filteredDocs = docs.filter((doc: any) => {
-    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          doc.type.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredDocs = publishedDocs.filter((doc: any) => {
+    const matchesSearch = 
+      doc.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      doc.type.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesFilter = activeFilter === 'All' || doc.type === activeFilter;
 
@@ -119,7 +124,7 @@ export default function DocsArchive() {
                       <h2 className="text-2xl font-semibold text-zinc-900 tracking-tight mb-2 group-hover:text-zinc-700 transition-colors">
                         {doc.title}
                       </h2>
-                      {/* Smart preview: Grabs the first paragraph and strips out any "###" markdown headers */}
+                      {/* Smart preview: Grabs the first paragraph and strips out markdown headers */}
                       <p className="text-sm text-zinc-500 font-light line-clamp-2 md:line-clamp-1 pr-4">
                         {doc.content[0]?.replace(/^### /, '') || "Read the full architectural breakdown."}
                       </p>
@@ -148,7 +153,7 @@ export default function DocsArchive() {
                 <h3 className="text-lg font-medium text-zinc-900 mb-2">No documents found</h3>
                 <p className="text-sm text-zinc-500 font-light">Try adjusting your filters or search terms.</p>
                 
-                {/* 🚀 Quick Clear Button */}
+                {/* Quick Clear Button */}
                 {(searchTerm !== '' || activeFilter !== 'All') && (
                   <button 
                     onClick={() => { setSearchTerm(''); setActiveFilter('All'); }}

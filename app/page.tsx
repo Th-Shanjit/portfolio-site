@@ -197,20 +197,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. CONTACT GLASS CARD */}
+      {/* 4. CONTACT GLASS CARD (UPDATED FOR LINKEDIN) */}
       <section className="flex justify-center px-6">
         <ScrollReveal>
           <div className="glass-panel rounded-[2.5rem] p-12 md:p-16 text-center max-w-2xl w-full flex flex-col items-center shadow-xl border border-white/60 bg-white/30 backdrop-blur-xl">
-            <div className="w-16 h-1 bg-zinc-900 rounded-full mb-8"></div>
+            <div className="w-16 h-1 bg-[#0a66c2] rounded-full mb-8"></div>
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-6 text-zinc-900">{portfolio.contact.heading}</h2>
             <p className="text-zinc-500 mb-10 text-base md:text-lg font-light max-w-md leading-relaxed">
-              Open to collaborating on Agentic AI product development and technical strategy.
+              Open to collaborating on Agentic AI product development and technical strategy. Let's connect.
             </p>
             <a 
-              href={`mailto:${portfolio.contact.email}`}
-              className="bg-zinc-900 text-white px-8 py-4 rounded-full text-sm font-medium tracking-wide hover:bg-zinc-700 hover:scale-105 hover:shadow-xl transition-all duration-300"
+              href={portfolio.site.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#0a66c2] text-white px-8 py-4 rounded-full text-sm font-medium tracking-wide hover:bg-blue-800 hover:scale-105 hover:shadow-xl transition-all duration-300"
             >
-              {portfolio.contact.email}
+              Drop me a DM on LinkedIn
             </a>
           </div>
         </ScrollReveal>

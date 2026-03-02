@@ -83,58 +83,31 @@
   },
   "docs": [
     {
-      "id": "new-doc-1772276315793",
-      "title": "Working on the paradox ",
-      "type": "Project Docs",
-      "readTime": "5 min read",
-      "date": "Feb 2026",
-      "coverImage": "",
-      "content": [
-        "who ate my fine bread sandwhich "
-      ]
-    },
-    {
-      "id": "new-doc-1772261999610",
-      "title": "New Document",
-      "type": "Project Docs",
-      "readTime": "5 min read",
-      "date": "Feb 2026",
-      "content": [
-        "Start typing your content here...saxasxasx"
-      ]
-    },
-    {
-      "id": "privacy",
-      "title": "Privacy Policy",
+      "id": "new-doc-1772435559240",
+      "title": "Terms of Service PaperLoop",
       "type": "Legal",
-      "readTime": "3 min read",
-      "date": "Feb 2026",
-      "content": [
-        "This is your official Privacy Policy...",
-        "We protect your data..."
-      ]
-    },
-    {
-      "id": "terms",
-      "title": "Terms of Service",
-      "type": "Legal",
-      "readTime": "3 min read",
-      "date": "Feb 2026",
-      "content": [
-        "By using our services, you agree to these terms...",
-        "Additional terms may apply..."
-      ]
-    },
-    {
-      "id": "subsentry",
-      "title": "SubSentry",
-      "type": "FinTech",
-      "date": "Nov 2025",
-      "readTime": "6 min read",
+      "date": "Mar 2026",
+      "readTime": "5 min read",
       "coverImage": "",
+      "pdfUrl": "/uploads/1772435583053-terms-of-service-paperloop.pdf",
+      "published": false,
+      "views": 0,
       "content": [
-        "SubSentry was born out of the frustration of 'subscription fatigue.' I designed this system to aggregate, track, and optimize recurring digital expenses.",
-        "The architecture focuses on secure API integrations and a minimalist dashboard that highlights potential savings through automated usage analysis."
+        "is this working?"
+      ]
+    },
+    {
+      "id": "new-doc-1772433856793",
+      "title": "PaperLoop Privacy Policy",
+      "type": "Legal",
+      "date": "Mar 2026",
+      "readTime": "5 min read",
+      "coverImage": "",
+      "pdfUrl": "/uploads/1772435541694-privacy-policy-paperloop.pdf",
+      "published": false,
+      "views": 0,
+      "content": [
+        "check check"
       ]
     }
   ]

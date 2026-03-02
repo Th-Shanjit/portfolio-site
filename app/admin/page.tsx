@@ -4,12 +4,15 @@ import { useState, useEffect } from 'react';
 import { 
   Save, Plus, Trash2, ChevronDown, ChevronUp, ImageIcon, 
   FileText, Settings, LayoutTemplate, Bold, Italic, 
-  Heading3, Quote, Code, Tag, Sparkles, Globe, Eye, EyeOff
+  Heading3, Quote, Code, Tag, Sparkles, Globe, Eye, EyeOff, 
+  CheckCircle2, ExternalLink, ArrowRight
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [saving, setSaving] = useState(false);
+  const [showModal, setShowModal] = useState(false); // 🚀 NEW: Success Modal State
   const [openSection, setOpenSection] = useState<string>('docs'); 
   const [openDocIndex, setOpenDocIndex] = useState<number | null>(null);
 
@@ -25,12 +28,19 @@ export default function AdminDashboard() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await fetch('/api/content', {
+      const res = await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      setTimeout(() => setSaving(false), 800);
+      
+      if (res.ok) {
+        // 🚀 Trigger the success modal after a short delay for better UX
+        setTimeout(() => {
+          setSaving(false);
+          setShowModal(true);
+        }, 800);
+      }
     } catch (error) {
       console.error('Failed to save', error);
       setSaving(false);
@@ -47,7 +57,7 @@ export default function AdminDashboard() {
       coverImage: "",
       pdfUrl: "",
       published: false,
-      views: 0, // 🚀 NEW: Initialize views for analytics
+      views: 0,
       content: ["Start writing your architecture breakdown here..."]
     };
     setData({ ...data, docs: [newDoc, ...data.docs] });
@@ -113,8 +123,37 @@ export default function AdminDashboard() {
   const allCategories = Array.from(new Set(data.docs.map((doc: any) => doc.type))).filter(Boolean) as string[];
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] pb-32 font-sans selection:bg-zinc-300">
+    <div className="min-h-screen bg-[#f5f5f7] pb-32 font-sans selection:bg-zinc-300 relative">
       
+      {/* 🚀 SUCCESS MODAL OVERLAY */}
+      {showModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-md bg-zinc-900/10">
+          <div className="bg-white rounded-[2.5rem] p-10 max-w-sm w-full shadow-2xl border border-zinc-200 text-center animate-in fade-in zoom-in duration-300">
+            <div className="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+              <CheckCircle2 size={32} />
+            </div>
+            <h2 className="text-xl font-semibold text-zinc-900 mb-2 tracking-tight">System Updated</h2>
+            <p className="text-sm text-zinc-500 font-light mb-8">Your changes have been successfully published to the portfolio database.</p>
+            
+            <div className="space-y-3">
+              <Link 
+                href={openDocIndex !== null ? `/docs/${data.docs[openDocIndex].id}` : "/docs"}
+                target="_blank"
+                className="w-full flex items-center justify-center gap-2 bg-zinc-900 text-white py-4 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-zinc-700 transition-all shadow-md"
+              >
+                <ExternalLink size={14} /> View Live Content
+              </Link>
+              <button 
+                onClick={() => setShowModal(false)}
+                className="w-full py-4 rounded-2xl text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-all"
+              >
+                Stay in Editor
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 1. STICKY PUBLISH HEADER */}
       <div className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-zinc-200 shadow-sm px-6 py-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -145,16 +184,12 @@ export default function AdminDashboard() {
             onClick={() => setOpenSection(openSection === 'site' ? '' : 'site')}
             className="w-full flex justify-between items-center p-6 bg-zinc-50/50 hover:bg-zinc-50 transition-colors"
           >
-            <div>
-              
-        <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">LinkedIn URL</label>
-        <input 
-          className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" 
-          placeholder="https://linkedin.com/in/..."
-          value={data.site.linkedinUrl || ''} 
-          onChange={e => setData({...data, site: {...data.site, linkedinUrl: e.target.value}})} 
-        />
-      </div>
+            <div className="flex items-center gap-3">
+              <Settings size={18} className="text-zinc-400" />
+              <h2 className="text-sm font-semibold tracking-wide text-zinc-900 uppercase">Global Settings & Contact</h2>
+            </div>
+            {openSection === 'site' ? <ChevronUp size={18} className="text-zinc-400"/> : <ChevronDown size={18} className="text-zinc-400"/>}
+          </button>
           
           {openSection === 'site' && (
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-zinc-100">
@@ -166,9 +201,15 @@ export default function AdminDashboard() {
                 <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Global Role</label>
                 <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" value={data.site.role} onChange={e => setData({...data, site: {...data.site, role: e.target.value}})} />
               </div>
+              
               <div>
-                <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">Contact Email</label>
-                <input className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" value={data.contact.email} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} />
+                <label className="block text-[10px] text-zinc-500 mb-2 uppercase tracking-widest">LinkedIn URL</label>
+                <input 
+                  className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:border-zinc-400" 
+                  placeholder="https://linkedin.com/in/..."
+                  value={data.site.linkedinUrl || ''} 
+                  onChange={e => setData({...data, site: {...data.site, linkedinUrl: e.target.value}})} 
+                />
               </div>
               
               <div>
@@ -240,7 +281,6 @@ export default function AdminDashboard() {
                             <p className="text-[10px] tracking-widest uppercase text-zinc-400">
                               {doc.type} • {doc.published ? 'Live' : 'Draft'}
                             </p>
-                            {/* 🚀 VIEW COUNTER BADGE */}
                             <span className="flex items-center gap-1 text-[9px] bg-zinc-100 text-zinc-500 px-1.5 py-0.5 rounded-md font-mono border border-zinc-200" title="Total page views">
                               <Eye size={10} /> {doc.views || 0}
                             </span>
@@ -253,7 +293,6 @@ export default function AdminDashboard() {
                     {openDocIndex === index && (
                       <div className="p-6 bg-zinc-50 border-t border-zinc-100 grid gap-6">
                         
-                        {/* 🚀 Visibility Toggle */}
                         <div className="flex items-center gap-3 p-4 bg-white border border-zinc-200 rounded-xl shadow-sm">
                           {doc.published ? <Eye size={16} className="text-emerald-500" /> : <EyeOff size={16} className="text-zinc-400" />}
                           <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
@@ -327,7 +366,6 @@ export default function AdminDashboard() {
                           </div>
                         </div>
 
-                        {/* ZEN EDITOR */}
                         <div className="flex flex-col gap-3 mt-4">
                           <label className="block text-[10px] text-zinc-500 uppercase tracking-widest flex justify-between items-end">
                             <span>Document Body</span>
