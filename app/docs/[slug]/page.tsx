@@ -24,7 +24,9 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
   const resolvedParams = use(params);
 
   useEffect(() => {
-    // 🚀 CACHE BUSTER: Fetches from the Upstash Cloud API with a timestamp to prevent stale browser caches.
+    // 🚀 THE FIX: Add this line to reset loading whenever the slug changes
+    setIsLoading(true); 
+
     fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(json => {
@@ -36,9 +38,7 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
         setIsLoading(false);
       });
 
-    // 🚀 ANALYTICS: Track views in the cloud database.
     fetch(`/api/views/${resolvedParams.slug}`, { method: 'POST' }).catch(() => {});
-    
     // Scroll progress tracker for the top progress bar.
     const updateProgress = () => {
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
