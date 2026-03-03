@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+// 🚀 NEXT.JS 16 REQUIREMENT: The function must be the default export 
+// and is typically named 'proxy' to match the filename.
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. ALLOW public access to docs and content APIs
+  // 1. PUBLIC ROUTES: Allow everyone to see your Case Studies and hit the View Counter
   if (
     pathname.startsWith('/docs') || 
     pathname.startsWith('/api/content') || 
@@ -13,12 +15,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. PROTECT the Admin Dashboard
+  // 2. PROTECTED ROUTES: Lock down the Admin Dashboard
   if (pathname.startsWith('/admin')) {
     const adminSession = request.cookies.get('admin_session');
     
+    // If no session cookie is found, redirect to your login page
     if (!adminSession) {
-      // Redirect to login if no session is found
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }
@@ -26,8 +28,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// 🚀 CRITICAL: Matcher must be specific to avoid intercepting 
-// static assets like images and CSS, which causes "Document Unavailable"
+// Ensure the matcher is configured to intercept the correct paths
 export const config = {
   matcher: [
     '/admin/:path*',
