@@ -1,36 +1,37 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export default function proxy(req: NextRequest) {
-  const url = req.nextUrl;
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-  // 🚀 Protect Admin UI and Content API
-  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api/content')) {
+  // 1. ALLOW public access to docs and content APIs
+  if (
+    pathname.startsWith('/docs') || 
+    pathname.startsWith('/api/content') || 
+    pathname.startsWith('/api/views')
+  ) {
+    return NextResponse.next();
+  }
+
+  // 2. PROTECT the Admin Dashboard
+  if (pathname.startsWith('/admin')) {
+    const adminSession = request.cookies.get('admin_session');
     
-    // Check for the session cookie set by your /login page
-    const session = req.cookies.get('admin_session')?.value;
-    const expectedPass = process.env.ADMIN_PASS?.trim();
-
-    // If no valid session exists, enforce protection
-    if (!session || session !== expectedPass) {
-      
-      // If they are on the dashboard, redirect to your custom /login page
-      if (url.pathname.startsWith('/admin')) {
-        return NextResponse.redirect(new URL('/login', req.url));
-      }
-
-      // If they hit the API directly without a cookie, block them
-      return new NextResponse('Unauthorized Access', { status: 401 });
+    if (!adminSession) {
+      // Redirect to login if no session is found
+      return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
   return NextResponse.next();
 }
 
+// 🚀 CRITICAL: Matcher must be specific to avoid intercepting 
+// static assets like images and CSS, which causes "Document Unavailable"
 export const config = {
   matcher: [
-    '/admin', 
-    '/admin/:path*', 
-    '/api/content/:path*'
+    '/admin/:path*',
+    '/api/:path*',
+    '/docs/:path*',
   ],
 };
