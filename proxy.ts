@@ -34,5 +34,6 @@ export const config = {
     '/admin/:path*',
     '/api/:path*',
     '/docs/:path*',
+    '/paperloop',
   ],
 };

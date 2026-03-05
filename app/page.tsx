@@ -76,7 +76,7 @@ export default function Home() {
             
             <div className="relative z-20 text-white w-full max-w-2xl">
               <span className="text-[10px] md:text-xs font-mono text-zinc-300 mb-6 block uppercase tracking-widest px-4 py-2 bg-white/10 rounded-full backdrop-blur-md w-max border border-white/10">
-                {hotProject.tag || "Primary Case Study"}
+                {hotProject.tag || "Latest Project"}
               </span>
               <h2 className="text-4xl md:text-6xl font-medium mb-6 tracking-tight leading-[1.1]">{hotProject.title}</h2>
               <p className="text-zinc-400 mb-10 text-base md:text-lg font-light leading-relaxed line-clamp-2">{hotProject.description}</p>
