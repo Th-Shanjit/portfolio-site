@@ -5,6 +5,10 @@ import { usePathname } from 'next/navigation';
 export default function Navigation() {
   const pathname = usePathname();
 
+  if (pathname && pathname.startsWith('/paperloop')) {
+    return null;
+  }
+
   return (
     <nav className="fixed top-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-1000">
       
