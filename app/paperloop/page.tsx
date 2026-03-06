@@ -5,16 +5,27 @@ import React from 'react';
 export default function PaperLoopLanding() {
   React.useEffect(() => {
     // Hide the global navigation pill from layout.tsx
-    const globalNav = document.querySelector('nav.fixed.top-8') as HTMLElement | null;
-    if (globalNav) globalNav.style.display = 'none';
+    const globalNavs = document.querySelectorAll('nav, header');
+    globalNavs.forEach(nav => {
+      if (nav.id !== 'nav') {
+        (nav as HTMLElement).style.display = 'none';
+      }
+    });
     
     // Hide footer from layout.tsx
-    const footer = document.querySelector('footer.pt-12.pb-24') as HTMLElement | null;
+    const footer = document.querySelector('footer') as HTMLElement | null;
     if (footer) footer.style.display = 'none';
 
     // Remove max-width constraints temporarily
     const main = document.querySelector('main');
-    if (main) main.classList.remove('max-w-7xl', 'mx-auto', 'px-6');
+    if (main) {
+      main.classList.remove('max-w-7xl', 'mx-auto', 'px-6', 'py-12', 'md:py-20');
+      main.style.maxWidth = '100%';
+      main.style.padding = '0';
+      main.style.margin = '0';
+      main.style.width = '100vw';
+      main.style.overflowX = 'hidden';
+    }
     
     // --- Ported vanilla JS script ---
     const io = new IntersectionObserver(entries => {
@@ -107,9 +118,20 @@ export default function PaperLoopLanding() {
 
     return () => {
       // Restore on unmount
-      if (globalNav) globalNav.style.display = '';
+      globalNavs.forEach(nav => {
+        if (nav.id !== 'nav') {
+          (nav as HTMLElement).style.display = '';
+        }
+      });
       if (footer) footer.style.display = '';
-      if (main) main.classList.add('max-w-7xl', 'mx-auto', 'px-6');
+      if (main) {
+        main.classList.add('max-w-7xl', 'mx-auto', 'px-6', 'py-12', 'md:py-20');
+        main.style.maxWidth = '';
+        main.style.padding = '';
+        main.style.margin = '';
+        main.style.width = '';
+        main.style.overflowX = '';
+      }
       
       // Cleanup script events
       io.disconnect();
@@ -126,38 +148,49 @@ export default function PaperLoopLanding() {
   return (
     /* 🚀 The "dangerouslySetInnerHTML" allows you to paste your 
        exact HTML/CSS draft without rewriting it into JSX units. */
-    <div className="w-[100vw] relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] !m-0 !p-0"
+    <div className="paperloop-container"
       dangerouslySetInnerHTML={{ __html: `
             <link rel="preconnect" href="https://fonts.googleapis.com"/>
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
             <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,500;1,9..144,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
             <style>
-            *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-            :root{
-            --ink:#0B1825;--ink2:#162436;--ink3:#1F3248;
-            --paper:#F6F2EB;--paper2:#EDE8DF;--paper3:#DDD7CB;
-            --cream:#EDE8DB;--cream2:rgba(237,232,219,.07);
-            --amber:#CF8610;--amblt:#F0A535;--ambbg:rgba(207,134,16,.12);
-            --teal:#0B7A70;--tealbg:rgba(11,122,112,.1);--teallt:#E5F4F2;
-            --white:#FFFFFF;
-            --fd:'Fraunces',Georgia,serif;
-            --fb:'DM Sans',system-ui,sans-serif;
-            --fm:'JetBrains Mono',monospace;
-            --ease:cubic-bezier(.16,1,.3,1);
-            --ease2:cubic-bezier(.34,1.56,.64,1);
+            .paperloop-container {
+              --ink:#0B1825;--ink2:#162436;--ink3:#1F3248;
+              --paper:#F6F2EB;--paper2:#EDE8DF;--paper3:#DDD7CB;
+              --cream:#EDE8DB;--cream2:rgba(237,232,219,.07);
+              --amber:#CF8610;--amblt:#F0A535;--ambbg:rgba(207,134,16,.12);
+              --teal:#0B7A70;--tealbg:rgba(11,122,112,.1);--teallt:#E5F4F2;
+              --white:#FFFFFF;
+              --fd:'Fraunces',Georgia,serif;
+              --fb:'DM Sans',system-ui,sans-serif;
+              --fm:'JetBrains Mono',monospace;
+              --ease:cubic-bezier(.16,1,.3,1);
+              --ease2:cubic-bezier(.34,1.56,.64,1);
+              background: var(--ink);
+              color: var(--cream);
+              font-family: var(--fb);
+              overflow-x: hidden;
+              line-height: 1.6;
+              min-height: 100vh;
+              position: relative;
+              width: 100vw;
+              left: 50%;
+              transform: translateX(-50%);
+              font-size: 16px;
+              scroll-behavior: smooth;
+              scroll-padding-top: 80px;
             }
-            html{scroll-behavior:smooth;scroll-padding-top:80px;font-size:16px;height:100%}
-            body{background:var(--ink);color:var(--cream);font-family:var(--fb);overflow-x:hidden;line-height:1.6;min-height:100%}
-            img{display:block}
-            ::-webkit-scrollbar{width:3px}
-            ::-webkit-scrollbar-track{background:var(--ink)}
-            ::-webkit-scrollbar-thumb{background:var(--amber);border-radius:3px}
-
-            /* GRAIN OVERLAY */
-            body::after{
-            content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
-            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-            opacity:.028;
+            .paperloop-container * {
+              box-sizing: border-box;
+            }
+            .paperloop-container::after {
+              content:'';
+              position:absolute;
+              inset:0;
+              pointer-events:none;
+              z-index:9999;
+              background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+              opacity:.028;
             }
 
             /* UTIL */
@@ -676,7 +709,7 @@ export default function PaperLoopLanding() {
                     <span class="vd-badge">● 60s walkthrough</span>
                 </div>
                 <div class="vd-body">
-                    <iframe class="vd-iframe" style="position:absolute;inset:0;width:100%;height:100%;border:none" src="https://www.youtube.com/watch?v=dQJ_dc_pzLA&t=5s" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    <iframe class="vd-iframe" style="position:absolute;inset:0;width:100%;height:100%;border:none" src="https://www.youtube.com/embed/dQJ_dc_pzLA?start=5" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
                 <div class="vd-foot">
                     <span class="vd-ft">Scan → AI reads → PDF exported — under 60 seconds</span>
