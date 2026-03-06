@@ -28,14 +28,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
-    <html lang="en">
-      <body className="min-h-screen font-sans selection:bg-zinc-300 flex flex-col overflow-x-hidden relative">
+    <html lang="en" className="h-full">
+      <body className="h-full min-h-screen font-sans selection:bg-zinc-300 flex flex-col overflow-x-hidden relative">
         
         {/* Global Navigation */}
         <Navigation />
         
         {/* Page Content Injection */}
-        <main className="flex-grow relative z-10">
+        <main className="flex-grow relative z-10 w-full p-0 m-0">
           {children}
         </main>
         

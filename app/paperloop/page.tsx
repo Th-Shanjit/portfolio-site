@@ -3,19 +3,131 @@
 import React from 'react';
 
 export default function PaperLoopLanding() {
+  React.useEffect(() => {
+    // Hide the global navigation pill from layout.tsx
+    const globalNav = document.querySelector('nav.fixed.top-8') as HTMLElement | null;
+    if (globalNav) globalNav.style.display = 'none';
+    
+    // Hide footer from layout.tsx
+    const footer = document.querySelector('footer.pt-12.pb-24') as HTMLElement | null;
+    if (footer) footer.style.display = 'none';
+
+    // Remove max-width constraints temporarily
+    const main = document.querySelector('main');
+    if (main) main.classList.remove('max-w-7xl', 'mx-auto', 'px-6');
+    
+    // --- Ported vanilla JS script ---
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const target = e.target as HTMLElement;
+        const parent = target.parentElement;
+        if (!parent) return;
+        
+        const siblings = Array.from(parent.children).filter(c =>
+          c.classList.contains('pain-c') || c.classList.contains('step') ||
+          c.classList.contains('fc') || c.classList.contains('rm-card') ||
+          c.classList.contains('pack') || c.classList.contains('up2')
+        );
+        const idx = Math.max(0, siblings.indexOf(target));
+        const base = target.style.transitionDelay ? parseFloat(target.style.transitionDelay) * 1000 : 0;
+        const delay = siblings.length > 1 ? idx * 85 + base : base;
+        setTimeout(() => target.classList.add('in'), delay);
+        io.unobserve(target);
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.up, .up2, .pain-c, .step, .fc, .rm-card, .pack').forEach(el => io.observe(el));
+
+    const localNav = document.getElementById('nav');
+    const handleScrollNav = () => {
+      if (localNav) localNav.classList.toggle('solid', window.scrollY > 40);
+    };
+    window.addEventListener('scroll', handleScrollNav, { passive: true });
+
+    const navLks = document.querySelectorAll('.nav-lk, .nav-btn');
+    const secs = document.querySelectorAll('section[id], div[id]');
+    const handleScrollActive = () => {
+      let cur = '';
+      secs.forEach(s => { 
+        if (window.scrollY >= (s as HTMLElement).offsetTop - 100) cur = s.id; 
+      });
+      navLks.forEach(a => {
+        const href = a.getAttribute('href')?.replace('#', '');
+        if (href) a.classList.toggle('act', href === cur);
+      });
+    };
+    window.addEventListener('scroll', handleScrollActive, { passive: true });
+
+    const handleSmoothScroll = function(this: HTMLAnchorElement, e: Event) {
+      const targetId = this.getAttribute('href')?.replace('#', '');
+      if (!targetId) return;
+      const target = document.getElementById(targetId);
+      if (target) {
+        e.preventDefault();
+        const targetPos = target.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+          top: targetPos - 70, // offset for navbar
+          behavior: 'smooth'
+        });
+        window.history.pushState(null, '', '#' + targetId);
+      }
+    };
+    const smoothLinks = document.querySelectorAll('a[href^="#"]');
+    smoothLinks.forEach(link => {
+      link.addEventListener('click', handleSmoothScroll as EventListener);
+    });
+
+    const modalOverlay = document.getElementById('waitlist-modal');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const triggers = document.querySelectorAll('.modal-trigger');
+
+    const openModal = (e?: Event) => {
+      if (e) e.preventDefault();
+      if (modalOverlay) {
+        modalOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    };
+
+    const closeModal = () => {
+      if (modalOverlay) {
+        modalOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    };
+
+    triggers.forEach(trigger => trigger.addEventListener('click', openModal));
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    
+    const handleModalOverlayClick = (e: Event) => {
+      if (e.target === modalOverlay) closeModal();
+    };
+    if (modalOverlay) modalOverlay.addEventListener('click', handleModalOverlayClick);
+
+    return () => {
+      // Restore on unmount
+      if (globalNav) globalNav.style.display = '';
+      if (footer) footer.style.display = '';
+      if (main) main.classList.add('max-w-7xl', 'mx-auto', 'px-6');
+      
+      // Cleanup script events
+      io.disconnect();
+      window.removeEventListener('scroll', handleScrollNav);
+      window.removeEventListener('scroll', handleScrollActive);
+      smoothLinks.forEach(link => link.removeEventListener('click', handleSmoothScroll as EventListener));
+      triggers.forEach(trigger => trigger.removeEventListener('click', openModal));
+      if (modalCloseBtn) modalCloseBtn.removeEventListener('click', closeModal);
+      if (modalOverlay) modalOverlay.removeEventListener('click', handleModalOverlayClick);
+      document.body.style.overflow = ''; // reset just in case modal was open
+    };
+  }, []);
+
   return (
     /* 🚀 The "dangerouslySetInnerHTML" allows you to paste your 
        exact HTML/CSS draft without rewriting it into JSX units. */
-    <div 
+    <div className="w-[100vw] relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] !m-0 !p-0"
       dangerouslySetInnerHTML={{ __html: `
-        <!DOCTYPE html>
-        <html lang="en">
-        <!DOCTYPE html>
-            <html lang="en">
-            <head>
-            <meta charset="UTF-8"/>
-            <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-            <title>PaperLoop — AI Exam Paper Generator for Educators</title>
             <link rel="preconnect" href="https://fonts.googleapis.com"/>
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
             <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,500;1,9..144,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -34,8 +146,8 @@ export default function PaperLoopLanding() {
             --ease:cubic-bezier(.16,1,.3,1);
             --ease2:cubic-bezier(.34,1.56,.64,1);
             }
-            html{scroll-behavior:smooth;scroll-padding-top:80px;font-size:16px}
-            body{background:var(--ink);color:var(--cream);font-family:var(--fb);overflow-x:hidden;line-height:1.6}
+            html{scroll-behavior:smooth;scroll-padding-top:80px;font-size:16px;height:100%}
+            body{background:var(--ink);color:var(--cream);font-family:var(--fb);overflow-x:hidden;line-height:1.6;min-height:100%}
             img{display:block}
             ::-webkit-scrollbar{width:3px}
             ::-webkit-scrollbar-track{background:var(--ink)}
@@ -68,7 +180,48 @@ export default function PaperLoopLanding() {
             @keyframes arrPulse{0%,100%{box-shadow:0 2px 12px rgba(207,134,16,.3)}50%{box-shadow:0 4px 24px rgba(207,134,16,.55)}}
             @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
             @keyframes spinSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+            @keyframes popupIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 
+            /* ── POPUP MODAL ── */
+            .modal-overlay {
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(11,24,37,0.85); backdrop-filter: blur(8px);
+                z-index: 9999; display: flex; align-items: center; justify-content: center;
+                opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            }
+            .modal-overlay.open { opacity: 1; pointer-events: all; }
+            .modal-content {
+                background: var(--ink2); border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 16px; padding: 2.5rem; max-width: 440px; width: 90%;
+                box-shadow: 0 24px 48px rgba(0,0,0,0.5); position: relative;
+                transform: scale(0.95) translateY(10px); transition: transform 0.4s var(--ease);
+                box-sizing: border-box;
+            }
+            .modal-overlay.open .modal-content { transform: scale(1) translateY(0); }
+            .modal-close {
+                position: absolute; top: 1rem; right: 1rem; background: none; border: none;
+                color: rgba(237,232,219,0.5); cursor: pointer; padding: 0.5rem; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+            }
+            .modal-close:hover { background: rgba(255,255,255,0.05); color: var(--cream); }
+            .modal-title { font-size: 1.4rem; font-family: var(--fd); font-weight: 600; color: var(--cream); margin-bottom: 0.5rem; }
+            .modal-desc { font-size: 0.9rem; color: rgba(237,232,219,0.6); margin-bottom: 1.5rem; line-height: 1.5; }
+            .modal-form { display: flex; flex-direction: column; gap: 1rem; }
+            .modal-input {
+                background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 8px; padding: 0.8rem 1rem; color: var(--cream); font-family: var(--fb);
+                font-size: 0.9rem; transition: border-color 0.2s; outline: none; width: 100%; box-sizing: border-box;
+            }
+            .modal-input:focus { border-color: var(--amblt); }
+            .modal-input::placeholder { color: rgba(237,232,219,0.3); }
+            .modal-btn {
+                background: var(--amblt); color: var(--ink); border: none; border-radius: 8px;
+                padding: 0.8rem; font-family: var(--fb); font-weight: 600; font-size: 0.9rem;
+                cursor: pointer; transition: background 0.2s, transform 0.15s; display: flex;
+                align-items: center; justify-content: center; gap: 0.5rem; width: 100%; box-sizing: border-box;
+            }
+            .modal-btn:hover { background: #F5B040; transform: translateY(-1px); }
+            
             /* ── NAV ── */
             nav{
             position:fixed;top:0;left:0;right:0;z-index:200;height:62px;
@@ -471,8 +624,6 @@ export default function PaperLoopLanding() {
             .manual-card{grid-column:1}
             }
             </style>
-            </head>
-            <body>
 
             
             
@@ -487,7 +638,7 @@ export default function PaperLoopLanding() {
                 <a href="#how" class="nav-lk">How it works</a>
                 <a href="#features" class="nav-lk">Features</a>
                 <a href="#pricing" class="nav-lk">Pricing</a>
-                <a href="#cta" class="nav-btn">Join Waitlist</a>
+                <button type="button" class="nav-btn modal-trigger">Join Waitlist</button>
             </div>
             </nav>
 
@@ -499,10 +650,10 @@ export default function PaperLoopLanding() {
                 <h1 class="hero-h1">Handwritten<br>to <em>print-ready</em><br>in <u>seconds.</u></h1>
                 <p class="hero-p">Scan your handwritten exam draft. <strong>Gemini reads every question, notation and section header.</strong> A formatted PDF comes out the other side. No laptop. No retyping.</p>
                 <div class="hero-cta">
-                <a href="#cta" class="btn-primary">
+                <button type="button" class="btn-primary modal-trigger">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                     Join the waitlist
-                </a>
+                </button>
                 <a href="#how" class="btn-ghost">See how it works <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
                 </div>
                 <div class="trust-row">
@@ -525,13 +676,8 @@ export default function PaperLoopLanding() {
                     <span class="vd-badge">● 60s walkthrough</span>
                 </div>
                 <div class="vd-body">
-                    <!-- 🎬 Replace with: <iframe class="vd-iframe" style="position:absolute;inset:0;width:100%;height:100%;border:none" src="https://www.youtube.com/embed/YOUR_ID" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
-                    <div class="vd-play">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    </div>
-                    <p class="vd-plbl">Demo coming soon</p>
-                    <p class="vd-psub">Drop your YouTube link here</p>
-                </div>
+                    <iframe class="vd-iframe" style="position:absolute;inset:0;width:100%;height:100%;border:none" src="https://www.youtube.com/watch?v=dQJ_dc_pzLA&t=5s" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
                 <div class="vd-foot">
                     <span class="vd-ft">Scan → AI reads → PDF exported — under 60 seconds</span>
                     <span class="vd-fok">
@@ -906,10 +1052,10 @@ export default function PaperLoopLanding() {
                 <h2 class="disp dark up" style="margin-bottom:.75rem">Currently in<br><em>Testing Phase</em></h2>
                 <p class="up" style="transition-delay:.1s">We are finalizing our publishing tools. Leave your contact info below to get early access when we launch.</p>
                 <div class="up" style="transition-delay:.2s;margin-top:2rem">
-                <a href="mailto:contact@shanjitthokchom.xyz?subject=PaperLoop%20Early%20Access" class="btn-amber">
+                <button type="button" class="btn-amber modal-trigger">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                     Request Early Access
-                </a>
+                </button>
                 </div>
                 <p class="cta-note up" style="transition-delay:.3s;margin-top:1.5rem">Drop us an email to join the waitlist</p>
             </div>
@@ -930,64 +1076,25 @@ export default function PaperLoopLanding() {
             <span class="foot-copy">© 2025 PaperLoop. All rights reserved.</span>
             </footer>
 
-            <script>
-            // Scroll reveals
-            const io = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (!e.isIntersecting) return;
-                const siblings = [...e.target.parentElement.children].filter(c =>
-                c.classList.contains('pain-c') || c.classList.contains('step') ||
-                c.classList.contains('fc') || c.classList.contains('rm-card') ||
-                c.classList.contains('pack') || c.classList.contains('up2')
-                );
-                const idx = Math.max(0, siblings.indexOf(e.target));
-                const base = (e.target.style.transitionDelay ? parseFloat(e.target.style.transitionDelay)*1000 : 0);
-                const delay = siblings.length > 1 ? idx * 85 + base : base;
-                setTimeout(() => e.target.classList.add('in'), delay);
-                io.unobserve(e.target);
-            });
-            }, {threshold: 0.08});
+            <!-- MODAL -->
+            <div id="waitlist-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <button class="modal-close" id="modal-close-btn" aria-label="Close modal">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                    <h3 class="modal-title">Join the Waitlist</h3>
+                    <p class="modal-desc">PaperLoop is currently in testing. Drop your details below and we'll reach out when we're ready for more users.</p>
+                    <form class="modal-form" action="mailto:th.shanjit@gmail.com?subject=PaperLoop Waitlist" method="post" enctype="text/plain">
+                        <input type="text" name="Name" class="modal-input" placeholder="Your Name" required>
+                        <input type="email" name="Email" class="modal-input" placeholder="Your Email Address" required>
+                        <button type="submit" class="modal-btn">
+                            Get Early Access
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
 
-            document.querySelectorAll('.up, .up2, .pain-c, .step, .fc, .rm-card, .pack').forEach(el => io.observe(el));
-
-            // Nav solid on scroll
-            const nav = document.getElementById('nav');
-            window.addEventListener('scroll', () => {
-            nav.classList.toggle('solid', window.scrollY > 40);
-            }, {passive: true});
-
-            // Active nav link
-            const navLks = document.querySelectorAll('.nav-lk, .nav-btn');
-            const secs = document.querySelectorAll('section[id], div[id]');
-            window.addEventListener('scroll', () => {
-            let cur = '';
-            secs.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
-            navLks.forEach(a => {
-                const href = a.getAttribute('href').replace('#','');
-                a.classList.toggle('act', href === cur);
-            });
-            }, {passive: true});
-
-            // Smooth scroll on click
-            document.querySelectorAll('a[href^="#"]').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    const targetId = this.getAttribute('href').replace('#','');
-                    const target = document.getElementById(targetId);
-                    if (target) {
-                        e.preventDefault();
-                        const targetPos = target.getBoundingClientRect().top + window.scrollY;
-                        window.scrollTo({
-                            top: targetPos - 70, // offset for navbar
-                            behavior: 'smooth'
-                        });
-                        // Also update URL hash without scrolling
-                        window.history.pushState(null, null, '#' + targetId);
-                    }
-                });
-            });
-            </script>
-        </body>
-        </html>
       `}} 
     />
   );
