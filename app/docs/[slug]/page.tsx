@@ -114,12 +114,23 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
             })}
 
             {doc.pdfUrl && (
-              <div style={{ marginTop: 64, padding: 32, background: t.bgSurface, borderRadius: 24, border: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <h3 style={{ fontFamily: t.serif, fontSize: 24, color: t.ink, marginBottom: 12 }}>Architecture Diagram</h3>
-                <p style={{ fontFamily: t.sans, fontSize: 15, color: t.inkMuted, marginBottom: 24 }}>High-resolution PDF export</p>
-                <a href={doc.pdfUrl} download style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', background: t.ink, color: t.bg, borderRadius: 99, fontFamily: t.sans, fontSize: 14, textDecoration: 'none', transition: 'transform 0.2s' }}>
-                  <Download size={16} /> Download PDF
-                </a>
+              <div style={{ marginTop: 64, background: t.bgSurface, borderRadius: 24, border: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div style={{ padding: '24px 32px', borderBottom: `1px solid ${t.borderFaint}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <h3 style={{ fontFamily: t.serif, fontSize: 24, color: t.ink, marginBottom: 4 }}>Architecture Diagram</h3>
+                    <p style={{ fontFamily: t.sans, fontSize: 13, color: t.inkMuted, margin: 0 }}>PDF Viewer</p>
+                  </div>
+                  <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: t.bgMuted, color: t.ink, border: `1px solid ${t.border}`, borderRadius: 99, fontFamily: t.sans, fontSize: 13, textDecoration: 'none', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = t.borderFaint} onMouseLeave={e => e.currentTarget.style.background = t.bgMuted}>
+                    <Download size={14} /> Open External
+                  </a>
+                </div>
+                <div style={{ width: '100%', height: '75vh', minHeight: 600, background: '#f8f9fa' }}>
+                  <iframe 
+                    src={`${doc.pdfUrl}#view=FitH&toolbar=1`} 
+                    style={{ width: '100%', height: '100%', border: 'none' }}
+                    title="PDF Viewer"
+                  />
+                </div>
               </div>
             )}
           </div>
