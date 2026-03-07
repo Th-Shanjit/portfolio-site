@@ -18,7 +18,7 @@ export const t = {
 };
 
 // ─── scroll reveal ──────────────────────────────────────────────────────────
-export function Reveal({ children, delay = 0, y = 16 }: { children: React.ReactNode; delay?: number; y?: number }) {
+export function Reveal({ children, delay = 0, y = 16, style }: { children: React.ReactNode; delay?: number; y?: number; style?: React.CSSProperties }) {
   const [on, setOn] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   
@@ -32,6 +32,7 @@ export function Reveal({ children, delay = 0, y = 16 }: { children: React.ReactN
   
   return (
     <div ref={ref} style={{
+      ...style,
       opacity: on ? 1 : 0,
       transform: on ? 'none' : `translateY(${y}px)`,
       transition: `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
