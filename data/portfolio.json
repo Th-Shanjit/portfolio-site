@@ -28,27 +28,11 @@
     "coverImage": ""
   },
   "highlightedProjects": [
-    {
-      "id": "recruit-ai",
-      "title": "Recruit-AI",
-      "category": "Project Docs",
-      "year": "2025",
-      "slug": "/docs/project-docs/recruit-ai"
-    },
-    {
-      "id": "retro-camera",
-      "title": "Retro Instant Camera",
-      "category": "Case Studies",
-      "year": "2025",
-      "slug": "/docs/case-studies/retro-camera"
-    },
-    {
-      "id": "subsentry",
-      "title": "Subsentry",
-      "category": "FinTech",
-      "year": "2025",
-      "slug": "/docs/case-studies/subsentry"
-    }
+    { "id": "p1" },
+    { "id": "p2" },
+    { "id": "p3" },
+    { "id": "p4" },
+    { "id": "p5" }
   ],
   "contact": {
     "heading": "Let's build.",
@@ -82,6 +66,151 @@
     ]
   },
   "docs": [
+    {
+      "id": "p1",
+      "title": "AgentFlow",
+      "type": "case-study",
+      "tag": "Agentic AI",
+      "published": true,
+      "thumbnail": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80",
+      "description": "End-to-end agentic workflow platform",
+      "content": ["### Detailed breakdown of system logic and execution.", "AgentFlow solves complex automation needs by letting LLM agents construct their own multi-step workflows."],
+      "date": "Mar 2026",
+      "readTime": "6 min read",
+      "views": 104
+    },
+    {
+      "id": "p2",
+      "title": "Memoria",
+      "type": "project",
+      "tag": "LLM Infra",
+      "published": true,
+      "thumbnail": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80",
+      "description": "LLM-powered knowledge management",
+      "content": ["### Detailed breakdown of system logic and execution.", "Memoria acts as a highly scalable semantic memory layer, organizing unstructured data into a navigable graph."],
+      "date": "Feb 2026",
+      "readTime": "8 min read",
+      "views": 210
+    },
+    {
+      "id": "p3",
+      "title": "Threadcraft",
+      "type": "case-study",
+      "tag": "Product",
+      "published": true,
+      "thumbnail": "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=80",
+      "description": "AI content strategy & scheduling",
+      "content": ["### Detailed breakdown of system logic and execution.", "Content ideation and distribution pipeline engineered for growth teams."],
+      "date": "Jan 2026",
+      "readTime": "4 min read",
+      "views": 56
+    },
+    {
+      "id": "p4",
+      "title": "Cortex",
+      "type": "project",
+      "tag": "Evaluation",
+      "published": true,
+      "thumbnail": "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=80",
+      "description": "Enterprise AI evaluation framework",
+      "content": ["### Detailed breakdown of system logic and execution.", "A robust testing matrix for measuring hallucination rates, compliance, and latency across foundational models."],
+      "date": "Dec 2025",
+      "readTime": "12 min read",
+      "views": 305
+    },
+    {
+      "id": "p5",
+      "title": "Nexus",
+      "type": "case-study",
+      "tag": "Multi-agent",
+      "published": true,
+      "thumbnail": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80",
+      "description": "Multi-agent orchestration OS",
+      "content": ["### Detailed breakdown of system logic and execution.", "Nexus enables discrete AI agents to negotiate tasks, share context, and execute complex goals cooperatively."],
+      "date": "Nov 2025",
+      "readTime": "15 min read",
+      "views": 412
+    },
+    {
+      "id": "d1",
+      "title": "Building Production-Grade Agentic Systems",
+      "type": "case-study",
+      "published": true,
+      "content": ["### Architectural Deep Dive", "An exploration of memory management, fault tolerance, and human-in-the-loop fallback strategies."],
+      "date": "Oct 2025",
+      "readTime": "7 min read",
+      "views": 98
+    },
+    {
+      "id": "d2",
+      "title": "Context Window Management at Scale",
+      "type": "case-study",
+      "published": true,
+      "content": ["### Architectural Deep Dive", "Strategies for packing context efficiently when limits are tight and costs are high."],
+      "date": "Oct 2025",
+      "readTime": "5 min read",
+      "views": 67
+    },
+    {
+      "id": "d3",
+      "title": "Multi-Agent Coordination Patterns",
+      "type": "case-study",
+      "published": true,
+      "content": ["### Architectural Deep Dive", "How to structure communication between specialized LLMs to avoid infinite loops and consensus failures."],
+      "date": "Sep 2025",
+      "readTime": "10 min read",
+      "views": 150
+    },
+    {
+      "id": "d4",
+      "title": "AgentFlow Technical Architecture",
+      "type": "project",
+      "published": true,
+      "content": ["### Documentation", "System diagrams, API specs, and database schemas for the AgentFlow platform."],
+      "date": "Aug 2025",
+      "readTime": "20 min read",
+      "views": 520
+    },
+    {
+      "id": "d5",
+      "title": "Memoria: Knowledge Graph Design",
+      "type": "project",
+      "published": true,
+      "content": ["### Documentation", "Ontology design and graph DB querying patterns used in Memoria."],
+      "date": "Jul 2025",
+      "readTime": "9 min read",
+      "views": 110
+    },
+    {
+      "id": "d6",
+      "title": "Evaluating LLMs for Agentic Tasks",
+      "type": "doc",
+      "published": true,
+      "content": ["### Research Notes", "Observations on model degradation and prompt sensitivity across top models."],
+      "date": "Jun 2025",
+      "readTime": "4 min read",
+      "views": 85
+    },
+    {
+      "id": "d7",
+      "title": "The State of AI in 2025",
+      "type": "blog",
+      "published": true,
+      "content": ["### Opinion", "Why the hype is cooling and the real builders are just getting started."],
+      "date": "May 2025",
+      "readTime": "3 min read",
+      "views": 240
+    },
+    {
+      "id": "d8",
+      "title": "Why Most AI Products Fail",
+      "type": "blog",
+      "published": true,
+      "content": ["### Opinion", "Product-market fit in the AI era requires more than just a wrapper around an API."],
+      "date": "Apr 2025",
+      "readTime": "6 min read",
+      "views": 330
+    },
     {
       "id": "new-doc-1772462344570",
       "title": "Terms of Service (PaperLoop)",

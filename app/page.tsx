@@ -1,184 +1,590 @@
 'use client';
 
+/*
+  layout.tsx fonts (next/font/google):
+  ─ Cormorant_Garamond  weights: 300,400,500,600  styles: normal,italic
+  ─ DM_Sans             weights: 300,400,500
+*/
+
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import {
+  ArrowUpRight, Heart, MessageCircle, Linkedin,
+  FolderOpen, BookOpen, FileText, LayoutGrid,
+  ChevronRight, Clock, HardDrive, ChevronLeft,
+  MapPin, Briefcase,
+} from 'lucide-react';
+import { t, Reveal, timeAgo, Label, RoleTag } from '@/lib/design';
 
-// --- MAGIC SCROLL REVEAL COMPONENT ---
-function ScrollReveal({ children, delay = 0, className = "" }: { children: React.ReactNode, delay?: number, className?: string }) {
-  const [isVisible, setVisible] = useState(false);
-  const domRef = useRef<HTMLDivElement>(null);
+// ─── types ─────────────────────────────────────────────────────────────────
+type Doc = {
+  id: string; title: string; type: string; published?: boolean;
+  thumbnail?: string; coverImage?: string; link?: string;
+  description?: string; tag?: string; content?: string[];
+};
+type Portfolio = {
+  site: { name: string; dpUrl?: string; linkedinUrl?: string };
+  hero: { description: string; link: string; linkText: string };
+  highlightedProjects: { id: string }[];
+  docs: Doc[];
+  contact: { heading: string };
+};
+type Post = {
+  id: string; postUrl: string; text?: string;
+  thumbnail?: string; likes: number; comments: number; createdAt?: number;
+};
 
+// ─── placeholder data ───────────────────────────────────────────────────────
+const PLACEHOLDER_PROJECTS: Doc[] = [
+  { id: 'p1', title: 'AgentFlow', type: 'case-study', tag: 'Agentic AI', published: true, thumbnail: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80', description: 'End-to-end agentic workflow platform' },
+  { id: 'p2', title: 'Memoria', type: 'project', tag: 'LLM Infra', published: true, thumbnail: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80', description: 'LLM-powered knowledge management' },
+  { id: 'p3', title: 'Threadcraft', type: 'case-study', tag: 'Product', published: true, thumbnail: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=80', description: 'AI content strategy & scheduling' },
+  { id: 'p4', title: 'Cortex', type: 'project', tag: 'Evaluation', published: true, thumbnail: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=80', description: 'Enterprise AI evaluation framework' },
+  { id: 'p5', title: 'Nexus', type: 'case-study', tag: 'Multi-agent', published: true, thumbnail: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80', description: 'Multi-agent orchestration OS' },
+];
+
+const PLACEHOLDER_POSTS: Post[] = [
+  { id: 'li1', postUrl: '#', likes: 847, comments: 63, createdAt: Date.now() - 1000 * 60 * 60 * 18, text: "After 6 months building agentic systems in production, here's what nobody tells you:\n\nAgents don't fail because the LLM is bad. They fail because the scaffolding is fragile.\n\nThree patterns that changed how we build:" },
+  { id: 'li2', postUrl: '#', likes: 1204, comments: 91, createdAt: Date.now() - 1000 * 60 * 60 * 42, text: "The best product insight I've had all year:\n\nUsers don't want AI that's impressive. They want AI that's invisible.\n\nThe moment your AI makes someone feel smart — that's product-market fit." },
+  { id: 'li3', postUrl: '#', likes: 532, comments: 44, createdAt: Date.now() - 1000 * 60 * 60 * 72, text: "We benchmarked 7 LLM providers for a production agentic workflow. Cost, latency, reliability.\n\nThe results surprised us. Thread below 👇" },
+  { id: 'li4', postUrl: '#', likes: 2140, comments: 178, createdAt: Date.now() - 1000 * 60 * 60 * 120, text: "Hot take: RAG is a band-aid.\n\nMost teams reach for retrieval when the real problem is context architecture.\n\nHere's a better mental model for when RAG actually makes sense — and when it doesn't." },
+];
+
+const PLACEHOLDER_DOCS: Doc[] = [
+  { id: 'd1', title: 'Building Production-Grade Agentic Systems', type: 'case-study', published: true },
+  { id: 'd2', title: 'Context Window Management at Scale', type: 'case-study', published: true },
+  { id: 'd3', title: 'Multi-Agent Coordination Patterns', type: 'case-study', published: true },
+  { id: 'd4', title: 'AgentFlow Technical Architecture', type: 'project', published: true },
+  { id: 'd5', title: 'Memoria: Knowledge Graph Design', type: 'project', published: true },
+  { id: 'd6', title: 'Evaluating LLMs for Agentic Tasks', type: 'doc', published: true },
+  { id: 'd7', title: 'The State of AI in 2025', type: 'blog', published: true },
+  { id: 'd8', title: 'Why Most AI Products Fail', type: 'blog', published: true },
+];
+
+
+// ─── project filmstrip ─────────────────────────────────────────────────────
+function Filmstrip({ items }: { items: Doc[] }) {
+  const rail = useRef<HTMLDivElement>(null);
+  const [canL, setL] = useState(false);
+  const [canR, setR] = useState(false);
+
+  const sync = () => {
+    const el = rail.current; if (!el) return;
+    setL(el.scrollLeft > 10);
+    setR(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
+  };
   useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => { if (entry.isIntersecting) setVisible(true); });
-    }, { threshold: 0.15 }); 
-    const current = domRef.current;
-    if (current) observer.observe(current);
-    return () => { if (current) observer.unobserve(current); };
-  }, []);
+    const el = rail.current; if (!el) return;
+    el.addEventListener('scroll', sync, { passive: true });
+    setTimeout(sync, 120);
+    return () => el.removeEventListener('scroll', sync);
+  }, [items]);
+
+  const scroll = (dir: 1 | -1) =>
+    rail.current?.scrollBy({ left: dir * 300, behavior: 'smooth' });
 
   return (
-    <div ref={domRef} className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
-      {children}
+    <div style={{ position: 'relative' }}>
+      {/* fade edges */}
+      {canL && <div style={{ position:'absolute', left:0, top:0, bottom:18, width:80, background:`linear-gradient(to right, ${t.bg}, transparent)`, zIndex:3, pointerEvents:'none' }} />}
+      {canR && <div style={{ position:'absolute', right:0, top:0, bottom:18, width:100, background:`linear-gradient(to left, ${t.bg}, transparent)`, zIndex:3, pointerEvents:'none' }} />}
+
+      {/* nav buttons */}
+      {canL && (
+        <button onClick={() => scroll(-1)} style={{ position:'absolute', left:-14, top:70, zIndex:4, width:32, height:32, borderRadius:'50%', background:t.bgSurface, border:`1px solid ${t.border}`, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
+          <ChevronLeft size={13} color={t.inkMuted} />
+        </button>
+      )}
+      {canR && (
+        <button onClick={() => scroll(1)} style={{ position:'absolute', right:-14, top:70, zIndex:4, width:32, height:32, borderRadius:'50%', background:t.bgSurface, border:`1px solid ${t.border}`, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
+          <ChevronRight size={13} color={t.inkMuted} />
+        </button>
+      )}
+
+      {/* rail */}
+      <div ref={rail} style={{ display:'flex', gap:20, overflowX:'auto', paddingBottom:6, scrollSnapType:'x mandatory', scrollbarWidth:'none' }}>
+        {items.map((doc, i) => <FilmCard key={doc.id} doc={doc} i={i} />)}
+      </div>
     </div>
   );
 }
 
-export default function Home() {
-  const [portfolio, setPortfolio] = useState<any>(null);
+function FilmCard({ doc, i }: { doc: Doc; i: number }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <a
+      href={doc.link || `/docs/${doc.id}`}
+      target={doc.link ? '_blank' : undefined}
+      rel="noopener noreferrer"
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{ display:'flex', flexDirection:'column', flexShrink:0, width:248, scrollSnapAlign:'start', textDecoration:'none' }}
+    >
+      {/* image */}
+      <div style={{ position:'relative', width:'100%', height:152, overflow:'hidden', background:t.bgMuted, borderRadius:8, border:`1px solid ${t.borderFaint}` }}>
+        {doc.thumbnail ? (
+          <img src={doc.thumbnail} alt={doc.title} style={{ width:'100%', height:'100%', objectFit:'cover', transform: hov ? 'scale(1.05)' : 'scale(1)', transition:'transform 0.6s cubic-bezier(0.16,1,0.3,1)' }} />
+        ) : (
+          <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, letterSpacing:'0.15em' }}>NO PREVIEW</span>
+          </div>
+        )}
+        {/* index badge */}
+        <div style={{ position:'absolute', top:10, left:10, fontFamily:t.mono, fontSize:9, color:'rgba(255,255,255,0.7)', background:'rgba(0,0,0,0.35)', backdropFilter:'blur(6px)', padding:'3px 7px', borderRadius:3, letterSpacing:'0.1em' }}>
+          {String(i + 1).padStart(2, '0')}
+        </div>
+      </div>
 
-  useEffect(() => {
-    // 🚀 FIX: Add timestamp & no-store to destroy the cache
-    fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
-      .then(res => res.json())
-      .then(json => setPortfolio(json))
-      .catch(err => console.error(err));
-  }, []);
+      {/* caption */}
+      <div style={{ paddingTop:10, display:'flex', flexDirection:'column', gap:3 }}>
+        <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:8 }}>
+          <span style={{ fontFamily:t.serif, fontSize:16, fontWeight:500, color: hov ? t.ink : '#5a5450', transition:'color 0.2s', lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+            {doc.title}
+          </span>
+          <ArrowUpRight size={12} color={hov ? t.accent : t.borderFaint} style={{ flexShrink:0, transition:'color 0.2s' }} />
+        </div>
+        <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, letterSpacing:'0.12em', textTransform:'uppercase' }}>
+          {doc.tag || doc.type}
+        </span>
+      </div>
+    </a>
+  );
+}
 
-  if (!portfolio) return <div className="min-h-screen flex items-center justify-center bg-[#f5f5f7] text-zinc-400 uppercase tracking-widest text-xs">Loading Interface...</div>;
+// ─── browser / data room ───────────────────────────────────────────────────
+const FOLDERS = [
+  { id: 'case-study', label: 'Case Studies', icon: LayoutGrid },
+  { id: 'project',    label: 'Projects',     icon: FolderOpen },
+  { id: 'blog',       label: 'Blog',         icon: BookOpen   },
+  { id: 'doc',        label: 'Docs',         icon: FileText   },
+];
 
-  const hotProject = portfolio.hero;
+function DataRoom({ docs }: { docs: Doc[] }) {
+  const [active, setActive] = useState('case-study');
+  const [hRow, setHRow] = useState<string | null>(null);
+  const [hFold, setHFold] = useState<string | null>(null);
+
+  const allDocs = docs.length > 0 ? docs : PLACEHOLDER_DOCS;
+  const folders = FOLDERS.map(f => ({ ...f, count: allDocs.filter(d => d.type === f.id).length }));
+  const rows = allDocs.filter(d => d.type === active).slice(0, 7);
+  const af = folders.find(f => f.id === active)!;
 
   return (
-    <main className="w-full pb-40 pt-12 relative z-10 selection:bg-zinc-300">
-      
-      <section className="mb-40 flex justify-center px-12 md:px-24 pt-8">
-        <ScrollReveal className="w-full max-w-4xl relative">
-          <div className="w-full mb-16 md:mb-20">
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold uppercase text-zinc-300 flex justify-between w-full select-none" aria-label={portfolio.site?.name || "Portfolio"}>
-              {Array.from(portfolio.site?.name || "Portfolio").map((char: any, i: number) => (
-                char === ' ' ? <span key={i} className="w-4 md:w-8 lg:w-12"></span> : <span key={i} aria-hidden="true">{char}</span>
-              ))}
-            </h1>
-          </div>
+    <div style={{ display:'flex', minHeight:380, fontFamily:t.mono }}>
+      {/* sidebar */}
+      <div style={{ width:192, flexShrink:0, borderRight:`1px solid ${t.borderFaint}`, background:'#fcfaf7', padding:'18px 0', display:'flex', flexDirection:'column', gap:1 }}>
+        <span style={{ fontSize:9, color:t.inkFaint, letterSpacing:'0.18em', textTransform:'uppercase', padding:'0 14px 10px' }}>Locations</span>
 
-          <div className="absolute top-8 -left-8 md:top-8 md:-left-16 z-50 w-28 h-28 md:w-36 md:h-36 rounded-full border-[6px] border-[#f5f5f7] shadow-xl overflow-hidden bg-zinc-200 flex items-center justify-center rotate-[-25deg]">
-            {portfolio.site?.dpUrl ? (
-              <img src={portfolio.site.dpUrl} alt="Profile" className="absolute inset-0 w-full h-full object-cover" />
-            ) : (
-              <span className="text-zinc-400 text-xs md:text-sm font-medium tracking-widest uppercase">DP</span>
-            )}
-          </div>
+        {folders.map(f => {
+          const isA = f.id === active;
+          return (
+            <button key={f.id} onClick={() => setActive(f.id)}
+              onMouseEnter={() => setHFold(f.id)} onMouseLeave={() => setHFold(null)}
+              style={{ width:'100%', display:'flex', alignItems:'center', gap:9, padding:'8px 14px', border:'none', cursor:'pointer', background: isA ? t.bgSurface : hFold===f.id ? 'rgba(0,0,0,0.02)' : 'transparent', borderLeft:`2px solid ${isA ? t.accent : 'transparent'}`, transition:'all 0.15s' }}
+            >
+              <f.icon size={11} color={isA ? t.accent : t.inkFaint} />
+              <span style={{ fontSize:11, color: isA ? t.ink : t.inkMuted, flex:1, textAlign:'left' }}>{f.label}</span>
+              <span style={{ fontSize:9, color:t.inkFaint, background: isA ? t.bgMuted : 'transparent', padding:'1px 6px', borderRadius:3 }}>{f.count}</span>
+            </button>
+          );
+        })}
 
-          <div className="absolute top-28 left-1/2 -translate-x-1/2 w-32 h-4 bg-zinc-900 rounded-b-xl z-20 flex justify-center items-end pb-1 md:top-[8.5rem] lg:top-[9rem]">
-            <div className="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
-          </div>
+        <div style={{ margin:'14px', height:1, background:t.borderFaint }} />
+        <Link href="/docs" style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 14px', textDecoration:'none' }}>
+          <ChevronRight size={10} color={t.inkFaint} />
+          <span style={{ fontSize:11, color:t.inkFaint }}>Browse All</span>
+        </Link>
+      </div>
 
-          <div className="relative w-full aspect-[16/10] bg-zinc-900 rounded-t-3xl border-[12px] border-zinc-900 shadow-2xl overflow-hidden flex flex-col p-8 md:p-12 items-start justify-end">
-            {hotProject.coverImage && (
-              <div className="absolute inset-0 z-0">
-                <img src={hotProject.coverImage} alt="Wallpaper" className="w-full h-full object-cover opacity-60" />
+      {/* main pane */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column' }}>
+        {/* breadcrumb */}
+        <div style={{ padding:'9px 16px', borderBottom:`1px solid ${t.borderFaint}`, display:'flex', alignItems:'center', gap:5, background:'#fdfcf9' }}>
+          <HardDrive size={9} color={t.inkFaint} />
+          <ChevronRight size={8} color={t.borderFaint} />
+          <span style={{ fontSize:9, color:t.inkFaint }}>portfolio</span>
+          <ChevronRight size={8} color={t.borderFaint} />
+          <span style={{ fontSize:9, color:t.accent }}>{af.label}</span>
+        </div>
+
+        {/* header row */}
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 90px 70px', padding:'6px 16px', borderBottom:`1px solid ${t.borderFaint}`, background:'#fdfcf9' }}>
+          {['Name','Type','Modified'].map(h => (
+            <span key={h} style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.15em' }}>{h}</span>
+          ))}
+        </div>
+
+        {/* rows */}
+        <div style={{ flex:1, overflowY:'auto' }}>
+          {rows.length === 0 ? (
+            <div style={{ padding:'48px 16px', textAlign:'center', color:t.inkFaint, fontSize:10 }}>No items</div>
+          ) : rows.map((doc, i) => (
+            <Link key={doc.id} href={`/docs/${doc.id}`}
+              onMouseEnter={() => setHRow(doc.id)} onMouseLeave={() => setHRow(null)}
+              style={{ display:'grid', gridTemplateColumns:'1fr 90px 70px', padding:'10px 16px', textDecoration:'none', background: hRow===doc.id ? '#fdf7f0' : i%2 ? '#fdfcf9' : t.bgSurface, borderBottom:`1px solid ${t.borderFaint}`, transition:'background 0.12s', alignItems:'center' }}
+            >
+              <div style={{ display:'flex', alignItems:'center', gap:9, overflow:'hidden' }}>
+                <af.icon size={10} color={hRow===doc.id ? t.accent : t.inkFaint} style={{ flexShrink:0 }} />
+                <span style={{ fontSize:11, color: hRow===doc.id ? t.ink : t.inkMuted, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', transition:'color 0.12s' }}>{doc.title}</span>
               </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50 pointer-events-none z-10"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/30 to-transparent pointer-events-none z-10"></div>
-            
-            <div className="relative z-20 text-white w-full max-w-2xl">
-              <span className="text-[10px] md:text-xs font-mono text-zinc-300 mb-6 block uppercase tracking-widest px-4 py-2 bg-white/10 rounded-full backdrop-blur-md w-max border border-white/10">
-                {hotProject.tag || "Latest Project"}
-              </span>
-              <h2 className="text-4xl md:text-6xl font-medium mb-6 tracking-tight leading-[1.1]">{hotProject.title}</h2>
-              <p className="text-zinc-400 mb-10 text-base md:text-lg font-light leading-relaxed line-clamp-2">{hotProject.description}</p>
-              <Link href={hotProject.link} className="inline-flex items-center gap-3 bg-white text-zinc-900 px-6 py-3 md:px-8 md:py-4 rounded-full text-xs md:text-sm font-semibold tracking-wide hover:bg-zinc-200 transition-colors">
-                {hotProject.linkText} <ArrowRight size={16} />
-              </Link>
+              <span style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.07em' }}>{doc.type}</span>
+              <div style={{ display:'flex', alignItems:'center', gap:4 }}>
+                <Clock size={8} color={t.borderFaint} />
+                <span style={{ fontSize:9, color:t.borderFaint }}>—</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* status */}
+        <div style={{ padding:'6px 16px', borderTop:`1px solid ${t.borderFaint}`, display:'flex', alignItems:'center', justifyContent:'space-between', background:'#fdfcf9' }}>
+          <span style={{ fontSize:9, color:t.inkFaint }}>{rows.length} item{rows.length !== 1 ? 's' : ''}</span>
+          <Link href="/docs" style={{ fontSize:9, color:t.accent, textDecoration:'none', display:'flex', alignItems:'center', gap:3 }}>
+            View all <ChevronRight size={8} />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Browser({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ borderRadius:12, overflow:'hidden', border:`1px solid ${t.border}`, boxShadow:`0 8px 40px rgba(28,25,22,0.08), 0 1px 0 ${t.borderFaint}` }}>
+      {/* chrome */}
+      <div style={{ background:'#f0ebe2', borderBottom:`1px solid ${t.border}`, padding:'10px 16px', display:'flex', alignItems:'center', gap:12 }}>
+        <div style={{ display:'flex', gap:5 }}>
+          {['#ff5f56','#ffbd2e','#27c93f'].map(c => <div key={c} style={{ width:10, height:10, borderRadius:'50%', background:c, opacity:0.7 }} />)}
+        </div>
+        {/* tab */}
+        <div style={{ background:t.bgSurface, border:`1px solid ${t.border}`, borderBottom:`1px solid ${t.bgSurface}`, borderRadius:'7px 7px 0 0', padding:'5px 14px 7px', display:'flex', alignItems:'center', gap:7, marginBottom:-11, marginTop:-2 }}>
+          <HardDrive size={9} color={t.accent} />
+          <span style={{ fontFamily:t.mono, fontSize:10, color:t.inkMuted }}>Data Room</span>
+        </div>
+        <div style={{ flex:1 }} />
+        {/* address */}
+        <div style={{ background:'#e8e2d8', border:`1px solid ${t.border}`, borderRadius:5, padding:'5px 12px', display:'flex', alignItems:'center', gap:6, minWidth:210 }}>
+          <div style={{ width:5, height:5, borderRadius:'50%', background:'#27c93f', opacity:0.8 }} />
+          <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint }}>portfolio.local / data-room</span>
+        </div>
+      </div>
+      <div style={{ background:t.bgSurface }}>{children}</div>
+    </div>
+  );
+}
+
+// ─── linkedin post ─────────────────────────────────────────────────────────
+function Post({ post, i, dpUrl, name }: { post: Post; i: number; dpUrl?: string; name?: string }) {
+  const [exp, setExp] = useState(false);
+  const [hov, setHov] = useState(false);
+  const long = (post.text?.length ?? 0) > 200;
+  const text = !exp && long ? post.text!.slice(0, 200) + '…' : post.text;
+
+  return (
+    <Reveal delay={i * 80}>
+      <a href={post.postUrl} target="_blank" rel="noopener noreferrer"
+        onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+        onClick={e => { if (long && !exp) { e.preventDefault(); setExp(true); } }}
+        style={{ display:'block', textDecoration:'none', paddingBottom:32, marginBottom:32, borderBottom:`1px solid ${t.borderFaint}` }}
+      >
+        {/* author */}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <div style={{ width:30, height:30, borderRadius:'50%', overflow:'hidden', border:`1px solid ${t.borderFaint}`, flexShrink:0 }}>
+              {dpUrl
+                ? <img src={dpUrl} alt={name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                : <div style={{ width:'100%', height:'100%', background:'#0a66c2', display:'flex', alignItems:'center', justifyContent:'center' }}><Linkedin size={11} color="white" /></div>
+              }
+            </div>
+            <div>
+              <p style={{ fontFamily:t.serif, fontSize:14, fontWeight:500, color:t.ink, margin:0, lineHeight:1 }}>{name || 'Author'}</p>
+              {post.createdAt && <p style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, margin:'3px 0 0' }}>{timeAgo(post.createdAt)} ago</p>}
             </div>
           </div>
-          
-          <div className="w-[110%] -ml-[5%] h-5 bg-gradient-to-b from-zinc-300 to-zinc-400 rounded-b-2xl shadow-xl border-t border-zinc-400 relative flex justify-center">
-            <div className="w-32 h-2 bg-zinc-400 rounded-b-md absolute top-0"></div>
-          </div>
-        </ScrollReveal>
-      </section>
+          <ArrowUpRight size={12} color={hov ? t.accent : t.borderFaint} style={{ transition:'color 0.2s' }} />
+        </div>
 
-      <section className="mb-40 max-w-3xl mx-auto px-6">
-        <ScrollReveal>
-          <div className="flex items-center justify-center mb-12">
-            <h2 className="text-3xl font-semibold text-zinc-900 tracking-tight">Architecture & Case Studies</h2>
-          </div>
-        </ScrollReveal>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {portfolio.highlightedProjects?.map((project: any, index: number) => {
-            const realDoc = portfolio.docs.find((d: any) => d.id === project.id);
-            
-            // 🚀 FIX: Safely destroy ghost projects. If it doesn't exist or isn't published, don't render it.
-            if (!realDoc || realDoc.published === false) return null;
+        {text && (
+          <p style={{ fontFamily:t.sans, fontSize:13, color: hov ? '#4a4440' : t.inkMuted, lineHeight:1.75, margin:'0 0 12px', whiteSpace:'pre-line', fontWeight:300 }}>
+            {text}
+            {long && !exp && <span style={{ color:t.accent, cursor:'pointer', marginLeft:4, fontWeight:400 }} onClick={e => { e.preventDefault(); setExp(true); }}>see more</span>}
+          </p>
+        )}
 
-            const title = realDoc.title;
-            const category = realDoc.type;
-            const targetUrl = `/docs/${realDoc.id}`;
-            const description = realDoc.content[0]?.replace(/^### /, '') || "Detailed breakdown of system logic and execution.";
+        <div style={{ display:'flex', gap:16 }}>
+          {[{Icon:Heart,v:post.likes},{Icon:MessageCircle,v:post.comments}].map(({Icon,v},j)=>(
+            <div key={j} style={{ display:'flex', alignItems:'center', gap:5 }}>
+              <Icon size={10} color={t.borderFaint} />
+              <span style={{ fontFamily:t.mono, fontSize:10, color:t.inkFaint }}>{v?.toLocaleString()}</span>
+            </div>
+          ))}
+        </div>
+      </a>
+    </Reveal>
+  );
+}
 
-            return (
-              <ScrollReveal key={realDoc.id} delay={index * 150}>
-                <Link href={targetUrl} className="group relative glass-panel rounded-[2.5rem] hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col p-10 aspect-square justify-between overflow-hidden">
-                  <div>
-                    <div className="flex justify-between items-start mb-6">
-                      <span className="text-[9px] font-bold text-zinc-500 tracking-widest uppercase bg-white/80 px-3 py-1.5 rounded-full border border-zinc-100 shadow-sm">{category}</span>
-                      <ArrowRight size={18} className="text-zinc-300 group-hover:text-zinc-900 group-hover:-rotate-45 transition-all duration-300" />
-                    </div>
-                    <h3 className="text-2xl font-semibold text-zinc-900 mb-4 tracking-tight line-clamp-1">{title}</h3>
-                    <p className="text-sm text-zinc-500 font-light leading-relaxed line-clamp-3">{description}</p>
-                  </div>
-                  <div className="flex items-center text-[10px] text-zinc-400 font-medium uppercase tracking-widest group-hover:text-zinc-900 transition-colors">
-                    View Breakdown <ChevronRight size={12} className="ml-1" />
-                  </div>
-                </Link>
-              </ScrollReveal>
-            );
-          })}
-          
-          <ScrollReveal delay={450}>
-            <Link href="/docs" className="glass-panel rounded-[2.5rem] p-10 group hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 flex flex-col items-center justify-center text-center aspect-square border-dashed border-2 border-zinc-200 bg-transparent">
-              <div className="w-12 h-12 bg-zinc-900 rounded-full flex items-center justify-center mb-6 shadow-md group-hover:scale-110 transition-transform duration-500">
-                <ArrowRight size={20} className="text-white group-hover:translate-x-1 transition-transform" />
+// ─── skeleton ──────────────────────────────────────────────────────────────
+function Skel() {
+  return (
+    <div style={{ paddingBottom:32, marginBottom:32, borderBottom:`1px solid ${t.borderFaint}` }}>
+      {[50,85,70,40].map((w,i)=>(
+        <div key={i} style={{ height:9, width:`${w}%`, background:t.borderFaint, borderRadius:3, marginBottom:9, animation:'pulse 1.4s ease-in-out infinite' }} />
+      ))}
+    </div>
+  );
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PAGE
+// ═══════════════════════════════════════════════════════════════════════════
+export default function Home() {
+  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [liLoading, setLiLoading] = useState(true);
+  const [liError, setLiError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/content?t=' + Date.now(), { cache:'no-store' })
+      .then(r => r.json()).then(setPortfolio).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/linkedin')
+      .then(r => r.json())
+      .then(d => { if (d.error) setLiError(d.error); else setPosts(d.posts || []); })
+      .catch(() => setLiError('Could not load posts.'))
+      .finally(() => setLiLoading(false));
+  }, []);
+
+  // use real data if available, fall back to placeholders
+  const name        = portfolio?.site?.name || 'Shanjit';
+  const dpUrl       = portfolio?.site?.dpUrl;
+  const linkedinUrl = portfolio?.site?.linkedinUrl || '#';
+  const bio         = portfolio?.hero?.description || 'Building agentic AI products at the intersection of LLMs, product strategy, and systems design. Currently focused on multi-agent orchestration.';
+  const ctaLink     = portfolio?.hero?.link || '/docs';
+  const ctaText     = portfolio?.hero?.linkText || 'View Work';
+  const contactH    = portfolio?.contact?.heading || "Let's build something together";
+
+  const rawProjects = portfolio
+    ? (portfolio.highlightedProjects || []).map(p => portfolio.docs?.find(d => d.id === p.id)).filter((d): d is Doc => !!d && d.published !== false)
+    : [];
+  const projects = rawProjects.length > 0 ? rawProjects : PLACEHOLDER_PROJECTS;
+
+  const allDocs  = (portfolio?.docs || []).filter(d => d.published !== false);
+  const livePosts = posts.length > 0 ? posts : PLACEHOLDER_POSTS;
+
+  const MAX = 1040;
+  const PX = 'clamp(20px, 5vw, 64px)';
+
+  return (
+    <>
+      <style>{`
+        @keyframes pulse{0%,100%{opacity:.4}50%{opacity:.9}}
+        *{box-sizing:border-box}
+        ::-webkit-scrollbar{display:none}
+        a{-webkit-tap-highlight-color:transparent}
+        button{outline:none}
+      `}</style>
+
+      <main style={{ background:t.bg, minHeight:'100vh', color:t.ink }}>
+
+        {/* ╔══════════════════════════════╗
+            ║          HERO               ║
+            ╚══════════════════════════════╝ */}
+        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`72px ${PX} 96px` }}>
+
+          {/* top bar: status left, location + role right */}
+          <Reveal>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:64 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:9 }}>
+                <div style={{ width:7, height:7, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 8px rgba(74,222,128,0.5)' }} />
+                <Label>Available for collaboration</Label>
               </div>
-              <h3 className="text-lg font-semibold text-zinc-900 tracking-tight">Full Archive</h3>
-              <p className="text-[10px] text-zinc-400 mt-2 font-light max-w-[140px] leading-relaxed uppercase tracking-widest">Access the complete Data Room</p>
-            </Link>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      <section className="mb-40 max-w-3xl mx-auto px-6">
-        <ScrollReveal>
-          <div className="flex flex-col items-center mb-12">
-            <h2 className="text-3xl font-semibold text-zinc-900 tracking-tight">Project Roadmap</h2>
-            <p className="text-zinc-400 text-[10px] mt-2 uppercase tracking-[0.2em] font-bold">Building in Public</p>
-          </div>
-        </ScrollReveal>
-        <div className="space-y-4">
-          {portfolio.roadmap?.map((item: string, i: number) => {
-            if (!item.trim()) return null;
-            return (
-              <ScrollReveal key={i} delay={i * 100}>
-                <div className="flex items-center gap-4 p-6 glass-panel rounded-2xl group border-zinc-100/50 hover:bg-white/60 transition-colors">
-                  <div className="w-2 h-2 rounded-full bg-zinc-900 group-hover:scale-150 transition-transform duration-500"></div>
-                  <span className="text-sm font-light text-zinc-600 tracking-wide">{item}</span>
+              <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                  <MapPin size={9} color={t.inkFaint} />
+                  <Label>Remote / Worldwide</Label>
                 </div>
-              </ScrollReveal>
-            );
-          })}
-        </div>
-      </section>
+                <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                  <Briefcase size={9} color={t.inkFaint} />
+                  <Label>AI Product</Label>
+                </div>
+              </div>
+            </div>
+          </Reveal>
 
-      <section className="flex justify-center px-6">
-        <ScrollReveal>
-          <div className="glass-panel rounded-[2.5rem] p-12 md:p-16 text-center max-w-2xl w-full flex flex-col items-center shadow-xl border border-white/60 bg-white/30 backdrop-blur-xl">
-            <div className="w-16 h-1 bg-[#0a66c2] rounded-full mb-8"></div>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-6 text-zinc-900">{portfolio.contact.heading}</h2>
-            <p className="text-zinc-500 mb-10 text-base md:text-lg font-light max-w-md leading-relaxed">
-              Open to collaborating on Agentic AI product development and technical strategy. Let's connect.
-            </p>
-            <a href={portfolio.site.linkedinUrl} target="_blank" rel="noopener noreferrer" className="bg-[#0a66c2] text-white px-8 py-4 rounded-full text-sm font-medium tracking-wide hover:bg-blue-800 hover:scale-105 hover:shadow-xl transition-all duration-300">
-              Drop me a DM on LinkedIn
-            </a>
+          {/* name + avatar */}
+          <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', gap:32 }}>
+            <Reveal delay={60}>
+              <h1 style={{
+                fontFamily: t.serif,
+                fontSize: 'clamp(56px, 9vw, 114px)',
+                fontWeight: 400,
+                lineHeight: 0.88,
+                letterSpacing: '-0.02em',
+                color: t.ink,
+                margin: 0,
+              }}>
+                {name}
+              </h1>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <div style={{ flexShrink:0, display:'flex', flexDirection:'column', alignItems:'flex-end', gap:12, paddingBottom:8 }}>
+                <div style={{ width:78, height:78, borderRadius:8, overflow:'hidden', border:`1px solid ${t.border}`, boxShadow:`0 4px 20px rgba(28,25,22,0.1)` }}>
+                  {dpUrl
+                    ? <img src={dpUrl} alt={name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                    : (
+                      /* placeholder avatar with initials */
+                      <div style={{ width:'100%', height:'100%', background:'linear-gradient(135deg,#e8d9c8,#d4c4b0)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                        <span style={{ fontFamily:t.serif, fontSize:28, color:'#8a7060', fontWeight:400 }}>
+                          {name[0]}
+                        </span>
+                      </div>
+                    )
+                  }
+                </div>
+                <div style={{ display:'flex', gap:6 }}>
+                  <RoleTag>AI Product</RoleTag>
+                  <RoleTag>Systems</RoleTag>
+                </div>
+              </div>
+            </Reveal>
           </div>
-        </ScrollReveal>
-      </section>
 
-    </main>
+          {/* rule + bio + cta */}
+          <Reveal delay={180}>
+            <div style={{ marginTop:44, paddingTop:36, borderTop:`1px solid ${t.border}`, display:'grid', gridTemplateColumns:'1fr 1fr', gap:40, alignItems:'start' }}>
+              <p style={{ fontFamily:t.sans, fontSize:14, color:t.inkMuted, lineHeight:1.8, margin:0, fontWeight:300, maxWidth:340 }}>
+                {bio}
+              </p>
+              <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:20 }}>
+                <div style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'flex-end' }}>
+                  <Link href={ctaLink} style={{ fontFamily:t.mono, fontSize:9, color:t.accentFg, background:t.accent, padding:'13px 22px', textDecoration:'none', letterSpacing:'0.14em', textTransform:'uppercase', display:'inline-flex', alignItems:'center', gap:7, borderRadius:3 }}>
+                    {ctaText} <ArrowUpRight size={11} />
+                  </Link>
+                  <a href={linkedinUrl} target="_blank" rel="noopener noreferrer"
+                    style={{ fontFamily:t.mono, fontSize:9, color:t.inkMuted, border:`1px solid ${t.border}`, padding:'12px 18px', textDecoration:'none', letterSpacing:'0.14em', textTransform:'uppercase', display:'inline-flex', alignItems:'center', gap:7, borderRadius:3 }}>
+                    <Linkedin size={10} /> LinkedIn
+                  </a>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* ╔══════════════════════════════╗
+            ║        PROJECTS             ║
+            ╚══════════════════════════════╝ */}
+        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`0 ${PX} 96px` }}>
+          <Reveal>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:32 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+                <Label>01</Label>
+                <div style={{ width:40, height:'1px', background:t.border }} />
+                <Label>Selected Work</Label>
+              </div>
+              <Link href="/docs" style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, textDecoration:'none', letterSpacing:'0.12em', textTransform:'uppercase', display:'flex', alignItems:'center', gap:5 }}>
+                All work <ArrowUpRight size={9} />
+              </Link>
+            </div>
+          </Reveal>
+          <Filmstrip items={projects} />
+        </section>
+
+        {/* ╔══════════════════════════════╗
+            ║        DATA ROOM            ║
+            ╚══════════════════════════════╝ */}
+        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`0 ${PX} 96px` }}>
+          <Reveal>
+            <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:32 }}>
+              <Label>02</Label>
+              <div style={{ width:40, height:'1px', background:t.border }} />
+              <Label>Data Room</Label>
+            </div>
+          </Reveal>
+          <Reveal delay={80}>
+            <Browser>
+              <DataRoom docs={allDocs} />
+            </Browser>
+          </Reveal>
+        </section>
+
+        {/* ╔══════════════════════════════╗
+            ║        LINKEDIN             ║
+            ╚══════════════════════════════╝ */}
+        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`0 ${PX} 96px` }}>
+          <Reveal>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:48 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+                <Label>03</Label>
+                <div style={{ width:40, height:'1px', background:t.border }} />
+                <Label>Thinking in Public</Label>
+              </div>
+              <a href={linkedinUrl} target="_blank" rel="noopener noreferrer"
+                style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, textDecoration:'none', letterSpacing:'0.12em', textTransform:'uppercase', display:'flex', alignItems:'center', gap:5 }}>
+                <Linkedin size={9} /> View profile <ArrowUpRight size={9} />
+              </a>
+            </div>
+          </Reveal>
+
+          {liError ? (
+            <p style={{ fontFamily:t.mono, fontSize:11, color:t.inkFaint }}>{liError}</p>
+          ) : (
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 52px' }}>
+              {(liLoading && posts.length === 0)
+                ? Array.from({length:4}).map((_,i)=><Skel key={i}/>)
+                : livePosts.map((p,i)=>(
+                    <Post key={p.id} post={p} i={i} dpUrl={dpUrl} name={name} />
+                  ))
+              }
+            </div>
+          )}
+        </section>
+
+        {/* ╔══════════════════════════════╗
+            ║         CONTACT             ║
+            ╚══════════════════════════════╝ */}
+        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`0 ${PX} 96px` }}>
+          <Reveal>
+            <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:56 }}>
+              <Label>04</Label>
+              <div style={{ width:40, height:'1px', background:t.border }} />
+              <Label>Contact</Label>
+            </div>
+          </Reveal>
+
+          <Reveal delay={60}>
+            <div style={{ paddingBottom:52, borderBottom:`1px solid ${t.border}`, display:'grid', gridTemplateColumns:'1fr auto', gap:40, alignItems:'end' }}>
+              <div>
+                <h2 style={{ fontFamily:t.serif, fontSize:'clamp(36px, 5vw, 64px)', fontWeight:400, lineHeight:1, letterSpacing:'-0.02em', color:t.ink, margin:'0 0 20px' }}>
+                  {contactH}
+                </h2>
+                <p style={{ fontFamily:t.sans, fontSize:13, color:t.inkMuted, lineHeight:1.8, maxWidth:340, margin:0, fontWeight:300 }}>
+                  Whether you're building an AI product, exploring agentic architectures, or just want to exchange ideas — my inbox is open.
+                </p>
+              </div>
+              <a href={linkedinUrl} target="_blank" rel="noopener noreferrer"
+                style={{ fontFamily:t.mono, fontSize:9, color:t.accentFg, background:t.accent, padding:'14px 24px', textDecoration:'none', letterSpacing:'0.14em', textTransform:'uppercase', whiteSpace:'nowrap', display:'inline-flex', alignItems:'center', gap:7, borderRadius:3 }}>
+                Drop a DM <ArrowUpRight size={11} />
+              </a>
+            </div>
+
+            {/* footer */}
+            <div style={{ paddingTop:28, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, letterSpacing:'0.12em' }}>
+                {name.toUpperCase()} © {new Date().getFullYear()}
+              </span>
+              <span style={{ fontFamily:t.mono, fontSize:9, color:t.borderFaint, letterSpacing:'0.08em' }}>
+                Built with Next.js
+              </span>
+            </div>
+          </Reveal>
+        </section>
+
+      </main>
+    </>
   );
 }

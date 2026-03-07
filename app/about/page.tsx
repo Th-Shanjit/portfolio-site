@@ -1,35 +1,8 @@
 'use client';
 
-import { MapPin, GraduationCap, Code2, Sparkles, Scale, Briefcase, ChevronRight } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { MapPin, GraduationCap, Code2, Sparkles, Scale, Briefcase } from 'lucide-react';
 import data from '@/data/portfolio.json';
-
-function ScrollReveal({ children, delay = 0, className = "" }: { children: React.ReactNode, delay?: number, className?: string }) {
-  const [isVisible, setVisible] = useState(false);
-  const domRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) setVisible(true);
-      });
-    }, { threshold: 0.15 }); 
-    
-    const current = domRef.current;
-    if (current) observer.observe(current);
-    return () => { if (current) observer.unobserve(current); };
-  }, []);
-
-  return (
-    <div
-      ref={domRef}
-      className={`transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95'} ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
-    </div>
-  );
-}
+import { t, Reveal, Label, RoleTag } from '@/lib/design';
 
 export default function About() {
   const about = (data as any).about;
@@ -37,114 +10,111 @@ export default function About() {
   const bio = (data as any).bio || [];
 
   return (
-    <main className="w-full pb-40 pt-24 relative z-10 selection:bg-zinc-300">
+    <main style={{ background: t.bg, minHeight: '100vh', color: t.ink, padding: '120px clamp(20px, 5vw, 64px) 160px', maxWidth: 1040, margin: '0 auto' }}>
       
       {/* HEADER */}
-      <div className="max-w-4xl mx-auto px-6 mb-16">
-        <ScrollReveal>
-          <h1 className="text-4xl md:text-6xl font-medium tracking-tight text-zinc-900 mb-6">{about.heading}</h1>
-          <p className="text-zinc-500 font-light text-xl max-w-2xl leading-relaxed">{about.subheading}</p>
-        </ScrollReveal>
+      <div style={{ marginBottom: 80 }}>
+        <Reveal>
+          <h1 style={{ fontFamily: t.serif, fontSize: 'clamp(40px, 6vw, 64px)', fontWeight: 400, color: t.ink, marginBottom: 24, lineHeight: 1.1 }}>{about.heading}</h1>
+          <p style={{ fontFamily: t.sans, fontSize: 18, color: t.inkMuted, fontWeight: 300, maxWidth: 640, lineHeight: 1.6 }}>{about.subheading}</p>
+        </Reveal>
       </div>
 
       {/* BENTO GRID */}
-      <div className="max-w-4xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: 96 }}>
         
-        <ScrollReveal delay={100} className="md:col-span-2">
-          <div className="glass-panel h-full rounded-[2.5rem] p-10 flex flex-col justify-between group hover:shadow-2xl transition-all duration-500">
+        <Reveal delay={100} style={{ gridColumn: '1 / -1' }}>
+          <div style={{ background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 24, padding: 40, display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={{ width: 40, height: 40, background: t.ink, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
+              <Scale size={18} color={t.bg} />
+            </div>
+            <h2 style={{ fontFamily: t.serif, fontSize: 24, fontWeight: 500, color: t.ink, marginBottom: 12 }}>{about.originTitle}</h2>
+            <p style={{ fontFamily: t.sans, fontSize: 15, color: t.inkMuted, lineHeight: 1.7, fontWeight: 300 }}>{about.originText}</p>
+          </div>
+        </Reveal>
+
+        <Reveal delay={200}>
+          <div style={{ background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 24, padding: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%', minHeight: 250 }}>
+            <MapPin size={32} color={t.ink} style={{ marginBottom: 16 }} />
+            <h3 style={{ fontFamily: t.serif, fontSize: 20, fontWeight: 500, color: t.ink }}>{about.location}</h3>
+            <div style={{ marginTop: 8 }}><Label>Current Base</Label></div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={300}>
+          <div style={{ background: t.ink, borderRadius: 24, padding: 40, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: t.bg, height: '100%', minHeight: 250 }}>
+            <GraduationCap size={24} color={t.borderFaint} style={{ marginBottom: 16 }} />
             <div>
-              <div className="w-10 h-10 bg-zinc-900 rounded-full flex items-center justify-center mb-6">
-                <Scale size={18} className="text-white" />
-              </div>
-              <h2 className="text-2xl font-semibold text-zinc-900 mb-3 tracking-tight">{about.originTitle}</h2>
-              <p className="text-zinc-500 font-light leading-relaxed">{about.originText}</p>
+              <h3 style={{ fontFamily: t.serif, fontSize: 20, fontWeight: 500, marginBottom: 8 }}>{about.educationTitle}</h3>
+              <p style={{ fontFamily: t.sans, fontSize: 14, color: t.inkFaint, fontWeight: 300, marginBottom: 24 }}>{about.educationSubtitle}</p>
+              <RoleTag>Alumni</RoleTag>
             </div>
           </div>
-        </ScrollReveal>
+        </Reveal>
 
-        <ScrollReveal delay={200} className="md:col-span-1">
-          <div className="glass-panel h-full rounded-[2.5rem] p-10 flex flex-col items-center justify-center text-center group hover:shadow-2xl transition-all duration-500 min-h-[250px]">
-            <MapPin size={32} className="text-zinc-900 mb-4 group-hover:-translate-y-2 transition-transform duration-500" />
-            <h3 className="text-lg font-semibold text-zinc-900 tracking-tight">{about.location}</h3>
-            <p className="text-xs text-zinc-400 uppercase tracking-widest mt-2">Current Base</p>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={300} className="md:col-span-1">
-          <div className="glass-panel h-full rounded-[2.5rem] p-10 flex flex-col justify-between group hover:shadow-2xl transition-all duration-500 bg-zinc-900 border-none text-white min-h-[250px]">
-            <GraduationCap size={24} className="text-zinc-300 mb-4" />
-            <div>
-              <h3 className="text-xl font-medium mb-2 leading-tight">{about.educationTitle}</h3>
-              <p className="text-zinc-400 text-sm font-light mb-6">{about.educationSubtitle}</p>
-              <span className="text-[9px] font-bold text-zinc-900 bg-white px-3 py-1.5 rounded-full uppercase tracking-widest">Alumni</span>
-            </div>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={400} className="md:col-span-2">
-          <div className="glass-panel h-full rounded-[2.5rem] p-10 flex flex-col justify-between group hover:shadow-2xl transition-all duration-500 overflow-hidden">
-            <div className="flex justify-between items-start mb-6">
-              <div className="flex gap-3">
-                <div className="w-10 h-10 bg-zinc-100 rounded-2xl flex items-center justify-center shadow-sm border border-zinc-200">
-                  <Sparkles size={18} className="text-zinc-700" />
+        <Reveal delay={400} style={{ gridColumn: '1 / -1' }}>
+          <div style={{ background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 24, padding: 40, display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+              <div style={{ display: 'flex', gap: 12 }}>
+                <div style={{ width: 40, height: 40, background: t.bgMuted, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${t.border}` }}>
+                  <Sparkles size={18} color={t.inkMuted} />
                 </div>
-                <div className="w-10 h-10 bg-zinc-100 rounded-2xl flex items-center justify-center shadow-sm border border-zinc-200">
-                  <Code2 size={18} className="text-zinc-700" />
+                <div style={{ width: 40, height: 40, background: t.bgMuted, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${t.border}` }}>
+                  <Code2 size={18} color={t.inkMuted} />
                 </div>
               </div>
-              <span className="text-[9px] font-bold text-zinc-500 tracking-widest uppercase bg-white/80 px-3 py-1.5 rounded-full border border-zinc-100">Stack & Focus</span>
+              <Label>Stack & Focus</Label>
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-zinc-900 mb-3 tracking-tight">{about.focusTitle}</h2>
-              <p className="text-zinc-500 font-light leading-relaxed">{about.focusText}</p>
+              <h2 style={{ fontFamily: t.serif, fontSize: 24, fontWeight: 500, color: t.ink, marginBottom: 12 }}>{about.focusTitle}</h2>
+              <p style={{ fontFamily: t.sans, fontSize: 15, color: t.inkMuted, lineHeight: 1.7, fontWeight: 300 }}>{about.focusText}</p>
             </div>
           </div>
-        </ScrollReveal>
+        </Reveal>
       </div>
 
-      {/* 🚀 NEW SECTION: THE NARRATIVE BIO */}
-      <div className="max-w-4xl mx-auto px-6 mb-24">
-        <ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-zinc-200 pt-16">
-            <div className="md:col-span-1">
-              <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Narrative</h2>
+      {/* NARRATIVE BIO */}
+      <div style={{ marginBottom: 96 }}>
+        <Reveal>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 48, borderTop: `1px solid ${t.border}`, paddingTop: 64 }}>
+            <div>
+              <Label>Narrative</Label>
             </div>
-            <div className="md:col-span-2 space-y-8">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
               {bio.map((paragraph: string, i: number) => (
-                <p key={i} className="text-lg font-light text-zinc-600 leading-relaxed">{paragraph}</p>
+                <p key={i} style={{ fontFamily: t.sans, fontSize: 16, fontWeight: 300, color: t.inkMuted, lineHeight: 1.8, margin: 0 }}>{paragraph}</p>
               ))}
             </div>
           </div>
-        </ScrollReveal>
+        </Reveal>
       </div>
 
-      {/* 🚀 NEW SECTION: THE TIMELINE */}
-      <div className="max-w-4xl mx-auto px-6">
-        <ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-zinc-200 pt-16">
-            <div className="md:col-span-1">
-              <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Experience</h2>
+      {/* EXPERIENCE TIMELINE */}
+      <div>
+        <Reveal>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 48, borderTop: `1px solid ${t.border}`, paddingTop: 64 }}>
+            <div>
+              <Label>Experience</Label>
             </div>
-            <div className="md:col-span-2 space-y-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
               {experience.map((exp: any, i: number) => (
-                <div key={i} className="group flex items-center justify-between p-6 bg-white/30 border border-zinc-100 rounded-[1.5rem] hover:bg-white/60 transition-all duration-300">
-                  <div className="flex items-center gap-6">
-                    <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400 group-hover:bg-zinc-900 group-hover:text-white transition-all duration-500">
-                      <Briefcase size={18} />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-zinc-900">{exp.role}</h4>
-                      <p className="text-sm text-zinc-400">{exp.company}</p>
-                    </div>
+                <div key={i} style={{ display: 'flex', gap: 24, position: 'relative' }}>
+                  <div style={{ width: 40, height: 40, background: t.bgMuted, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${t.border}`, flexShrink: 0, zIndex: 2 }}>
+                    <Briefcase size={16} color={t.inkMuted} />
                   </div>
-                  <div className="text-right">
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-zinc-400">{exp.year}</span>
+                  {i !== experience.length - 1 && (
+                    <div style={{ position: 'absolute', left: 19.5, top: 40, bottom: -32, width: 1, background: t.border, zIndex: 1 }} />
+                  )}
+                  <div style={{ paddingBottom: 16 }}>
+                    <h3 style={{ fontFamily: t.serif, fontSize: 20, fontWeight: 500, color: t.ink, margin: '0 0 8px' }}>{exp.role}</h3>
+                    <p style={{ fontFamily: t.sans, fontSize: 15, color: t.inkMuted, margin: '0 0 4px', fontWeight: 300 }}>{exp.company}</p>
+                    <Label>{exp.year}</Label>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </ScrollReveal>
+        </Reveal>
       </div>
 
     </main>
