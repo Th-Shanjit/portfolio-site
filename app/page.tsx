@@ -91,12 +91,12 @@ function Filmstrip({ items }: { items: Doc[] }) {
 
       {/* nav buttons */}
       {canL && (
-        <button onClick={() => scroll(-1)} style={{ position:'absolute', left:-14, top:70, zIndex:4, width:32, height:32, borderRadius:'50%', background:t.bgSurface, border:`1px solid ${t.border}`, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
+        <button className="hidden sm:flex" onClick={() => scroll(-1)} style={{ position:'absolute', left:-14, top:70, zIndex:4, width:32, height:32, borderRadius:'50%', background:t.bgSurface, border:`1px solid ${t.border}`, cursor:'pointer', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
           <ChevronLeft size={13} color={t.inkMuted} />
         </button>
       )}
       {canR && (
-        <button onClick={() => scroll(1)} style={{ position:'absolute', right:-14, top:70, zIndex:4, width:32, height:32, borderRadius:'50%', background:t.bgSurface, border:`1px solid ${t.border}`, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
+        <button className="hidden sm:flex" onClick={() => scroll(1)} style={{ position:'absolute', right:-14, top:70, zIndex:4, width:32, height:32, borderRadius:'50%', background:t.bgSurface, border:`1px solid ${t.border}`, cursor:'pointer', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
           <ChevronRight size={13} color={t.inkMuted} />
         </button>
       )}
@@ -170,65 +170,78 @@ function DataRoom({ docs }: { docs: Doc[] }) {
   const af = folders.find(f => f.id === active)!;
 
   return (
-    <div style={{ display:'flex', minHeight:380, fontFamily:t.mono }}>
+    <div className="flex flex-col sm:flex-row min-h-[380px]" style={{ fontFamily:t.mono }}>
       {/* sidebar */}
-      <div style={{ width:192, flexShrink:0, borderRight:`1px solid ${t.borderFaint}`, background:'#fcfaf7', padding:'18px 0', display:'flex', flexDirection:'column', gap:1 }}>
-        <span style={{ fontSize:9, color:t.inkFaint, letterSpacing:'0.18em', textTransform:'uppercase', padding:'0 14px 10px' }}>Locations</span>
+      <div className="flex flex-row sm:flex-col overflow-x-auto no-scrollbar shrink-0 w-full sm:w-[192px] border-b sm:border-b-0 sm:border-r" style={{ borderColor:t.borderFaint, background:'#fcfaf7' }}>
+        
+        <div className="hidden sm:block" style={{ padding:'18px 14px 10px' }}>
+          <span style={{ fontSize:9, color:t.inkFaint, letterSpacing:'0.18em', textTransform:'uppercase' }}>Locations</span>
+        </div>
 
-        {folders.map(f => {
-          const isA = f.id === active;
-          return (
-            <button key={f.id} onClick={() => setActive(f.id)}
-              onMouseEnter={() => setHFold(f.id)} onMouseLeave={() => setHFold(null)}
-              style={{ width:'100%', display:'flex', alignItems:'center', gap:9, padding:'8px 14px', border:'none', cursor:'pointer', background: isA ? t.bgSurface : hFold===f.id ? 'rgba(0,0,0,0.02)' : 'transparent', borderLeft:`2px solid ${isA ? t.accent : 'transparent'}`, transition:'all 0.15s' }}
-            >
-              <f.icon size={11} color={isA ? t.accent : t.inkFaint} />
-              <span style={{ fontSize:11, color: isA ? t.ink : t.inkMuted, flex:1, textAlign:'left' }}>{f.label}</span>
-              <span style={{ fontSize:9, color:t.inkFaint, background: isA ? t.bgMuted : 'transparent', padding:'1px 6px', borderRadius:3 }}>{f.count}</span>
-            </button>
-          );
-        })}
+        <div className="flex flex-row sm:flex-col w-max sm:w-full">
+          {folders.map(f => {
+            const isA = f.id === active;
+            return (
+              <button key={f.id} onClick={() => setActive(f.id)}
+                onMouseEnter={() => setHFold(f.id)} onMouseLeave={() => setHFold(null)}
+                className="flex items-center justify-between sm:justify-start gap-2 px-4 py-3 sm:py-2 border-b-2 sm:border-b-0 sm:border-l-2 transition-colors cursor-pointer"
+                style={{ 
+                  background: isA ? t.bgSurface : hFold===f.id ? 'rgba(0,0,0,0.02)' : 'transparent', 
+                  borderColor: isA ? t.accent : 'transparent' 
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <f.icon size={11} color={isA ? t.accent : t.inkFaint} />
+                  <span style={{ fontSize:11, color: isA ? t.ink : t.inkMuted }}>{f.label}</span>
+                </div>
+                <span className="hidden sm:block ml-auto" style={{ fontSize:9, color:t.inkFaint, background: isA ? t.bgMuted : 'transparent', padding:'1px 6px', borderRadius:3 }}>{f.count}</span>
+              </button>
+            );
+          })}
 
-        <div style={{ margin:'14px', height:1, background:t.borderFaint }} />
-        <Link href="/docs" style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 14px', textDecoration:'none' }}>
-          <ChevronRight size={10} color={t.inkFaint} />
-          <span style={{ fontSize:11, color:t.inkFaint }}>Browse All</span>
-        </Link>
+          <div className="hidden sm:block mx-3.5 my-3.5 h-px" style={{ background:t.borderFaint }} />
+          
+          <Link href="/docs" className="flex items-center gap-2 px-4 py-3 sm:py-2 border-b-2 sm:border-b-0 sm:border-l-2 border-transparent transition-colors" style={{ textDecoration:'none' }}>
+            <ChevronRight size={10} color={t.inkFaint} />
+            <span style={{ fontSize:11, color:t.inkFaint }}>Browse All</span>
+          </Link>
+        </div>
       </div>
 
       {/* main pane */}
-      <div style={{ flex:1, display:'flex', flexDirection:'column' }}>
+      <div className="flex-1 flex flex-col min-w-0">
         {/* breadcrumb */}
-        <div style={{ padding:'9px 16px', borderBottom:`1px solid ${t.borderFaint}`, display:'flex', alignItems:'center', gap:5, background:'#fdfcf9' }}>
-          <HardDrive size={9} color={t.inkFaint} />
-          <ChevronRight size={8} color={t.borderFaint} />
+        <div className="flex items-center gap-1.5 px-4 py-2 border-b whitespace-nowrap overflow-hidden" style={{ textOverflow: 'ellipsis', borderColor:t.borderFaint, background:'#fdfcf9' }}>
+          <HardDrive size={9} color={t.inkFaint} className="shrink-0" />
+          <ChevronRight size={8} color={t.borderFaint} className="shrink-0" />
           <span style={{ fontSize:9, color:t.inkFaint }}>portfolio</span>
-          <ChevronRight size={8} color={t.borderFaint} />
+          <ChevronRight size={8} color={t.borderFaint} className="shrink-0" />
           <span style={{ fontSize:9, color:t.accent }}>{af.label}</span>
         </div>
 
         {/* header row */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 90px 70px', padding:'6px 16px', borderBottom:`1px solid ${t.borderFaint}`, background:'#fdfcf9' }}>
-          {['Name','Type','Modified'].map(h => (
-            <span key={h} style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.15em' }}>{h}</span>
-          ))}
+        <div className="grid grid-cols-[1fr_70px] sm:grid-cols-[1fr_90px_70px] px-4 py-1.5 border-b" style={{ borderColor:t.borderFaint, background:'#fdfcf9' }}>
+          <span style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.15em' }}>Name</span>
+          <span className="hidden sm:block" style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.15em' }}>Type</span>
+          <span style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.15em' }}>Modified</span>
         </div>
 
         {/* rows */}
-        <div style={{ flex:1, overflowY:'auto' }}>
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
           {rows.length === 0 ? (
             <div style={{ padding:'48px 16px', textAlign:'center', color:t.inkFaint, fontSize:10 }}>No items</div>
           ) : rows.map((doc, i) => (
             <Link key={doc.id} href={`/docs/${doc.id}`}
               onMouseEnter={() => setHRow(doc.id)} onMouseLeave={() => setHRow(null)}
-              style={{ display:'grid', gridTemplateColumns:'1fr 90px 70px', padding:'10px 16px', textDecoration:'none', background: hRow===doc.id ? '#fdf7f0' : i%2 ? '#fdfcf9' : t.bgSurface, borderBottom:`1px solid ${t.borderFaint}`, transition:'background 0.12s', alignItems:'center' }}
+              className="grid grid-cols-[1fr_70px] sm:grid-cols-[1fr_90px_70px] px-4 py-2.5 items-center border-b transition-colors"
+              style={{ textDecoration: 'none', background: hRow===doc.id ? '#fdf7f0' : i%2 ? '#fdfcf9' : t.bgSurface, borderColor:t.borderFaint }}
             >
-              <div style={{ display:'flex', alignItems:'center', gap:9, overflow:'hidden' }}>
-                <af.icon size={10} color={hRow===doc.id ? t.accent : t.inkFaint} style={{ flexShrink:0 }} />
-                <span style={{ fontSize:11, color: hRow===doc.id ? t.ink : t.inkMuted, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', transition:'color 0.12s' }}>{doc.title}</span>
+              <div className="flex items-center gap-2.5 overflow-hidden">
+                <af.icon size={10} color={hRow===doc.id ? t.accent : t.inkFaint} className="shrink-0" />
+                <span className="truncate transition-colors" style={{ fontSize:11, color: hRow===doc.id ? t.ink : t.inkMuted }}>{doc.title}</span>
               </div>
-              <span style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.07em' }}>{doc.type}</span>
-              <div style={{ display:'flex', alignItems:'center', gap:4 }}>
+              <span className="hidden sm:block" style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.07em' }}>{doc.type}</span>
+              <div className="flex items-center gap-1 shrink-0">
                 <Clock size={8} color={t.borderFaint} />
                 <span style={{ fontSize:9, color:t.borderFaint }}>—</span>
               </div>
@@ -237,9 +250,9 @@ function DataRoom({ docs }: { docs: Doc[] }) {
         </div>
 
         {/* status */}
-        <div style={{ padding:'6px 16px', borderTop:`1px solid ${t.borderFaint}`, display:'flex', alignItems:'center', justifyContent:'space-between', background:'#fdfcf9' }}>
+        <div className="flex items-center justify-between px-4 py-1.5 border-t mt-auto" style={{ borderColor:t.borderFaint, background:'#fdfcf9' }}>
           <span style={{ fontSize:9, color:t.inkFaint }}>{rows.length} item{rows.length !== 1 ? 's' : ''}</span>
-          <Link href="/docs" style={{ fontSize:9, color:t.accent, textDecoration:'none', display:'flex', alignItems:'center', gap:3 }}>
+          <Link href="/docs" className="flex items-center gap-1" style={{ textDecoration: 'none', fontSize:9, color:t.accent }}>
             View all <ChevronRight size={8} />
           </Link>
         </div>
@@ -250,20 +263,20 @@ function DataRoom({ docs }: { docs: Doc[] }) {
 
 function Browser({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ borderRadius:12, overflow:'hidden', border:`1px solid ${t.border}`, boxShadow:`0 8px 40px rgba(28,25,22,0.08), 0 1px 0 ${t.borderFaint}` }}>
+    <div className="rounded-xl overflow-hidden border" style={{ borderColor:t.border, boxShadow:`0 8px 40px rgba(28,25,22,0.08), 0 1px 0 ${t.borderFaint}` }}>
       {/* chrome */}
-      <div style={{ background:'#f0ebe2', borderBottom:`1px solid ${t.border}`, padding:'10px 16px', display:'flex', alignItems:'center', gap:12 }}>
-        <div style={{ display:'flex', gap:5 }}>
+      <div className="flex items-center px-4 py-2.5 gap-3 border-b" style={{ background:'#f0ebe2', borderColor:t.border }}>
+        <div className="hidden sm:flex gap-1.5">
           {['#ff5f56','#ffbd2e','#27c93f'].map(c => <div key={c} style={{ width:10, height:10, borderRadius:'50%', background:c, opacity:0.7 }} />)}
         </div>
         {/* tab */}
-        <div style={{ background:t.bgSurface, border:`1px solid ${t.border}`, borderBottom:`1px solid ${t.bgSurface}`, borderRadius:'7px 7px 0 0', padding:'5px 14px 7px', display:'flex', alignItems:'center', gap:7, marginBottom:-11, marginTop:-2 }}>
+        <div className="flex items-center gap-1.5 px-3.5 py-1.5 mb-[-11px] mt-[-2px] border-t border-x rounded-t-[7px] relative z-10" style={{ background:t.bgSurface, borderColor:t.border, borderBottomColor:t.bgSurface }}>
           <HardDrive size={9} color={t.accent} />
           <span style={{ fontFamily:t.mono, fontSize:10, color:t.inkMuted }}>Data Room</span>
         </div>
-        <div style={{ flex:1 }} />
+        <div className="flex-1" />
         {/* address */}
-        <div style={{ background:'#e8e2d8', border:`1px solid ${t.border}`, borderRadius:5, padding:'5px 12px', display:'flex', alignItems:'center', gap:6, minWidth:210 }}>
+        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 border rounded-[5px] min-w-[210px]" style={{ background:'#e8e2d8', borderColor:t.border }}>
           <div style={{ width:5, height:5, borderRadius:'50%', background:'#27c93f', opacity:0.8 }} />
           <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint }}>portfolio.local / data-room</span>
         </div>
@@ -397,12 +410,12 @@ export default function Home() {
 
           {/* top bar: status left, location + role right */}
           <Reveal>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:64 }}>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-[40px] sm:mb-[64px]">
               <div style={{ display:'flex', alignItems:'center', gap:9 }}>
                 <div style={{ width:7, height:7, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 8px rgba(74,222,128,0.5)' }} />
                 <Label>Available for collaboration</Label>
               </div>
-              <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-16">
                 <div style={{ display:'flex', alignItems:'center', gap:5 }}>
                   <MapPin size={9} color={t.inkFaint} />
                   <Label>Remote / Worldwide</Label>
@@ -416,11 +429,11 @@ export default function Home() {
           </Reveal>
 
           {/* name + avatar */}
-          <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', gap:32 }}>
+          <div className="flex flex-col-reverse sm:flex-row items-start sm:items-end justify-between gap-8 sm:gap-[32px]">
             <Reveal delay={60}>
               <h1 style={{
                 fontFamily: t.serif,
-                fontSize: 'clamp(56px, 9vw, 114px)',
+                fontSize: 'clamp(56px, 12vw, 114px)',
                 fontWeight: 400,
                 lineHeight: 0.88,
                 letterSpacing: '-0.02em',
@@ -432,7 +445,7 @@ export default function Home() {
             </Reveal>
 
             <Reveal delay={120}>
-              <div style={{ flexShrink:0, display:'flex', flexDirection:'column', alignItems:'flex-end', gap:12, paddingBottom:8 }}>
+              <div className="flex flex-row sm:flex-col items-center sm:items-end gap-4 sm:gap-3 pb-0 sm:pb-2 shrink-0">
                 <div style={{ width:78, height:78, borderRadius:8, overflow:'hidden', border:`1px solid ${t.border}`, boxShadow:`0 4px 20px rgba(28,25,22,0.1)` }}>
                   {dpUrl
                     ? <img src={dpUrl} alt={name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
@@ -456,12 +469,12 @@ export default function Home() {
 
           {/* rule + bio + cta */}
           <Reveal delay={180}>
-            <div style={{ marginTop:44, paddingTop:36, borderTop:`1px solid ${t.border}`, display:'grid', gridTemplateColumns:'1fr 1fr', gap:40, alignItems:'start' }}>
+            <div className="mt-8 pt-8 sm:mt-[44px] sm:pt-[36px] border-t grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-[40px] items-start" style={{ borderColor: t.border }}>
               <p style={{ fontFamily:t.sans, fontSize:14, color:t.inkMuted, lineHeight:1.8, margin:0, fontWeight:300, maxWidth:340 }}>
                 {bio}
               </p>
-              <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:20 }}>
-                <div style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'flex-end' }}>
+              <div className="flex flex-col items-start sm:items-end gap-5">
+                <div className="flex gap-2.5 flex-wrap justify-start sm:justify-end">
                   <Link href={ctaLink} style={{ fontFamily:t.mono, fontSize:9, color:t.accentFg, background:t.accent, padding:'13px 22px', textDecoration:'none', letterSpacing:'0.14em', textTransform:'uppercase', display:'inline-flex', alignItems:'center', gap:7, borderRadius:3 }}>
                     {ctaText} <ArrowUpRight size={11} />
                   </Link>
@@ -533,7 +546,7 @@ export default function Home() {
           {liError ? (
             <p style={{ fontFamily:t.mono, fontSize:11, color:t.inkFaint }}>{liError}</p>
           ) : (
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 52px' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-0 sm:gap-x-[52px]">
               {(liLoading && posts.length === 0)
                 ? Array.from({length:4}).map((_,i)=><Skel key={i}/>)
                 : livePosts.map((p,i)=>(
@@ -557,7 +570,7 @@ export default function Home() {
           </Reveal>
 
           <Reveal delay={60}>
-            <div style={{ paddingBottom:52, borderBottom:`1px solid ${t.border}`, display:'grid', gridTemplateColumns:'1fr auto', gap:40, alignItems:'end' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-8 sm:gap-10 items-start sm:items-end pb-[52px] border-b" style={{ borderColor:t.border }}>
               <div>
                 <h2 style={{ fontFamily:t.serif, fontSize:'clamp(36px, 5vw, 64px)', fontWeight:400, lineHeight:1, letterSpacing:'-0.02em', color:t.ink, margin:'0 0 20px' }}>
                   {contactH}
@@ -573,7 +586,7 @@ export default function Home() {
             </div>
 
             {/* footer */}
-            <div style={{ paddingTop:28, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 pt-7">
               <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, letterSpacing:'0.12em' }}>
                 {name.toUpperCase()} © {new Date().getFullYear()}
               </span>
