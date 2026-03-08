@@ -671,7 +671,7 @@ export default function PaperLoopLanding() {
                 <a href="#how" class="nav-lk">How it works</a>
                 <a href="#features" class="nav-lk">Features</a>
                 <a href="#pricing" class="nav-lk">Pricing</a>
-                <button type="button" class="nav-btn modal-trigger">Join Waitlist</button>
+                <a href="https://play.google.com/store/apps/details?id=com.paperloop.official&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="nav-btn" style="text-decoration:none;">Get the App</a>
             </div>
             </nav>
 
@@ -683,11 +683,11 @@ export default function PaperLoopLanding() {
                 <h1 class="hero-h1">Handwritten<br>to <em>print-ready</em><br>in <u>seconds.</u></h1>
                 <p class="hero-p">Scan your handwritten exam draft. <strong>Gemini reads every question, notation and section header.</strong> A formatted PDF comes out the other side. No laptop. No retyping.</p>
                 <div class="hero-cta">
-                <button type="button" class="btn-primary modal-trigger">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    Join the waitlist
-                </button>
-                <a href="#how" class="btn-ghost">See how it works <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                <a href="https://play.google.com/store/apps/details?id=com.paperloop.official&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="btn-primary" style="text-decoration:none;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Get it on Google Play
+                </a>
+                <a href="#how" class="btn-ghost" style="text-decoration:none;">See how it works <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
                 </div>
                 <div class="trust-row">
                 <span class="trust-i"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="rgba(11,122,112,.8)" stroke-width="2.2" stroke-linecap="round"><polyline points="2 6 5 9 10 3"/></svg>No login needed</span>
@@ -1079,18 +1079,18 @@ export default function PaperLoopLanding() {
             <div class="w">
             <div class="cta-inner">
                 <span style="display:inline-flex;align-items:center;gap:.4rem;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(237,232,219,.3);margin-bottom:.9rem">
-                <span style="width:5px;height:5px;background:var(--amblt);border-radius:50%;display:block;animation:pulse 2.5s infinite"></span>
-                We're almost ready
+                <span style="width:5px;height:5px;background:#27c93f;border-radius:50%;display:block;animation:pulse 2.5s infinite"></span>
+                Live in internal testing
                 </span>
-                <h2 class="disp dark up" style="margin-bottom:.75rem">Currently in<br><em>Testing Phase</em></h2>
-                <p class="up" style="transition-delay:.1s">We are finalizing our publishing tools. Leave your contact info below to get early access when we launch.</p>
-                <div class="up" style="transition-delay:.2s;margin-top:2rem">
-                <button type="button" class="btn-amber modal-trigger">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    Request Early Access
-                </button>
+                <h2 class="disp dark up" style="margin-bottom:.75rem">Ready to<br><em>scan?</em></h2>
+                <p class="up" style="transition-delay:.1s">Join our internal testing program and try PaperLoop for free on your Android device today.</p>
+                <div class="up" style="transition-delay:.2s;margin-top:2rem;display:flex;justify-content:center">
+                <a href="https://play.google.com/store/apps/details?id=com.paperloop.official&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="btn-amber" style="text-decoration:none;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Download on Google Play
+                </a>
                 </div>
-                <p class="cta-note up" style="transition-delay:.3s;margin-top:1.5rem">Drop us an email to join the waitlist</p>
+                <p class="cta-note up" style="transition-delay:.3s;margin-top:1.5rem">Available now for Android devices</p>
             </div>
             </div>
             </section>
