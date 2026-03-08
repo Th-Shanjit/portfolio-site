@@ -709,7 +709,7 @@ export default function PaperLoopLanding() {
                     <span class="vd-badge">● 60s walkthrough</span>
                 </div>
                 <div class="vd-body">
-                    <iframe class="vd-iframe" style="position:absolute;inset:0;width:100%;height:100%;border:none" src="https://www.youtube.com/watch?v=07vjZy0WkCo&feature=youtu.be" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/07vjZy0WkCo?si=TuhNLuvRI8O3Cw_k" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
                 <div class="vd-foot">
                     <span class="vd-ft">Scan → AI reads → PDF exported — under 60 seconds</span>
