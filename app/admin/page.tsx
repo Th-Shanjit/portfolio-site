@@ -203,34 +203,150 @@ export default function AdminDashboard() {
           </button>
           
           {openSection === 'site' && (
-            <div style={{ padding: 24, borderTop: `1px solid ${t.borderFaint}`, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
-              <div>
-                <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Site Name</label>
-                <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.site.name} onChange={e => setData({...data, site: {...data.site, name: e.target.value}})} />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Global Role</label>
-                <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.site.role} onChange={e => setData({...data, site: {...data.site, role: e.target.value}})} />
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>LinkedIn URL</label>
-                <input 
-                  style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }}
-                  placeholder="https://linkedin.com/in/..."
-                  value={data.site.linkedinUrl || ''} 
-                  onChange={e => setData({...data, site: {...data.site, linkedinUrl: e.target.value}})} 
-                />
-              </div>
-              
-              <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}><ImageIcon size={12}/> Display Picture</label>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8 }}>
-                  {data.site.dpUrl && <img src={data.site.dpUrl} alt="DP" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />}
-                  <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'site.dpUrl')} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
-                  {uploadingState['site.dpUrl'] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading...</span>}
+            <div style={{ padding: 24, borderTop: `1px solid ${t.borderFaint}`, display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Site Name</label>
+                  <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.site.name} onChange={e => setData({...data, site: {...data.site, name: e.target.value}})} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Global Role</label>
+                  <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.site.role} onChange={e => setData({...data, site: {...data.site, role: e.target.value}})} />
                 </div>
               </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>LinkedIn URL</label>
+                  <input 
+                    style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }}
+                    placeholder="https://linkedin.com/in/..."
+                    value={data.site.linkedinUrl || ''} 
+                    onChange={e => setData({...data, site: {...data.site, linkedinUrl: e.target.value}})} 
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}><ImageIcon size={12}/> Display Picture</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8 }}>
+                    {data.site.dpUrl && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <img src={data.site.dpUrl} alt="DP" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                        <button onClick={() => setData({...data, site: {...data.site, dpUrl: ''}})} style={{ padding: 4, background: 'transparent', color: '#ef4444', border: 'none', cursor: 'pointer' }} title="Remove DP"><Trash2 size={12} /></button>
+                      </div>
+                    )}
+                    <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'site.dpUrl')} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
+                    {uploadingState['site.dpUrl'] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading...</span>}
+                  </div>
+                </div>
+              </div>
+
+              {/* ABOUT SECTION */}
+              <div style={{ marginTop: 16, paddingTop: 24, borderTop: `1px solid ${t.borderFaint}` }}>
+                <h3 style={{ fontFamily: t.serif, fontSize: 18, color: t.ink, marginBottom: 16 }}>About Section</h3>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: 24 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Heading</label>
+                    <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.about?.heading || ''} onChange={e => setData({...data, about: {...data.about, heading: e.target.value}})} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Subheading</label>
+                    <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.about?.subheading || ''} onChange={e => setData({...data, about: {...data.about, subheading: e.target.value}})} />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 24 }}>
+                  <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Bio Paragraphs</label>
+                  <p style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted, marginBottom: 12 }}>Separate paragraphs with double newlines (\n\n).</p>
+                  <textarea 
+                    style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none', height: 120, resize: 'vertical' }} 
+                    value={Array.isArray(data.about?.bio) ? data.about.bio.join('\n\n') : (data.about?.bio || '')} 
+                    onChange={e => setData({...data, about: {...data.about, bio: e.target.value.split('\n\n')}})} 
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: 24 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Origin Title</label>
+                    <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.about?.originTitle || ''} onChange={e => setData({...data, about: {...data.about, originTitle: e.target.value}})} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Origin Text</label>
+                    <textarea style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none', height: 100, resize: 'vertical' }} value={data.about?.originText || ''} onChange={e => setData({...data, about: {...data.about, originText: e.target.value}})} />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: 24 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Focus Title</label>
+                    <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.about?.focusTitle || ''} onChange={e => setData({...data, about: {...data.about, focusTitle: e.target.value}})} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Focus Text</label>
+                    <textarea style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none', height: 100, resize: 'vertical' }} value={data.about?.focusText || ''} onChange={e => setData({...data, about: {...data.about, focusText: e.target.value}})} />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 24 }}>
+                  <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    <span>Experience Timeline</span>
+                    <button onClick={() => {
+                      const newExp = [...(data.about?.experience || []), { role: 'New Role', company: 'Company', year: 'Year' }];
+                      setData({...data, about: {...data.about, experience: newExp}});
+                    }} style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'transparent', border: 'none', color: t.ink, cursor: 'pointer', fontFamily: t.mono }}>
+                      <Plus size={12} /> Add
+                    </button>
+                  </label>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {data.about?.experience?.map((exp: any, i: number) => (
+                      <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', background: t.bgMuted, padding: 12, borderRadius: 8, border: `1px solid ${t.borderFaint}` }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, flex: 1 }}>
+                          <input style={{ padding: 8, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 4, fontSize: 13, fontFamily: t.sans }} value={exp.role} placeholder="Role" onChange={e => {
+                            const newExp = [...data.about.experience];
+                            newExp[i].role = e.target.value;
+                            setData({...data, about: {...data.about, experience: newExp}});
+                          }} />
+                          <input style={{ padding: 8, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 4, fontSize: 13, fontFamily: t.sans }} value={exp.company} placeholder="Company" onChange={e => {
+                            const newExp = [...data.about.experience];
+                            newExp[i].company = e.target.value;
+                            setData({...data, about: {...data.about, experience: newExp}});
+                          }} />
+                          <input style={{ padding: 8, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 4, fontSize: 13, fontFamily: t.mono }} value={exp.year} placeholder="Year (e.g. 2021 — Present)" onChange={e => {
+                            const newExp = [...data.about.experience];
+                            newExp[i].year = e.target.value;
+                            setData({...data, about: {...data.about, experience: newExp}});
+                          }} />
+                        </div>
+                        <button onClick={() => {
+                          const newExp = [...data.about.experience];
+                          newExp.splice(i, 1);
+                          setData({...data, about: {...data.about, experience: newExp}});
+                        }} style={{ padding: 8, background: '#fef2f2', color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+              
+              {/* CONTACT SECTION */}
+              <div style={{ paddingTop: 24, borderTop: `1px solid ${t.borderFaint}` }}>
+                <h3 style={{ fontFamily: t.serif, fontSize: 18, color: t.ink, marginBottom: 16 }}>Contact Section</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Contact Heading</label>
+                    <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.contact?.heading || ''} onChange={e => setData({...data, contact: {...data.contact, heading: e.target.value}})} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Contact Email</label>
+                    <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.contact?.email || ''} onChange={e => setData({...data, contact: {...data.contact, email: e.target.value}})} />
+                  </div>
+                </div>
+              </div>
+
             </div>
           )}
         </div>
@@ -302,6 +418,28 @@ export default function AdminDashboard() {
                           </div>
                         </div>
 
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+                          <div>
+                            <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>External Link (optional)</label>
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.link || ''} placeholder="https://..." onChange={e => updateDoc(index, 'link', e.target.value)} />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Short Description</label>
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.description || ''} placeholder="Brief description for cards..." onChange={e => updateDoc(index, 'description', e.target.value)} />
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+                          <div>
+                            <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Date</label>
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.date || ''} placeholder="e.g. Mar 2026" onChange={e => updateDoc(index, 'date', e.target.value)} />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Read Time</label>
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.readTime || ''} placeholder="e.g. 5 min read" onChange={e => updateDoc(index, 'readTime', e.target.value)} />
+                          </div>
+                        </div>
+
                         <div style={{ padding: 20, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 12 }}>
                           <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                             <Tag size={12} /> Category / Tag Builder
@@ -318,27 +456,58 @@ export default function AdminDashboard() {
                               </button>
                             ))}
                           </div>
-                          <input 
-                            style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }}
-                            value={doc.type}
-                            placeholder="Type a new tag..."
-                            onChange={e => updateDoc(index, 'type', e.target.value)}
-                          />
+                          <div style={{ display: 'flex', gap: 12 }}>
+                            <input 
+                              style={{ flex: 1, padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }}
+                              value={doc.type || ''}
+                              placeholder="Type a new tag..."
+                              onChange={e => updateDoc(index, 'type', e.target.value)}
+                            />
+                            <input 
+                              style={{ flex: 1, padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }}
+                              value={doc.tag || ''}
+                              placeholder="Sub-tag (e.g. Agentic AI)"
+                              onChange={e => updateDoc(index, 'tag', e.target.value)}
+                            />
+                          </div>
                         </div>
                         
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
                           <div>
                             <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Cover Image</label>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8 }}>
-                              {doc.coverImage && <img src={doc.coverImage} style={{ width: '100%', height: 96, objectFit: 'cover', borderRadius: 6, border: `1px solid ${t.borderFaint}` }} />}
+                              {doc.coverImage && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                  <img src={doc.coverImage} style={{ width: '100%', height: 96, objectFit: 'cover', borderRadius: 6, border: `1px solid ${t.borderFaint}` }} />
+                                  <button onClick={() => updateDoc(index, 'coverImage', '')} style={{ padding: 8, background: t.bgMuted, color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }} title="Remove cover image"><Trash2 size={14} /></button>
+                                </div>
+                              )}
                               <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'coverImage', index)} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
                               {uploadingState['coverImage'] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading Image...</span>}
                             </div>
                           </div>
                           <div>
+                            <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Thumbnail (Filmstrip)</label>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8 }}>
+                              {doc.thumbnail && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                  <img src={doc.thumbnail} style={{ width: '100%', height: 96, objectFit: 'cover', borderRadius: 6, border: `1px solid ${t.borderFaint}` }} />
+                                  <button onClick={() => updateDoc(index, 'thumbnail', '')} style={{ padding: 8, background: t.bgMuted, color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }} title="Remove thumbnail"><Trash2 size={14} /></button>
+                                </div>
+                              )}
+                              <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'thumbnail', index)} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
+                              {uploadingState['thumbnail'] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading Image...</span>}
+                            </div>
+                          </div>
+                          <div>
                             <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Embed PDF</label>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, height: '100%', justifyContent: 'center' }}>
-                              {doc.pdfUrl && <span style={{ fontSize: 10, fontFamily: t.mono, color: '#10b981', background: '#f0fdf4', padding: '6px 12px', borderRadius: 6, border: '1px solid #d1fae5', textAlign: 'center', wordBreak: 'break-all' }}>Attached: {doc.pdfUrl.split('/').pop()}</span>}
+                              {doc.pdfUrl && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                  <span style={{ flex: 1, fontSize: 10, fontFamily: t.mono, color: '#10b981', background: '#f0fdf4', padding: '6px 12px', borderRadius: 6, border: '1px solid #d1fae5', textAlign: 'center', wordBreak: 'break-all' }}>Attached: {doc.pdfUrl.split('/').pop()}</span>
+                                  <button onClick={() => updateDoc(index, 'pdfUrl', '')} style={{ padding: 8, background: t.bgMuted, color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }} title="Remove PDF"><Trash2 size={14} /></button>
+                                </div>
+                              )}
                               <input type="file" accept="application/pdf" onChange={e => handleFileUpload(e, 'pdfUrl', index)} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
                               {uploadingState['pdfUrl'] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading PDF...</span>}
                             </div>
@@ -352,15 +521,15 @@ export default function AdminDashboard() {
                           </label>
                           <div style={{ border: `1px solid ${t.border}`, borderRadius: 12, overflow: 'hidden', background: t.bgSurface }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: 8, background: t.bgMuted, borderBottom: `1px solid ${t.borderFaint}` }}>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + '\n\n### ')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Heading3 size={16}/></button>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + '**Bold**')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Bold size={16}/></button>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + '*Italic*')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Italic size={16}/></button>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + '\n\n> ')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Quote size={16}/></button>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content) + ' `code` ')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Code size={16}/></button>
+                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + '\n\n### ')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Heading3 size={16}/></button>
+                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + '**Bold**')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Bold size={16}/></button>
+                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + '*Italic*')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Italic size={16}/></button>
+                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + '\n\n> ')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Quote size={16}/></button>
+                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + ' `code` ')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Code size={16}/></button>
                             </div>
                             <textarea 
                               style={{ width: '100%', padding: 24, background: 'transparent', fontSize: 14, fontFamily: t.sans, color: t.ink, minHeight: 300, border: 'none', outline: 'none', resize: 'vertical', lineHeight: 1.6 }} 
-                              value={Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content} 
+                              value={Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || ''} 
                               onChange={(e) => {
                                 e.target.style.height = 'auto';
                                 e.target.style.height = e.target.scrollHeight + 'px';

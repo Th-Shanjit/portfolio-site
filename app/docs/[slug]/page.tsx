@@ -117,17 +117,17 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
               <div style={{ marginTop: 64, background: t.bgSurface, borderRadius: 24, border: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <div style={{ padding: '24px 32px', borderBottom: `1px solid ${t.borderFaint}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div>
-                    <h3 style={{ fontFamily: t.serif, fontSize: 24, color: t.ink, marginBottom: 4 }}>Architecture Diagram</h3>
+                    <h3 style={{ fontFamily: t.serif, fontSize: 'clamp(18px, 4vw, 24px)', color: t.ink, marginBottom: 4 }}>Architecture Diagram</h3>
                     <p style={{ fontFamily: t.sans, fontSize: 13, color: t.inkMuted, margin: 0 }}>PDF Viewer</p>
                   </div>
-                  <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: t.bgMuted, color: t.ink, border: `1px solid ${t.border}`, borderRadius: 99, fontFamily: t.sans, fontSize: 13, textDecoration: 'none', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = t.borderFaint} onMouseLeave={e => e.currentTarget.style.background = t.bgMuted}>
+                  <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: t.bgMuted, color: t.ink, border: `1px solid ${t.border}`, borderRadius: 99, fontFamily: t.sans, fontSize: 13, textDecoration: 'none', transition: 'background 0.2s', whiteSpace: 'nowrap' }} onMouseEnter={e => e.currentTarget.style.background = t.borderFaint} onMouseLeave={e => e.currentTarget.style.background = t.bgMuted}>
                     <Download size={14} /> Open External
                   </a>
                 </div>
-                <div style={{ width: '100%', height: '75vh', minHeight: 600, background: '#f8f9fa' }}>
+                <div style={{ width: '100%', height: 'calc(100vh - 120px)', minHeight: '500px', maxHeight: '1000px', background: '#f8f9fa', position: 'relative' }}>
                   <iframe 
                     src={`${doc.pdfUrl}#view=FitH&toolbar=1`} 
-                    style={{ width: '100%', height: '100%', border: 'none' }}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
                     title="PDF Viewer"
                   />
                 </div>

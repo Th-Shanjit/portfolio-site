@@ -6,16 +6,19 @@ import { t } from '@/lib/design';
 export default function Header() {
   const pathname = usePathname();
 
-  if (pathname && pathname.startsWith('/paperloop')) {
+  if (pathname && (pathname.startsWith('/paperloop') || pathname.startsWith('/admin') || pathname.startsWith('/login'))) {
     return null;
   }
 
   return (
     <header style={{ 
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 50,
-      padding: '32px clamp(20px, 5vw, 64px)',
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+      padding: '24px clamp(20px, 5vw, 64px)',
       display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 24,
-      fontFamily: t.mono, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase'
+      fontFamily: t.mono, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase',
+      background: 'rgba(248, 244, 239, 0.85)',
+      backdropFilter: 'blur(12px)',
+      borderBottom: `1px solid ${t.borderFaint}`
     }}>
       {[
         { name: 'Portfolio', path: '/' },
