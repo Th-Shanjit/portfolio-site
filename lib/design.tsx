@@ -70,3 +70,12 @@ export function RoleTag({ children }: { children: React.ReactNode }) {
     </span>
   );
 }
+
+// ─── draft badge ───────────────────────────────────────────────────────────
+export function DraftBadge() {
+  return (
+    <span style={{ fontFamily:t.mono, fontSize:8, color:'#d97706', letterSpacing:'0.12em', textTransform:'uppercase', background:'#fef3c7', border:`1px solid #fde68a`, padding:'2px 6px', borderRadius:4, marginLeft:6, verticalAlign:'middle' }}>
+      DRAFT
+    </span>
+  );
+}

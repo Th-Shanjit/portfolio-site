@@ -671,7 +671,7 @@ export default function PaperLoopLanding() {
                 <a href="#how" class="nav-lk">How it works</a>
                 <a href="#features" class="nav-lk">Features</a>
                 <a href="#pricing" class="nav-lk">Pricing</a>
-                <a href="https://play.google.com/store/apps/details?id=com.paperloop.official&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="nav-btn" style="text-decoration:none;">Get the App</a>
+                <a href="#" class="nav-btn modal-trigger" style="text-decoration:none;">Get the App</a>
             </div>
             </nav>
 
@@ -683,7 +683,7 @@ export default function PaperLoopLanding() {
                 <h1 class="hero-h1">Handwritten<br>to <em>print-ready</em><br>in <u>seconds.</u></h1>
                 <p class="hero-p">Scan your handwritten exam draft. <strong>Gemini reads every question, notation and section header.</strong> A formatted PDF comes out the other side. No laptop. No retyping.</p>
                 <div class="hero-cta">
-                <a href="https://play.google.com/store/apps/details?id=com.paperloop.official&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="btn-primary" style="text-decoration:none;">
+                <a href="#" class="btn-primary modal-trigger" style="text-decoration:none;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                     Get it on Google Play
                 </a>
@@ -1085,7 +1085,7 @@ export default function PaperLoopLanding() {
                 <h2 class="disp dark up" style="margin-bottom:.75rem">Ready to<br><em>scan?</em></h2>
                 <p class="up" style="transition-delay:.1s">Join our internal testing program and try PaperLoop for free on your Android device today.</p>
                 <div class="up" style="transition-delay:.2s;margin-top:2rem;display:flex;justify-content:center">
-                <a href="https://play.google.com/store/apps/details?id=com.paperloop.official&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="btn-amber" style="text-decoration:none;">
+                <a href="#" class="btn-amber modal-trigger" style="text-decoration:none;">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                     Download on Google Play
                 </a>
@@ -1115,16 +1115,16 @@ export default function PaperLoopLanding() {
                     <button class="modal-close" id="modal-close-btn" aria-label="Close modal">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
-                    <h3 class="modal-title">Join the Waitlist</h3>
-                    <p class="modal-desc">PaperLoop is currently in testing. Drop your details below and we'll reach out when we're ready for more users.</p>
-                    <form class="modal-form" action="mailto:th.shanjit@gmail.com?subject=PaperLoop Waitlist" method="post" enctype="text/plain">
-                        <input type="text" name="Name" class="modal-input" placeholder="Your Name" required>
-                        <input type="email" name="Email" class="modal-input" placeholder="Your Email Address" required>
-                        <button type="submit" class="modal-btn">
-                            Get Early Access
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    </form>
+                    <h3 class="modal-title">App Access</h3>
+                    <p class="modal-desc">To access the app, please join our Google Group first. Once you're a member, you can download the app from the Play Store.</p>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <a href="https://groups.google.com/g/paperloopmvp" target="_blank" rel="noopener noreferrer" style="font-family: var(--fm); font-size: 0.85rem; color: var(--cream); border: 1px solid rgba(255,255,255,0.1); padding: 16px; text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; background: rgba(0,0,0,0.2); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='rgba(0,0,0,0.2)'">
+                            <span>1. Join Google Group</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(237,232,219,0.5)" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </a>
+                        <a href="https://play.google.com/apps/internaltest/4701363822367153846" target="_blank" rel="noopener noreferrer" class="modal-btn" style="text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; font-family: var(--fm); font-size: 0.85rem; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+                            <span>2. Go to Play Store</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </a>
+                    </div>
                 </div>
             </div>
 

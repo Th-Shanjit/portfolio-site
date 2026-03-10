@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, Search, FileText, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { t, Reveal, Label, RoleTag } from '@/lib/design';
+import { t, Reveal, Label, RoleTag, DraftBadge } from '@/lib/design';
 
 export default function DocsArchive() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -90,7 +90,10 @@ export default function DocsArchive() {
                       <div style={{ marginBottom: 12 }}>
                         <RoleTag>{doc.type}</RoleTag>
                       </div>
-                      <h2 className="doc-title" style={{ fontFamily: t.serif, fontSize: 24, fontWeight: 500, color: t.ink, marginBottom: 8, transition: 'color 0.2s' }}>{doc.title}</h2>
+                      <h2 className="doc-title" style={{ fontFamily: t.serif, fontSize: 24, fontWeight: 500, color: t.ink, marginBottom: 8, transition: 'color 0.2s' }}>
+                        {doc.title}
+                        {doc.status === 'draft' && <DraftBadge />}
+                      </h2>
                       <p style={{ fontFamily: t.sans, fontSize: 15, color: t.inkMuted, fontWeight: 300, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {doc.content[0]?.replace(/^### /, '') || "Read the full architectural breakdown."}
                       </p>
