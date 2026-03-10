@@ -93,6 +93,11 @@ export default function PaperLoopLanding() {
     const modalCloseBtn = document.getElementById('modal-close-btn');
     const triggers = document.querySelectorAll('.modal-trigger');
 
+    // Move modal to body so it escapes any transform/stacking context issues
+    if (modalOverlay && modalOverlay.parentNode !== document.body) {
+      document.body.appendChild(modalOverlay);
+    }
+
     const openModal = (e?: Event) => {
       if (e) e.preventDefault();
       if (modalOverlay) {
@@ -140,7 +145,12 @@ export default function PaperLoopLanding() {
       smoothLinks.forEach(link => link.removeEventListener('click', handleSmoothScroll as EventListener));
       triggers.forEach(trigger => trigger.removeEventListener('click', openModal));
       if (modalCloseBtn) modalCloseBtn.removeEventListener('click', closeModal);
-      if (modalOverlay) modalOverlay.removeEventListener('click', handleModalOverlayClick);
+      if (modalOverlay) {
+        modalOverlay.removeEventListener('click', handleModalOverlayClick);
+        if (modalOverlay.parentNode === document.body) {
+          document.body.removeChild(modalOverlay);
+        }
+      }
       document.body.style.overflow = ''; // reset just in case modal was open
     };
   }, []);
@@ -219,7 +229,7 @@ export default function PaperLoopLanding() {
             .modal-overlay {
                 position: fixed; top: 0; left: 0; right: 0; bottom: 0;
                 background: rgba(11,24,37,0.85); backdrop-filter: blur(8px);
-                z-index: 9999; display: flex; align-items: center; justify-content: center;
+                z-index: 999999; display: flex; align-items: center; justify-content: center;
                 opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
             }
             .modal-overlay.open { opacity: 1; pointer-events: all; }
