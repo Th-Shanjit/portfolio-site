@@ -8,11 +8,12 @@ export const dynamic = 'force-dynamic';
 
 // 🚀 Helper to get Redis instance or throw meaningful error
 const getRedis = () => {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  // Check both Upstash-specific and Vercel-KV-specific environment variables
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   
   if (!url || !token) {
-    console.warn("Upstash Redis environment variables are missing.");
+    console.warn("Upstash Redis environment variables are missing (checked UPSTASH_REDIS_REST_URL/TOKEN and KV_REST_API_URL/TOKEN).");
     return null;
   }
   
@@ -66,7 +67,7 @@ export async function POST(request: Request) {
         console.error("Cloud Save Error:", e);
       }
     } else {
-      cloudError = "Upstash environment variables are missing (UPSTASH_REDIS_REST_URL/TOKEN).";
+      cloudError = "Upstash environment variables are missing (UPSTASH_REDIS_REST_URL/TOKEN or KV_REST_API_URL/TOKEN).";
     }
     
     // Also try to save locally (for local dev)
