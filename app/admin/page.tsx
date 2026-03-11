@@ -15,7 +15,7 @@ export default function AdminDashboard() {
   const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false); 
   const [openSection, setOpenSection] = useState<string>('docs'); 
-  const [openDocIndex, setOpenDocIndex] = useState<number | null>(null);
+  const [openDocId, setOpenDocId] = useState<string | null>(null);
   const [openProjectIndex, setOpenProjectIndex] = useState<number | null>(null);
 
   const [uploadingState, setUploadingState] = useState<{ [key: string]: boolean }>({});
@@ -55,8 +55,9 @@ export default function AdminDashboard() {
   };
 
   const addDoc = () => {
+    const newDocId = `new-doc-${Date.now()}`;
     const newDoc = {
-      id: `new-doc-${Date.now()}`,
+      id: newDocId,
       title: "New Case Study",
       type: "Drafts",
       date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
@@ -70,41 +71,49 @@ export default function AdminDashboard() {
     
     setData((prev: any) => ({ ...prev, docs: [newDoc, ...prev.docs] }));
     setOpenSection('docs');
-    setOpenDocIndex(0); 
+    setOpenDocId(newDocId); 
   };
 
-  const deleteDoc = (index: number) => {
-    if (confirm("Are you sure you want to delete this document?")) {
-      setData((prev: any) => {
-        const newDocs = [...prev.docs];
-        newDocs.splice(index, 1);
-        return { ...prev, docs: newDocs };
-      });
-      setOpenDocIndex(null);
+  const deleteDoc = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this document?")) {
+      setData((prev: any) => ({
+        ...prev,
+        docs: prev.docs.filter((d: any) => d.id !== id)
+      }));
+      if (openDocId === id) setOpenDocId(null);
     }
   };
 
-  const updateDoc = (index: number, field: string, value: any) => {
+  const updateDoc = (id: string, field: string, value: any) => {
     setData((prev: any) => {
       if (!prev) return prev;
+      const index = prev.docs.findIndex((d: any) => d.id === id);
+      if (index === -1) return prev;
+      
       const newDocs = [...prev.docs];
+      const updatedDoc = { ...newDocs[index] };
+      
       if (field === 'content') {
-        newDocs[index][field] = [value];
+        updatedDoc[field] = [value];
       } else if (field === 'published') {
-        newDocs[index][field] = value;
-        newDocs[index]['status'] = value ? 'published' : 'draft';
+        updatedDoc[field] = value;
+        updatedDoc['status'] = value ? 'published' : 'draft';
       } else {
-        newDocs[index][field] = value;
+        updatedDoc[field] = value;
       }
+      
+      newDocs[index] = updatedDoc;
       return { ...prev, docs: newDocs };
     });
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldPath: string, docIndex?: number) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldPath: string, docId?: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploadingState(prev => ({ ...prev, [fieldPath]: true }));
+    const stateKey = docId ? `doc-${docId}-${fieldPath}` : fieldPath;
+    setUploadingState(prev => ({ ...prev, [stateKey]: true }));
+    
     const formData = new FormData();
     formData.append('file', file);
 
@@ -112,22 +121,29 @@ export default function AdminDashboard() {
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
       const responseData = await res.json();
       
-      if (responseData.url) {
-        if (docIndex !== undefined) {
-          updateDoc(docIndex, fieldPath, responseData.url);
+      if (res.ok && responseData.url) {
+        if (docId) {
+          updateDoc(docId, fieldPath, responseData.url);
         } else {
           const keys = fieldPath.split('.');
-          setData((prev: any) => ({
-            ...prev,
-            [keys[0]]: { ...prev[keys[0]], [keys[1]]: responseData.url }
-          }));
+          setData((prev: any) => {
+            const updatedSection = { ...prev[keys[0]] };
+            updatedSection[keys[1]] = responseData.url;
+            return {
+              ...prev,
+              [keys[0]]: updatedSection
+            };
+          });
         }
+      } else {
+        const errorMsg = responseData.error || "Upload failed without error message.";
+        alert(`Upload failed: ${errorMsg}`);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Upload failed", err);
-      alert("Failed to upload file.");
+      alert(`Upload failed: ${err.message || 'Network error'}`);
     } finally {
-      setUploadingState(prev => ({ ...prev, [fieldPath]: false }));
+      setUploadingState(prev => ({ ...prev, [stateKey]: false }));
     }
   };
 
@@ -154,7 +170,7 @@ export default function AdminDashboard() {
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Link 
-                href={openDocIndex !== null ? `/docs/${data.docs[openDocIndex].id}` : "/docs"}
+                href={openDocId ? `/docs/${openDocId}` : "/docs"}
                 target="_blank"
                 style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: t.ink, color: t.bg, padding: 16, borderRadius: 12, fontSize: 11, fontFamily: t.mono, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.1em', textDecoration: 'none' }}
               >
@@ -498,11 +514,11 @@ export default function AdminDashboard() {
           {openSection === 'docs' && (
             <div style={{ borderTop: `1px solid ${t.borderFaint}` }}>
               <div>
-                {data.docs.map((doc: any, index: number) => (
-                <div key={index} style={{ borderBottom: `1px solid ${t.borderFaint}` }}>
+                {data.docs.map((doc: any) => (
+                <div key={doc.id} style={{ borderBottom: `1px solid ${t.borderFaint}` }}>
                     
                     <button 
-                      onClick={() => setOpenDocIndex(openDocIndex === index ? null : index)}
+                      onClick={() => setOpenDocId(openDocId === doc.id ? null : doc.id)}
                       style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -519,10 +535,10 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                       </div>
-                      <ChevronDown size={16} color={t.inkMuted} style={{ transform: openDocIndex === index ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                      <ChevronDown size={16} color={t.inkMuted} style={{ transform: openDocId === doc.id ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
                     </button>
 
-                    {openDocIndex === index && (
+                    {openDocId === doc.id && (
                       <div style={{ padding: 24, background: t.bgMuted, borderTop: `1px solid ${t.borderFaint}`, display: 'flex', flexDirection: 'column', gap: 24 }}>
                         
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 16, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 12 }}>
@@ -531,7 +547,7 @@ export default function AdminDashboard() {
                             Visibility: {doc.published ? 'Public' : 'Hidden'}
                           </span>
                           <button 
-                            onClick={() => updateDoc(index, 'published', !doc.published)}
+                            onClick={() => updateDoc(doc.id, 'published', !doc.published)}
                             style={{ marginLeft: 'auto', padding: '6px 16px', borderRadius: 99, fontSize: 10, fontFamily: t.mono, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.1em', cursor: 'pointer', background: doc.published ? t.ink : t.bgMuted, color: doc.published ? t.bg : t.inkMuted, border: `1px solid ${doc.published ? t.ink : t.border}` }}
                           >
                             {doc.published ? 'Unpublish' : 'Go Live'}
@@ -541,33 +557,33 @@ export default function AdminDashboard() {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
                           <div>
                             <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Document Title</label>
-                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.title} onChange={e => updateDoc(index, 'title', e.target.value)} />
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.title} onChange={e => updateDoc(doc.id, 'title', e.target.value)} />
                           </div>
                           <div>
                             <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>URL Slug (ID)</label>
-                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.mono, color: t.ink, outline: 'none' }} value={doc.id} onChange={e => updateDoc(index, 'id', e.target.value)} />
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.mono, color: t.ink, outline: 'none' }} value={doc.id} onChange={e => updateDoc(doc.id, 'id', e.target.value)} />
                           </div>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
                           <div>
                             <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>External Link (optional)</label>
-                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.link || ''} placeholder="https://..." onChange={e => updateDoc(index, 'link', e.target.value)} />
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.link || ''} placeholder="https://..." onChange={e => updateDoc(doc.id, 'link', e.target.value)} />
                           </div>
                           <div>
                             <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Short Description</label>
-                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.description || ''} placeholder="Brief description for cards..." onChange={e => updateDoc(index, 'description', e.target.value)} />
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.description || ''} placeholder="Brief description for cards..." onChange={e => updateDoc(doc.id, 'description', e.target.value)} />
                           </div>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
                           <div>
                             <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Date</label>
-                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.date || ''} placeholder="e.g. Mar 2026" onChange={e => updateDoc(index, 'date', e.target.value)} />
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.date || ''} placeholder="e.g. Mar 2026" onChange={e => updateDoc(doc.id, 'date', e.target.value)} />
                           </div>
                           <div>
                             <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Read Time</label>
-                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.readTime || ''} placeholder="e.g. 5 min read" onChange={e => updateDoc(index, 'readTime', e.target.value)} />
+                            <input style={{ width: '100%', padding: 12, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={doc.readTime || ''} placeholder="e.g. 5 min read" onChange={e => updateDoc(doc.id, 'readTime', e.target.value)} />
                           </div>
                         </div>
 
@@ -580,7 +596,7 @@ export default function AdminDashboard() {
                               <button
                                 key={category}
                                 type="button"
-                                onClick={() => updateDoc(index, 'type', category)}
+                                onClick={() => updateDoc(doc.id, 'type', category)}
                                 style={{ padding: '6px 12px', borderRadius: 99, fontSize: 10, fontFamily: t.mono, textTransform: 'uppercase', letterSpacing: '0.1em', cursor: 'pointer', background: doc.type === category ? t.ink : t.bgMuted, color: doc.type === category ? t.bg : t.inkMuted, border: `1px solid ${doc.type === category ? t.ink : t.border}` }}
                               >
                                 {category}
@@ -592,13 +608,13 @@ export default function AdminDashboard() {
                               style={{ flex: 1, padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }}
                               value={doc.type || ''}
                               placeholder="Type a new tag..."
-                              onChange={e => updateDoc(index, 'type', e.target.value)}
+                              onChange={e => updateDoc(doc.id, 'type', e.target.value)}
                             />
                             <input 
                               style={{ flex: 1, padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }}
                               value={doc.tag || ''}
                               placeholder="Sub-tag (e.g. Agentic AI)"
-                              onChange={e => updateDoc(index, 'tag', e.target.value)}
+                              onChange={e => updateDoc(doc.id, 'tag', e.target.value)}
                             />
                           </div>
                         </div>
@@ -610,11 +626,11 @@ export default function AdminDashboard() {
                               {doc.coverImage && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                   <img src={doc.coverImage} style={{ width: '100%', height: 96, objectFit: 'cover', borderRadius: 6, border: `1px solid ${t.borderFaint}` }} />
-                                  <button onClick={() => updateDoc(index, 'coverImage', '')} style={{ padding: 8, background: t.bgMuted, color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }} title="Remove cover image"><Trash2 size={14} /></button>
+                                  <button onClick={() => updateDoc(doc.id, 'coverImage', '')} style={{ padding: 8, background: t.bgMuted, color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }} title="Remove cover image"><Trash2 size={14} /></button>
                                 </div>
                               )}
-                              <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'coverImage', index)} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
-                              {uploadingState['coverImage'] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading Image...</span>}
+                              <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'coverImage', doc.id)} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
+                              {uploadingState[`doc-${doc.id}-coverImage`] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading Image...</span>}
                             </div>
                           </div>
                           <div>
@@ -623,11 +639,11 @@ export default function AdminDashboard() {
                               {doc.thumbnail && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                   <img src={doc.thumbnail} style={{ width: '100%', height: 96, objectFit: 'cover', borderRadius: 6, border: `1px solid ${t.borderFaint}` }} />
-                                  <button onClick={() => updateDoc(index, 'thumbnail', '')} style={{ padding: 8, background: t.bgMuted, color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }} title="Remove thumbnail"><Trash2 size={14} /></button>
+                                  <button onClick={() => updateDoc(doc.id, 'thumbnail', '')} style={{ padding: 8, background: t.bgMuted, color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }} title="Remove thumbnail"><Trash2 size={14} /></button>
                                 </div>
                               )}
-                              <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'thumbnail', index)} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
-                              {uploadingState['thumbnail'] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading Image...</span>}
+                              <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'thumbnail', doc.id)} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
+                              {uploadingState[`doc-${doc.id}-thumbnail`] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading Image...</span>}
                             </div>
                           </div>
                           <div>
@@ -636,11 +652,11 @@ export default function AdminDashboard() {
                               {doc.pdfUrl && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                   <span style={{ flex: 1, fontSize: 10, fontFamily: t.mono, color: '#10b981', background: '#f0fdf4', padding: '6px 12px', borderRadius: 6, border: '1px solid #d1fae5', textAlign: 'center', wordBreak: 'break-all' }}>Attached: {doc.pdfUrl.split('/').pop()}</span>
-                                  <button onClick={() => updateDoc(index, 'pdfUrl', '')} style={{ padding: 8, background: t.bgMuted, color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }} title="Remove PDF"><Trash2 size={14} /></button>
+                                  <button onClick={() => updateDoc(doc.id, 'pdfUrl', '')} style={{ padding: 8, background: t.bgMuted, color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }} title="Remove PDF"><Trash2 size={14} /></button>
                                 </div>
                               )}
-                              <input type="file" accept="application/pdf" onChange={e => handleFileUpload(e, 'pdfUrl', index)} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
-                              {uploadingState['pdfUrl'] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading PDF...</span>}
+                              <input type="file" accept=".pdf,application/pdf" onChange={e => handleFileUpload(e, 'pdfUrl', doc.id)} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
+                              {uploadingState[`doc-${doc.id}-pdfUrl`] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading PDF...</span>}
                             </div>
                           </div>
                         </div>
@@ -652,12 +668,12 @@ export default function AdminDashboard() {
                           </label>
                           <RichTextEditor 
                             content={Array.isArray(doc.content) ? doc.content.join('\n\n') : (doc.content || '')} 
-                            onChange={(html) => updateDoc(index, 'content', html)} 
+                            onChange={(html) => updateDoc(doc.id, 'content', html)} 
                           />
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 16, borderTop: `1px solid ${t.borderFaint}` }}>
-                          <button onClick={() => deleteDoc(index)} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#ef4444', background: '#fef2f2', padding: '8px 16px', borderRadius: 8, fontSize: 12, fontFamily: t.sans, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
+                          <button onClick={() => deleteDoc(doc.id)} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#ef4444', background: '#fef2f2', padding: '8px 16px', borderRadius: 8, fontSize: 12, fontFamily: t.sans, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
                             <Trash2 size={14} /> Delete Document
                           </button>
                         </div>
