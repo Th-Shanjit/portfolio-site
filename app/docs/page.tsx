@@ -95,7 +95,7 @@ export default function DocsArchive() {
                         {doc.status === 'draft' && <DraftBadge />}
                       </h2>
                       <p style={{ fontFamily: t.sans, fontSize: 15, color: t.inkMuted, fontWeight: 300, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                        {doc.content[0]?.replace(/^### /, '') || "Read the full architectural breakdown."}
+                        {(Array.isArray(doc.content) && doc.content[0]) ? doc.content[0].replace(/^### /, '') : "Read the full architectural breakdown."}
                       </p>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>

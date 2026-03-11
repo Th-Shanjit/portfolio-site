@@ -11,7 +11,7 @@ export async function GET() {
   const personUrn = process.env.LINKEDIN_PERSON_URN;
 
   if (!token || !personUrn) {
-    return NextResponse.json({ error: "LinkedIn credentials not configured." }, { status: 500 });
+    return NextResponse.json({ posts: [], message: "LinkedIn credentials not configured." });
   }
 
   try {

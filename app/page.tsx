@@ -395,7 +395,7 @@ export default function Home() {
 
   useEffect(() => {
     fetch('/api/linkedin')
-      .then(r => r.json())
+      .then(r => r.ok ? r.json() : { error: `Server error: ${r.status}` })
       .then(d => { if (d.error) setLiError(d.error); else setPosts(d.posts || []); })
       .catch(() => setLiError('Could not load posts.'))
       .finally(() => setLiLoading(false));
