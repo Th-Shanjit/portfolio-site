@@ -166,8 +166,8 @@ const DEFAULT_LABELS: Record<string, string> = {
   'doc': 'Docs',
 };
 
-function DataRoom({ docs }: { docs: Doc[] }) {
-  const allDocs = docs.length > 0 ? docs : PLACEHOLDER_DOCS;
+function DataRoom({ docs, isLoaded }: { docs: Doc[], isLoaded: boolean }) {
+  const allDocs = !isLoaded ? PLACEHOLDER_DOCS : docs;
   
   const uniqueTypes = Array.from(new Set(allDocs.map(d => d.type))).filter(Boolean) as string[];
   
@@ -417,7 +417,7 @@ export default function Home() {
     : PLACEHOLDER_PROJECTS;
   const projects = rawProjects;
 
-  const allDocs  = portfolio ? (portfolio.docs || []).filter(d => d.published !== false) : PLACEHOLDER_DOCS;
+  const allDocs  = portfolio ? (portfolio.docs || []).filter(d => d.published !== false) : [];
   const livePosts = posts.length > 0 ? posts : PLACEHOLDER_POSTS;
 
   const MAX = 1040;
@@ -492,7 +492,7 @@ export default function Home() {
                   }
                 </div>
                 <div style={{ display:'flex', gap:6 }}>
-                  <RoleTag>AI Product</RoleTag>
+                  <RoleTag>{portfolio?.site?.role || 'AI Product'}</RoleTag>
                   <RoleTag>Systems</RoleTag>
                 </div>
               </div>
@@ -552,7 +552,7 @@ export default function Home() {
           </Reveal>
           <Reveal delay={80}>
             <Browser>
-              <DataRoom docs={allDocs} />
+              <DataRoom docs={allDocs} isLoaded={!!portfolio} />
             </Browser>
           </Reveal>
         </section>
