@@ -1031,8 +1031,8 @@ export default function PaperLoopLanding() {
                 <span class="foot-nm">Paper<b>loop</b></span>
             </a>
             <div class="foot-links">
-                <a href="https://www.shanjitthokchom.xyz/docs/paperloopprivacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-                <a href="https://www.shanjitthokchom.xyz/docs/termspaperloop" target="_blank" rel="noopener noreferrer">Terms of Service</a>
+                <a href="/docs/paperloopprivacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                <a href="/docs/termspaperloop" target="_blank" rel="noopener noreferrer">Terms of Service</a>
                 <a href="https://wa.me/916290739163" target="_blank" rel="noopener noreferrer">WhatsApp Support</a>
                 <a href="mailto:th.shanjit@gmail.com" target="_blank" rel="noopener noreferrer">th.shanjit@gmail.com</a>
             </div>

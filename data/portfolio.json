@@ -274,14 +274,14 @@
       "views": 330
     },
     {
-      "id": "new-doc-1772462344570",
+      "id": "termspaperloop",
       "title": "Terms of Service (PaperLoop)",
-      "type": "legal",
+      "type": "Legal",
       "date": "Mar 2026",
       "readTime": "5 min read",
       "coverImage": "",
-      "pdfUrl": "",
-      "published": false,
+      "pdfUrl": "/uploads/1772435583053-terms-of-service-paperloop.pdf",
+      "published": true,
       "views": 0,
       "content": [
         ""
@@ -289,14 +289,14 @@
       "status": "published"
     },
     {
-      "id": "new-doc-1772462315078",
+      "id": "paperloopprivacy",
       "title": "Privacy Policy (PaperLoop)",
-      "type": "legal",
+      "type": "Legal",
       "date": "Mar 2026",
       "readTime": "5 min read",
       "coverImage": "",
-      "pdfUrl": "",
-      "published": false,
+      "pdfUrl": "/uploads/1772435541694-privacy-policy-paperloop.pdf",
+      "published": true,
       "views": 0,
       "content": [
         ""
