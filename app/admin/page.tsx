@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { 
   Save, Plus, Trash2, ChevronDown, ChevronUp, ImageIcon, 
-  FileText, Settings, LayoutTemplate, Tag, Sparkles, Globe, Eye, EyeOff, 
-  CheckCircle2, ExternalLink, ArrowRight
+  FileText, Settings, Tag, Eye, EyeOff, 
+  CheckCircle2, ExternalLink
 } from 'lucide-react';
 import Link from 'next/link';
 import { t } from '@/lib/design';

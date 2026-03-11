@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Clock, Calendar, Hash, Download } from 'lucide-react';
-import { t, Reveal, Label, RoleTag } from '@/lib/design';
+import { t, Reveal, RoleTag } from '@/lib/design';
 
 export default function DocumentReader({ params }: { params: Promise<{ slug: string }> }) {
   const [progress, setProgress] = useState(0);

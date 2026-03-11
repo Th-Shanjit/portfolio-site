@@ -1,6 +1,6 @@
 'use client';
 
-import { MapPin, GraduationCap, Code2, Sparkles, Scale, Briefcase } from 'lucide-react';
+import { MapPin, Code2, Sparkles, Scale, Briefcase } from 'lucide-react';
 import data from '@/data/portfolio.json';
 import { t, Reveal, Label, RoleTag } from '@/lib/design';
 
