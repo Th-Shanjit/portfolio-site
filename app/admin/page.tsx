@@ -42,7 +42,8 @@ export default function AdminDashboard() {
         }, 800);
       } else {
         const errorData = await res.json();
-        alert(`Failed to save: Vercel is Read-Only. Please run locally or set up a Cloud DB.`);
+        const errorMessage = errorData.error || 'Vercel is Read-Only. Please run locally or set up a Cloud DB.';
+        alert(`Failed to save: ${errorMessage}`);
         setSaving(false);
       }
     } catch (error) {

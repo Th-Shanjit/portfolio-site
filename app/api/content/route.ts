@@ -6,21 +6,21 @@ import path from 'path';
 
 export const dynamic = 'force-dynamic';
 
-// 🚀 Safely connect to Upstash
+// 🚀 Helper to get Redis instance or throw meaningful error
 const getRedis = () => {
-  try {
-    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-      return Redis.fromEnv();
-    }
-    return null;
-  } catch (e) {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  
+  if (!url || !token) {
+    console.warn("Upstash Redis environment variables are missing.");
     return null;
   }
+  
+  return new Redis({ url, token });
 };
 
-const redis = getRedis();
-
 export async function GET() {
+  const redis = getRedis();
   try {
     if (redis) {
       let data = await redis.get('portfolio_data');
@@ -35,43 +35,61 @@ export async function GET() {
     console.error("Upstash GET Error:", error);
   }
 
-  // Fallback to local file read for immediate updates in dev or when no Redis
+  // Fallback to local file read
   try {
     const filePath = path.join(process.cwd(), 'data', 'portfolio.json');
-    const fileData = fs.readFileSync(filePath, 'utf8');
-    return NextResponse.json(JSON.parse(fileData));
+    if (fs.existsSync(filePath)) {
+      const fileData = fs.readFileSync(filePath, 'utf8');
+      return NextResponse.json(JSON.parse(fileData));
+    }
   } catch (e) {
-    return NextResponse.json(fallbackData);
+    console.error("Local Read Error:", e);
   }
+  
+  return NextResponse.json(fallbackData);
 }
 
 export async function POST(request: Request) {
+  const redis = getRedis();
   try {
     const newData = await request.json();
     
     let savedToCloud = false;
+    let cloudError = null;
+
     if (redis) {
-      await redis.set('portfolio_data', newData);
-      savedToCloud = true;
+      try {
+        await redis.set('portfolio_data', newData);
+        savedToCloud = true;
+      } catch (e: any) {
+        cloudError = e.message;
+        console.error("Cloud Save Error:", e);
+      }
+    } else {
+      cloudError = "Upstash environment variables are missing (UPSTASH_REDIS_REST_URL/TOKEN).";
     }
     
-    // Also try to save locally (mainly for local dev without Redis)
+    // Also try to save locally (for local dev)
     let savedLocally = false;
     try {
       const filePath = path.join(process.cwd(), 'data', 'portfolio.json');
       fs.writeFileSync(filePath, JSON.stringify(newData, null, 2), 'utf8');
       savedLocally = true;
     } catch (e) {
-      console.error("Failed to write local file", e);
+      // Expected to fail on Vercel read-only filesystem
     }
 
     if (!savedToCloud && !savedLocally) {
-      throw new Error("Failed to save to both Cloud and Local Storage.");
+      return NextResponse.json({ 
+        error: `Persistence failed. Cloud: ${cloudError || 'Unknown'}. Local: Filesystem is read-only.` 
+      }, { status: 500 });
     }
     
-    return NextResponse.json({ message: 'Database updated instantly.' });
+    return NextResponse.json({ 
+      message: savedToCloud ? 'Saved to Cloud.' : 'Saved locally (Cloud setup missing).' 
+    });
   } catch (error: any) {
-    console.error("Save Error:", error);
-    return NextResponse.json({ error: error.message || 'Failed to save data' }, { status: 500 });
+    console.error("POST Handler Error:", error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
