@@ -383,7 +383,14 @@ export default function Home() {
 
   useEffect(() => {
     fetch('/api/content?t=' + Date.now(), { cache:'no-store' })
-      .then(r => r.json()).then(setPortfolio).catch(() => {});
+      .then(r => r.json())
+      .then(data => {
+        // Only set portfolio if we actually got valid data, otherwise keep null to show placeholders
+        if (data && typeof data === 'object') {
+          setPortfolio(data);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -403,12 +410,14 @@ export default function Home() {
   const ctaText     = portfolio?.hero?.linkText || 'View Work';
   const contactH    = portfolio?.contact?.heading || "Let's build something together";
 
+  // Use placeholders only if portfolio is literally null (not loaded yet)
+  // Otherwise use whatever is in portfolio, even if it's empty arrays.
   const rawProjects = portfolio
     ? (portfolio.highlightedProjects || []).map(p => portfolio.docs?.find(d => d.id === p.id)).filter((d): d is Doc => !!d && d.published !== false)
-    : [];
-  const projects = rawProjects.length > 0 ? rawProjects : PLACEHOLDER_PROJECTS;
+    : PLACEHOLDER_PROJECTS;
+  const projects = rawProjects;
 
-  const allDocs  = (portfolio?.docs || []).filter(d => d.published !== false);
+  const allDocs  = portfolio ? (portfolio.docs || []).filter(d => d.published !== false) : PLACEHOLDER_DOCS;
   const livePosts = posts.length > 0 ? posts : PLACEHOLDER_POSTS;
 
   const MAX = 1040;

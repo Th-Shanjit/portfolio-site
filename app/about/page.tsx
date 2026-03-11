@@ -1,13 +1,30 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { MapPin, Code2, Sparkles, Scale, Briefcase } from 'lucide-react';
-import data from '@/data/portfolio.json';
 import { t, Reveal, Label, RoleTag } from '@/lib/design';
 
 export default function About() {
-  const about = (data as any).about;
-  const experience = (data as any).experience || [];
-  const bio = (data as any).bio || [];
+  const [data, setData] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
+      .then(res => res.json())
+      .then(setData)
+      .catch(console.error);
+  }, []);
+
+  if (!data) {
+    return (
+      <main style={{ background: t.bg, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ fontFamily: t.mono, fontSize: 11, color: t.inkMuted, textTransform: 'uppercase', letterSpacing: '0.15em' }}>Loading...</p>
+      </main>
+    );
+  }
+
+  const about = data.about || {};
+  const experience = data.experience || [];
+  const bio = data.bio || [];
 
   return (
     <main style={{ background: t.bg, minHeight: '100vh', color: t.ink, padding: '120px clamp(20px, 5vw, 64px) 160px', maxWidth: 1040, margin: '0 auto', overflow: 'hidden' }}>
