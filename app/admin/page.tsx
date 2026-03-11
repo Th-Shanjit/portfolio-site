@@ -16,6 +16,7 @@ export default function AdminDashboard() {
   const [showModal, setShowModal] = useState(false); 
   const [openSection, setOpenSection] = useState<string>('docs'); 
   const [openDocIndex, setOpenDocIndex] = useState<number | null>(null);
+  const [openProjectIndex, setOpenProjectIndex] = useState<number | null>(null);
 
   const [uploadingState, setUploadingState] = useState<{ [key: string]: boolean }>({});
 
@@ -58,19 +59,17 @@ export default function AdminDashboard() {
       id: `new-doc-${Date.now()}`,
       title: "New Case Study",
       type: "Drafts",
-      tag: "Agentic AI",
       date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
       readTime: "5 min read",
-      description: "Brief overview of the architecture...",
       coverImage: "",
-      thumbnail: "",
       pdfUrl: "",
       published: false,
       views: 0,
-      content: ["<p>Start writing your architecture breakdown here...</p>"]
+      content: ["Start writing your architecture breakdown here..."]
     };
     
     setData((prev: any) => ({ ...prev, docs: [newDoc, ...prev.docs] }));
+    setOpenSection('docs');
     setOpenDocIndex(0); 
   };
 
@@ -79,10 +78,7 @@ export default function AdminDashboard() {
       setData((prev: any) => {
         const newDocs = [...prev.docs];
         newDocs.splice(index, 1);
-        // Also remove from highlighted projects if present
-        const deletedId = prev.docs[index].id;
-        const newHighlighted = (prev.highlightedProjects || []).filter((p: any) => p.id !== deletedId);
-        return { ...prev, docs: newDocs, highlightedProjects: newHighlighted };
+        return { ...prev, docs: newDocs };
       });
       setOpenDocIndex(null);
     }
@@ -92,35 +88,15 @@ export default function AdminDashboard() {
     setData((prev: any) => {
       if (!prev) return prev;
       const newDocs = [...prev.docs];
-      const targetDoc = { ...newDocs[index] };
-      
       if (field === 'content') {
-        // Keep it as an array if it was an array, or string if it was string
-        if (Array.isArray(targetDoc.content)) {
-          targetDoc.content = [value];
-        } else {
-          targetDoc.content = value;
-        }
+        newDocs[index][field] = [value];
+      } else if (field === 'published') {
+        newDocs[index][field] = value;
+        newDocs[index]['status'] = value ? 'published' : 'draft';
       } else {
-        targetDoc[field] = value;
+        newDocs[index][field] = value;
       }
-      
-      newDocs[index] = targetDoc;
       return { ...prev, docs: newDocs };
-    });
-  };
-
-  const toggleHighlighted = (docId: string) => {
-    setData((prev: any) => {
-      const current = prev.highlightedProjects || [];
-      const exists = current.find((p: any) => p.id === docId);
-      let next;
-      if (exists) {
-        next = current.filter((p: any) => p.id !== docId);
-      } else {
-        next = [...current, { id: docId }];
-      }
-      return { ...prev, highlightedProjects: next };
     });
   };
 
@@ -161,7 +137,7 @@ export default function AdminDashboard() {
     </div>
   );
 
-  const allCategories = Array.from(new Set((data.docs || []).map((doc: any) => doc.type))).filter(Boolean) as string[];
+  const allCategories = Array.from(new Set(data.docs.map((doc: any) => doc.type))).filter(Boolean) as string[];
 
   return (
     <div style={{ minHeight: '100vh', background: t.bg, paddingBottom: 128, fontFamily: t.sans, color: t.ink }}>
@@ -178,7 +154,7 @@ export default function AdminDashboard() {
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Link 
-                href={openDocIndex !== null && data.docs?.[openDocIndex] ? `/docs/${data.docs[openDocIndex].id}` : "/"}
+                href={openDocIndex !== null ? `/docs/${data.docs[openDocIndex].id}` : "/docs"}
                 target="_blank"
                 style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: t.ink, color: t.bg, padding: 16, borderRadius: 12, fontSize: 11, fontFamily: t.mono, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.1em', textDecoration: 'none' }}
               >
@@ -207,22 +183,14 @@ export default function AdminDashboard() {
           </div>
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Link 
-            href="/"
-            style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'transparent', color: t.inkMuted, padding: '10px 20px', borderRadius: 99, fontSize: 12, fontFamily: t.sans, fontWeight: 500, border: `1px solid ${t.border}`, textDecoration: 'none' }}
-          >
-            <ExternalLink size={14} /> View Site
-          </Link>
-          <button 
-            onClick={handleSave}
-            disabled={saving}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, background: t.ink, color: t.bg, padding: '10px 24px', borderRadius: 99, fontSize: 12, fontFamily: t.sans, fontWeight: 500, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1 }}
-          >
-            <Save size={14} />
-            {saving ? 'Publishing...' : 'Publish to Site'}
-          </button>
-        </div>
+        <button 
+          onClick={handleSave}
+          disabled={saving}
+          style={{ display: 'flex', alignItems: 'center', gap: 8, background: t.ink, color: t.bg, padding: '10px 24px', borderRadius: 99, fontSize: 12, fontFamily: t.sans, fontWeight: 500, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1 }}
+        >
+          <Save size={14} />
+          {saving ? 'Publishing...' : 'Publish to Site'}
+        </button>
       </div>
 
       <div style={{ maxWidth: 896, margin: '48px auto 0', padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -235,7 +203,7 @@ export default function AdminDashboard() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <Settings size={18} color={t.inkMuted} />
-              <h2 style={{ fontFamily: t.serif, fontSize: 16, fontWeight: 500, color: t.ink, margin: 0 }}>Global Settings & Contact</h2>
+              <h2 style={{ fontFamily: t.serif, fontSize: 16, fontWeight: 500, color: t.ink, margin: 0 }}>Global Settings & About</h2>
             </div>
             {openSection === 'site' ? <ChevronUp size={18} color={t.inkMuted} /> : <ChevronDown size={18} color={t.inkMuted} />}
           </button>
@@ -278,44 +246,9 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* SOCIALS */}
-              <div style={{ marginTop: 16, paddingTop: 24, borderTop: `1px solid ${t.borderFaint}` }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                  <h3 style={{ fontFamily: t.serif, fontSize: 18, color: t.ink, margin: 0 }}>Social Links</h3>
-                  <button onClick={() => {
-                    const newSocials = [...(data.socials || []), { name: 'New Link', url: '#' }];
-                    setData({...data, socials: newSocials});
-                  }} style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'transparent', border: 'none', color: t.ink, cursor: 'pointer', fontFamily: t.mono, fontSize: 10, textTransform: 'uppercase' }}>
-                    <Plus size={12} /> Add Link
-                  </button>
-                </div>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {data.socials?.map((social: any, i: number) => (
-                    <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', background: t.bgMuted, padding: 12, borderRadius: 8 }}>
-                      <input style={{ flex: 1, padding: 8, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 4, fontSize: 13 }} value={social.name} placeholder="Label (e.g. GitHub)" onChange={e => {
-                        const next = [...data.socials];
-                        next[i].name = e.target.value;
-                        setData({...data, socials: next});
-                      }} />
-                      <input style={{ flex: 2, padding: 8, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 4, fontSize: 13 }} value={social.url} placeholder="URL" onChange={e => {
-                        const next = [...data.socials];
-                        next[i].url = e.target.value;
-                        setData({...data, socials: next});
-                      }} />
-                      <button onClick={() => {
-                        const next = [...data.socials];
-                        next.splice(i, 1);
-                        setData({...data, socials: next});
-                      }} style={{ padding: 8, background: '#fef2f2', color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }}><Trash2 size={14} /></button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* ABOUT SECTION */}
               <div style={{ marginTop: 16, paddingTop: 24, borderTop: `1px solid ${t.borderFaint}` }}>
-                <h3 style={{ fontFamily: t.serif, fontSize: 18, color: t.ink, marginBottom: 16 }}>About Page Narrative</h3>
+                <h3 style={{ fontFamily: t.serif, fontSize: 18, color: t.ink, marginBottom: 16 }}>About Section</h3>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: 24 }}>
                   <div>
@@ -403,6 +336,17 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: 24 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Location</label>
+                    <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.about?.location || ''} onChange={e => setData({...data, about: {...data.about, location: e.target.value}})} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Education Title</label>
+                    <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.about?.educationTitle || ''} onChange={e => setData({...data, about: {...data.about, educationTitle: e.target.value}})} />
+                  </div>
+                </div>
+
               </div>
               
               {/* CONTACT SECTION */}
@@ -424,15 +368,15 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* HERO SETTINGS ACCORDION */}
+        {/* HERO SECTION ACCORDION */}
         <div style={{ background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 16, overflow: 'hidden' }}>
           <button 
             onClick={() => setOpenSection(openSection === 'hero' ? '' : 'hero')}
             style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 24, background: t.bgMuted, border: 'none', cursor: 'pointer' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <Tag size={18} color={t.inkMuted} />
-              <h2 style={{ fontFamily: t.serif, fontSize: 16, fontWeight: 500, color: t.ink, margin: 0 }}>Hero Section (Home Page)</h2>
+              <ImageIcon size={18} color={t.inkMuted} />
+              <h2 style={{ fontFamily: t.serif, fontSize: 16, fontWeight: 500, color: t.ink, margin: 0 }}>Portfolio Hero Section</h2>
             </div>
             {openSection === 'hero' ? <ChevronUp size={18} color={t.inkMuted} /> : <ChevronDown size={18} color={t.inkMuted} />}
           </button>
@@ -450,59 +394,90 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}><ImageIcon size={12}/> Hero Image (Optional)</label>
+                <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Hero Description (Bio on Home)</label>
+                <textarea style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none', height: 100, resize: 'vertical' }} value={data.hero?.description || ''} onChange={e => setData({...data, hero: {...data.hero, description: e.target.value}})} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>CTA Link</label>
+                  <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.mono, color: t.ink, outline: 'none' }} value={data.hero?.link || ''} onChange={e => setData({...data, hero: {...data.hero, link: e.target.value}})} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>CTA Text</label>
+                  <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.hero?.linkText || ''} onChange={e => setData({...data, hero: {...data.hero, linkText: e.target.value}})} />
+                </div>
+              </div>
+              <div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}><ImageIcon size={12}/> Hero Image</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8 }}>
                   {data.hero?.coverImage && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <img src={data.hero.coverImage} alt="Hero" style={{ width: 100, height: 40, objectFit: 'cover', borderRadius: 4 }} />
-                      <button onClick={() => setData({...data, hero: {...data.hero, coverImage: ''}})} style={{ padding: 4, background: 'transparent', color: '#ef4444', border: 'none', cursor: 'pointer' }}><Trash2 size={12} /></button>
+                      <img src={data.hero.coverImage} alt="Hero" style={{ width: 64, height: 40, borderRadius: 4, objectFit: 'cover' }} />
+                      <button onClick={() => setData({...data, hero: {...data.hero, coverImage: ''}})} style={{ padding: 4, background: 'transparent', color: '#ef4444', border: 'none', cursor: 'pointer' }}><Trash2 size={14} /></button>
                     </div>
                   )}
                   <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'hero.coverImage')} style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted }} />
                   {uploadingState['hero.coverImage'] && <span style={{ fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase' }}>Uploading...</span>}
                 </div>
               </div>
-              <div>
-                <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Hero Description</label>
-                <textarea style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none', height: 100, resize: 'vertical' }} value={data.hero?.description || ''} onChange={e => setData({...data, hero: {...data.hero, description: e.target.value}})} />
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>CTA Link</label>
-                  <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.hero?.link || ''} placeholder="/docs/..." onChange={e => setData({...data, hero: {...data.hero, link: e.target.value}})} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>CTA Text</label>
-                  <input style={{ width: '100%', padding: 12, background: t.bgMuted, border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 14, fontFamily: t.sans, color: t.ink, outline: 'none' }} value={data.hero?.linkText || ''} placeholder="View Case Study" onChange={e => setData({...data, hero: {...data.hero, linkText: e.target.value}})} />
-                </div>
-              </div>
+            </div>
+          )}
+        </div>
 
-              {/* HIGHLIGHTED PROJECTS SELECTOR */}
-              <div style={{ marginTop: 16, paddingTop: 24, borderTop: `1px solid ${t.borderFaint}` }}>
-                <h3 style={{ fontFamily: t.serif, fontSize: 18, color: t.ink, marginBottom: 8 }}>Highlighted Projects</h3>
-                <p style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted, marginBottom: 20 }}>Select projects to showcase in the "Selected Work" filmstrip on the home page.</p>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
-                  {data.docs.map((doc: any) => {
-                    const isHighlighted = data.highlightedProjects?.find((p: any) => p.id === doc.id);
-                    return (
-                      <button 
-                        key={doc.id}
-                        onClick={() => toggleHighlighted(doc.id)}
-                        style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 12, background: isHighlighted ? t.ink : t.bgMuted, color: isHighlighted ? t.bg : t.ink, border: `1px solid ${isHighlighted ? t.ink : t.border}`, borderRadius: 12, cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
-                      >
-                        <div style={{ width: 16, height: 16, borderRadius: 4, background: isHighlighted ? t.accent : 'transparent', border: `1px solid ${isHighlighted ? t.accent : t.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          {isHighlighted && <CheckCircle2 size={10} color="white" />}
-                        </div>
-                        <div style={{ flex: 1, overflow: 'hidden' }}>
-                          <p style={{ fontSize: 12, fontWeight: 500, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{doc.title}</p>
-                          <p style={{ fontSize: 9, fontFamily: t.mono, textTransform: 'uppercase', opacity: 0.6, margin: 0 }}>{doc.type}</p>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+        {/* HIGHLIGHTED PROJECTS ACCORDION */}
+        <div style={{ background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 16, overflow: 'hidden' }}>
+          <button 
+            onClick={() => setOpenSection(openSection === 'projects' ? '' : 'projects')}
+            style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 24, background: t.bgMuted, border: 'none', cursor: 'pointer' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <LayoutGrid size={18} color={t.inkMuted} />
+              <h2 style={{ fontFamily: t.serif, fontSize: 16, fontWeight: 500, color: t.ink, margin: 0 }}>Highlighted Projects (Filmstrip)</h2>
+            </div>
+            {openSection === 'projects' ? <ChevronUp size={18} color={t.inkMuted} /> : <ChevronDown size={18} color={t.inkMuted} />}
+          </button>
+          
+          {openSection === 'projects' && (
+            <div style={{ padding: 24, borderTop: `1px solid ${t.borderFaint}`, display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <p style={{ fontSize: 12, fontFamily: t.sans, color: t.inkMuted, margin: 0 }}>These projects appear in the filmstrip on the home page. You must use the Document ID (Slug).</p>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {data.highlightedProjects?.map((proj: any, i: number) => (
+                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', background: t.bgMuted, padding: 12, borderRadius: 8, border: `1px solid ${t.borderFaint}` }}>
+                    <select 
+                      style={{ flex: 1, padding: 8, background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 4, fontSize: 13, fontFamily: t.sans, color: t.ink, outline: 'none' }}
+                      value={proj.id}
+                      onChange={e => {
+                        const newProj = [...data.highlightedProjects];
+                        newProj[i].id = e.target.value;
+                        setData({...data, highlightedProjects: newProj});
+                      }}
+                    >
+                      <option value="">Select a document...</option>
+                      {data.docs.map((doc: any) => (
+                        <option key={doc.id} value={doc.id}>{doc.title} ({doc.id})</option>
+                      ))}
+                    </select>
+                    <button onClick={() => {
+                      const newProj = [...data.highlightedProjects];
+                      newProj.splice(i, 1);
+                      setData({...data, highlightedProjects: newProj});
+                    }} style={{ padding: 8, background: '#fef2f2', color: '#ef4444', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
               </div>
+              
+              <button 
+                onClick={() => {
+                  const newProj = [...(data.highlightedProjects || []), { id: '' }];
+                  setData({...data, highlightedProjects: newProj});
+                }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 12, background: t.bgMuted, color: t.inkMuted, border: `1px dashed ${t.border}`, borderRadius: 8, cursor: 'pointer', fontFamily: t.mono, fontSize: 11, textTransform: 'uppercase' }}
+              >
+                <Plus size={14} /> Add Project to Highlights
+              </button>
             </div>
           )}
         </div>
@@ -523,7 +498,7 @@ export default function AdminDashboard() {
           {openSection === 'docs' && (
             <div style={{ borderTop: `1px solid ${t.borderFaint}` }}>
               <div>
-                {(data.docs || []).map((doc: any, index: number) => (
+                {data.docs.map((doc: any, index: number) => (
                 <div key={index} style={{ borderBottom: `1px solid ${t.borderFaint}` }}>
                     
                     <button 

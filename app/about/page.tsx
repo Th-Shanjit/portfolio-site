@@ -23,8 +23,8 @@ export default function About() {
   }
 
   const about = data.about || {};
-  const experience = data.experience || [];
-  const bio = data.bio || [];
+  const experience = about.experience || [];
+  const bio = about.bio || [];
 
   return (
     <main style={{ background: t.bg, minHeight: '100vh', color: t.ink, padding: '120px clamp(20px, 5vw, 64px) 160px', maxWidth: 1040, margin: '0 auto', overflow: 'hidden' }}>

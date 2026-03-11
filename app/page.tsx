@@ -166,8 +166,8 @@ const DEFAULT_LABELS: Record<string, string> = {
   'doc': 'Docs',
 };
 
-function DataRoom({ docs, isLoaded }: { docs: Doc[], isLoaded: boolean }) {
-  const allDocs = !isLoaded ? PLACEHOLDER_DOCS : docs;
+function DataRoom({ docs }: { docs: Doc[] }) {
+  const allDocs = docs.length > 0 ? docs : PLACEHOLDER_DOCS;
   
   const uniqueTypes = Array.from(new Set(allDocs.map(d => d.type))).filter(Boolean) as string[];
   
@@ -254,7 +254,8 @@ function DataRoom({ docs, isLoaded }: { docs: Doc[], isLoaded: boolean }) {
           {rows.length === 0 ? (
             <div style={{ padding:'48px 16px', textAlign:'center', color:t.inkFaint, fontSize:10 }}>No items</div>
           ) : rows.map((doc, i) => (
-            <Link key={doc.id} href={`/docs/${doc.id}`}
+            <Link key={doc.id} href={doc.link || `/docs/${doc.id}`}
+              target={doc.link ? "_blank" : undefined}
               onMouseEnter={() => setHRow(doc.id)} onMouseLeave={() => setHRow(null)}
               className="grid grid-cols-[1fr_70px] sm:grid-cols-[1fr_90px_70px] px-4 py-2.5 items-center border-b transition-colors"
               style={{ textDecoration: 'none', background: hRow===doc.id ? '#fdf7f0' : i%2 ? '#fdfcf9' : t.bgSurface, borderColor:t.borderFaint }}
@@ -417,7 +418,7 @@ export default function Home() {
     : PLACEHOLDER_PROJECTS;
   const projects = rawProjects;
 
-  const allDocs  = portfolio ? (portfolio.docs || []).filter(d => d.published !== false) : [];
+  const allDocs  = portfolio ? (portfolio.docs || []).filter(d => d.published !== false) : PLACEHOLDER_DOCS;
   const livePosts = posts.length > 0 ? posts : PLACEHOLDER_POSTS;
 
   const MAX = 1040;
@@ -492,7 +493,7 @@ export default function Home() {
                   }
                 </div>
                 <div style={{ display:'flex', gap:6 }}>
-                  <RoleTag>{portfolio?.site?.role || 'AI Product'}</RoleTag>
+                  <RoleTag>AI Product</RoleTag>
                   <RoleTag>Systems</RoleTag>
                 </div>
               </div>
@@ -552,7 +553,7 @@ export default function Home() {
           </Reveal>
           <Reveal delay={80}>
             <Browser>
-              <DataRoom docs={allDocs} isLoaded={!!portfolio} />
+              <DataRoom docs={allDocs} />
             </Browser>
           </Reveal>
         </section>

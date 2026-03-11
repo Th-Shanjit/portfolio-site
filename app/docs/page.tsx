@@ -28,6 +28,11 @@ export default function DocsArchive() {
   const categories = Array.from(new Set(publishedDocs.map((doc: any) => doc.type))) as string[];
   const allCategories = ['All', ...categories];
 
+  const stripHtml = (html: string) => {
+    if (!html) return '';
+    return html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ');
+  };
+
   const filteredDocs = publishedDocs.filter((doc: any) => {
     const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) || doc.type.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = activeFilter === 'All' || doc.type === activeFilter;
@@ -80,7 +85,8 @@ export default function DocsArchive() {
             {filteredDocs.map((doc: any, index: number) => (
               <Reveal key={doc.id} delay={index * 60}>
                 <Link 
-                  href={`/docs/${doc.id}`} 
+                  href={doc.link || `/docs/${doc.id}`} 
+                  target={doc.link ? "_blank" : undefined}
                   style={{ display: 'block', textDecoration: 'none', padding: '32px 0', borderBottom: `1px solid ${t.borderFaint}`, transition: 'all 0.2s' }}
                   onMouseEnter={(e) => (e.currentTarget.querySelector('.doc-title') as HTMLElement).style.color = t.accent}
                   onMouseLeave={(e) => (e.currentTarget.querySelector('.doc-title') as HTMLElement).style.color = t.ink}
@@ -95,7 +101,7 @@ export default function DocsArchive() {
                         {doc.status === 'draft' && <DraftBadge />}
                       </h2>
                       <p style={{ fontFamily: t.sans, fontSize: 15, color: t.inkMuted, fontWeight: 300, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                        {(Array.isArray(doc.content) && doc.content[0]) ? doc.content[0].replace(/^### /, '') : "Read the full architectural breakdown."}
+                        {(Array.isArray(doc.content) && doc.content[0]) ? stripHtml(doc.content[0]) : "Read the full architectural breakdown."}
                       </p>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
