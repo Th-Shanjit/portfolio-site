@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { 
   Save, Plus, Trash2, ChevronDown, ChevronUp, ImageIcon, 
-  FileText, Settings, LayoutTemplate, Bold, Italic, 
-  Heading3, Quote, Code, Tag, Sparkles, Globe, Eye, EyeOff, 
+  FileText, Settings, LayoutTemplate, Tag, Sparkles, Globe, Eye, EyeOff, 
   CheckCircle2, ExternalLink, ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { t } from '@/lib/design';
+import RichTextEditor from '@/components/RichTextEditor';
 
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
       if (!prev) return prev;
       const newDocs = [...prev.docs];
       if (field === 'content') {
-        newDocs[index][field] = value.split('\n\n');
+        newDocs[index][field] = [value]; // Save the HTML string as a single item in the array to avoid breaking the expected string[] format right now, though we should transition to a single string eventually.
       } else {
         newDocs[index][field] = value;
       }
@@ -517,26 +517,12 @@ export default function AdminDashboard() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 16 }}>
                           <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                             <span>Document Body</span>
-                            <span style={{ textTransform: 'none', letterSpacing: 'normal', color: t.inkFaint }}>Markdown supported.</span>
+                            <span style={{ textTransform: 'none', letterSpacing: 'normal', color: t.inkFaint }}>Rich text supported (Paste from anywhere)</span>
                           </label>
-                          <div style={{ border: `1px solid ${t.border}`, borderRadius: 12, overflow: 'hidden', background: t.bgSurface }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: 8, background: t.bgMuted, borderBottom: `1px solid ${t.borderFaint}` }}>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + '\n\n### ')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Heading3 size={16}/></button>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + '**Bold**')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Bold size={16}/></button>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + '*Italic*')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Italic size={16}/></button>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + '\n\n> ')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Quote size={16}/></button>
-                              <button type="button" onClick={() => updateDoc(index, 'content', (Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || '') + ' `code` ')} style={{ padding: 8, background: 'transparent', border: 'none', color: t.inkMuted, cursor: 'pointer', borderRadius: 6 }}><Code size={16}/></button>
-                            </div>
-                            <textarea 
-                              style={{ width: '100%', padding: 24, background: 'transparent', fontSize: 14, fontFamily: t.sans, color: t.ink, minHeight: 300, border: 'none', outline: 'none', resize: 'vertical', lineHeight: 1.6 }} 
-                              value={Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content || ''} 
-                              onChange={(e) => {
-                                e.target.style.height = 'auto';
-                                e.target.style.height = e.target.scrollHeight + 'px';
-                                updateDoc(index, 'content', e.target.value);
-                              }} 
-                            />
-                          </div>
+                          <RichTextEditor 
+                            content={Array.isArray(doc.content) ? doc.content.join('\n\n') : (doc.content || '')} 
+                            onChange={(html) => updateDoc(index, 'content', html)} 
+                          />
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 16, borderTop: `1px solid ${t.borderFaint}` }}>

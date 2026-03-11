@@ -5,14 +5,6 @@ import Link from 'next/link';
 import { ArrowLeft, Clock, Calendar, Hash, Download } from 'lucide-react';
 import { t, Reveal, Label, RoleTag } from '@/lib/design';
 
-const formatText = (text: string) => {
-  let formatted = text
-    .replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 500; color: var(--ink)">$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em style="font-style: italic; color: var(--ink)">$1</em>')
-    .replace(/`(.*?)`/g, '<code style="background: var(--bgMuted); color: var(--ink); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 13px; border: 1px solid var(--borderFaint)">$1</code>');
-  return { __html: formatted };
-};
-
 export default function DocumentReader({ params }: { params: Promise<{ slug: string }> }) {
   const [progress, setProgress] = useState(0);
   const [data, setData] = useState<any>(null);
@@ -100,18 +92,11 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
         {/* Content Body */}
         <Reveal delay={100}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-            {doc.content?.map((paragraph: string, index: number) => {
-              if (paragraph.startsWith('###')) {
-                return (
-                  <h3 key={index} style={{ fontFamily: t.serif, fontSize: 28, fontWeight: 500, color: t.ink, marginTop: 32, marginBottom: 8, lineHeight: 1.2 }}>
-                    {paragraph.replace('### ', '')}
-                  </h3>
-                );
-              }
-              return (
-                <p key={index} style={{ fontFamily: t.sans, fontSize: 18, color: t.inkMuted, fontWeight: 300, lineHeight: 1.8, margin: 0 }} dangerouslySetInnerHTML={formatText(paragraph)} />
-              );
-            })}
+            <div 
+              className="rich-text-content"
+              style={{ fontFamily: t.sans, fontSize: 18, color: t.inkMuted, fontWeight: 300, lineHeight: 1.8 }}
+              dangerouslySetInnerHTML={{ __html: Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content }}
+            />
 
             {doc.pdfUrl && (
               <div style={{ marginTop: 64, background: t.bgSurface, borderRadius: 24, border: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>

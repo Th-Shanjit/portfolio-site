@@ -152,22 +152,45 @@ function FilmCard({ doc, i }: { doc: Doc; i: number }) {
 }
 
 // ─── browser / data room ───────────────────────────────────────────────────
-const FOLDERS = [
-  { id: 'case-study', label: 'Case Studies', icon: LayoutGrid },
-  { id: 'project',    label: 'Projects',     icon: FolderOpen },
-  { id: 'blog',       label: 'Blog',         icon: BookOpen   },
-  { id: 'doc',        label: 'Docs',         icon: FileText   },
-];
+const DEFAULT_ICONS: Record<string, any> = {
+  'case-study': LayoutGrid,
+  'project': FolderOpen,
+  'blog': BookOpen,
+  'doc': FileText,
+};
+
+const DEFAULT_LABELS: Record<string, string> = {
+  'case-study': 'Case Studies',
+  'project': 'Projects',
+  'blog': 'Blog',
+  'doc': 'Docs',
+};
 
 function DataRoom({ docs }: { docs: Doc[] }) {
-  const [active, setActive] = useState('case-study');
+  const allDocs = docs.length > 0 ? docs : PLACEHOLDER_DOCS;
+  
+  const uniqueTypes = Array.from(new Set(allDocs.map(d => d.type))).filter(Boolean) as string[];
+  
+  const folders = uniqueTypes.map(type => ({
+    id: type,
+    label: DEFAULT_LABELS[type] || (type.charAt(0).toUpperCase() + type.slice(1)),
+    icon: DEFAULT_ICONS[type] || FileText,
+    count: allDocs.filter(d => d.type === type).length
+  }));
+
+  const [active, setActive] = useState(folders.length > 0 ? folders[0].id : 'case-study');
   const [hRow, setHRow] = useState<string | null>(null);
   const [hFold, setHFold] = useState<string | null>(null);
 
-  const allDocs = docs.length > 0 ? docs : PLACEHOLDER_DOCS;
-  const folders = FOLDERS.map(f => ({ ...f, count: allDocs.filter(d => d.type === f.id).length }));
+  // If active type is deleted, fallback to the first available
+  useEffect(() => {
+    if (folders.length > 0 && !folders.find(f => f.id === active)) {
+      setActive(folders[0].id);
+    }
+  }, [folders, active]);
+
   const rows = allDocs.filter(d => d.type === active).slice(0, 7);
-  const af = folders.find(f => f.id === active)!;
+  const af = folders.find(f => f.id === active) || { label: 'Unknown', icon: FileText };
 
   return (
     <div className="flex flex-col sm:flex-row min-h-[380px]" style={{ fontFamily:t.mono }}>
