@@ -9,12 +9,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowUpRight, Heart, MessageCircle, Linkedin,
+  ArrowUpRight, Linkedin,
   FolderOpen, BookOpen, FileText, LayoutGrid,
   ChevronRight, Clock, HardDrive, ChevronLeft,
   MapPin, Briefcase,
 } from 'lucide-react';
-import { t, Reveal, timeAgo, Label, RoleTag } from '@/lib/design';
+import { t, Reveal, Label, RoleTag } from '@/lib/design';
 
 // ─── types ─────────────────────────────────────────────────────────────────
 type Doc = {
@@ -30,10 +30,6 @@ type Portfolio = {
   docs: Doc[];
   contact: { heading: string };
 };
-type Post = {
-  id: string; postUrl: string; text?: string;
-  thumbnail?: string; likes: number; comments: number; createdAt?: number;
-};
 
 // ─── placeholder data ───────────────────────────────────────────────────────
 const PLACEHOLDER_PROJECTS: Doc[] = [
@@ -42,13 +38,6 @@ const PLACEHOLDER_PROJECTS: Doc[] = [
   { id: 'p3', title: 'Threadcraft', type: 'case-study', tag: 'Product', published: true, thumbnail: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=80', description: 'AI content strategy & scheduling' },
   { id: 'p4', title: 'Cortex', type: 'project', tag: 'Evaluation', published: true, thumbnail: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=80', description: 'Enterprise AI evaluation framework' },
   { id: 'p5', title: 'Nexus', type: 'case-study', tag: 'Multi-agent', published: true, thumbnail: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80', description: 'Multi-agent orchestration OS' },
-];
-
-const PLACEHOLDER_POSTS: Post[] = [
-  { id: 'li1', postUrl: '#', likes: 847, comments: 63, createdAt: Date.now() - 1000 * 60 * 60 * 18, text: "After 6 months building agentic systems in production, here's what nobody tells you:\n\nAgents don't fail because the LLM is bad. They fail because the scaffolding is fragile.\n\nThree patterns that changed how we build:" },
-  { id: 'li2', postUrl: '#', likes: 1204, comments: 91, createdAt: Date.now() - 1000 * 60 * 60 * 42, text: "The best product insight I've had all year:\n\nUsers don't want AI that's impressive. They want AI that's invisible.\n\nThe moment your AI makes someone feel smart — that's product-market fit." },
-  { id: 'li3', postUrl: '#', likes: 532, comments: 44, createdAt: Date.now() - 1000 * 60 * 60 * 72, text: "We benchmarked 7 LLM providers for a production agentic workflow. Cost, latency, reliability.\n\nThe results surprised us. Thread below 👇" },
-  { id: 'li4', postUrl: '#', likes: 2140, comments: 178, createdAt: Date.now() - 1000 * 60 * 60 * 120, text: "Hot take: RAG is a band-aid.\n\nMost teams reach for retrieval when the real problem is context architecture.\n\nHere's a better mental model for when RAG actually makes sense — and when it doesn't." },
 ];
 
 const PLACEHOLDER_DOCS: Doc[] = [
@@ -311,77 +300,11 @@ function Browser({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── linkedin post ─────────────────────────────────────────────────────────
-function Post({ post, i, dpUrl, name }: { post: Post; i: number; dpUrl?: string; name?: string }) {
-  const [exp, setExp] = useState(false);
-  const [hov, setHov] = useState(false);
-  const long = (post.text?.length ?? 0) > 200;
-  const text = !exp && long ? post.text!.slice(0, 200) + '…' : post.text;
-
-  return (
-    <Reveal delay={i * 80}>
-      <a href={post.postUrl} target="_blank" rel="noopener noreferrer"
-        onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-        onClick={e => { if (long && !exp) { e.preventDefault(); setExp(true); } }}
-        style={{ display:'block', textDecoration:'none', paddingBottom:32, marginBottom:32, borderBottom:`1px solid ${t.borderFaint}` }}
-      >
-        {/* author */}
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
-          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <div style={{ width:30, height:30, borderRadius:'50%', overflow:'hidden', border:`1px solid ${t.borderFaint}`, flexShrink:0 }}>
-              {dpUrl
-                ? <img src={dpUrl} alt={name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-                : <div style={{ width:'100%', height:'100%', background:'#0a66c2', display:'flex', alignItems:'center', justifyContent:'center' }}><Linkedin size={11} color="white" /></div>
-              }
-            </div>
-            <div>
-              <p style={{ fontFamily:t.serif, fontSize:14, fontWeight:500, color:t.ink, margin:0, lineHeight:1 }}>{name || 'Author'}</p>
-              {post.createdAt && <p style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, margin:'3px 0 0' }}>{timeAgo(post.createdAt)} ago</p>}
-            </div>
-          </div>
-          <ArrowUpRight size={12} color={hov ? t.accent : t.borderFaint} style={{ transition:'color 0.2s' }} />
-        </div>
-
-        {text && (
-          <p style={{ fontFamily:t.sans, fontSize:13, color: hov ? '#4a4440' : t.inkMuted, lineHeight:1.75, margin:'0 0 12px', whiteSpace:'pre-line', fontWeight:300 }}>
-            {text}
-            {long && !exp && <span style={{ color:t.accent, cursor:'pointer', marginLeft:4, fontWeight:400 }} onClick={e => { e.preventDefault(); setExp(true); }}>see more</span>}
-          </p>
-        )}
-
-        <div style={{ display:'flex', gap:16 }}>
-          {[{Icon:Heart,v:post.likes},{Icon:MessageCircle,v:post.comments}].map(({Icon,v},j)=>(
-            <div key={j} style={{ display:'flex', alignItems:'center', gap:5 }}>
-              <Icon size={10} color={t.borderFaint} />
-              <span style={{ fontFamily:t.mono, fontSize:10, color:t.inkFaint }}>{v?.toLocaleString()}</span>
-            </div>
-          ))}
-        </div>
-      </a>
-    </Reveal>
-  );
-}
-
-// ─── skeleton ──────────────────────────────────────────────────────────────
-function Skel() {
-  return (
-    <div style={{ paddingBottom:32, marginBottom:32, borderBottom:`1px solid ${t.borderFaint}` }}>
-      {[50,85,70,40].map((w,i)=>(
-        <div key={i} style={{ height:9, width:`${w}%`, background:t.borderFaint, borderRadius:3, marginBottom:9, animation:'pulse 1.4s ease-in-out infinite' }} />
-      ))}
-    </div>
-  );
-}
-
-
 // ═══════════════════════════════════════════════════════════════════════════
 // PAGE
 // ═══════════════════════════════════════════════════════════════════════════
 export default function Home() {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [liLoading, setLiLoading] = useState(true);
-  const [liError, setLiError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/content?t=' + Date.now(), { cache:'no-store' })
@@ -393,14 +316,6 @@ export default function Home() {
         }
       })
       .catch(console.error);
-  }, []);
-
-  useEffect(() => {
-    fetch('/api/linkedin')
-      .then(r => r.ok ? r.json() : { error: `Server error: ${r.status}` })
-      .then(d => { if (d.error) setLiError(d.error); else setPosts(d.posts || []); })
-      .catch(() => setLiError('Could not load posts.'))
-      .finally(() => setLiLoading(false));
   }, []);
 
   // use real data if available, fall back to placeholders
@@ -420,7 +335,6 @@ export default function Home() {
   const projects = rawProjects;
 
   const allDocs  = portfolio ? (portfolio.docs || []).filter(d => d.published !== false) : PLACEHOLDER_DOCS;
-  const livePosts = posts.length > 0 ? posts : PLACEHOLDER_POSTS;
 
   const MAX = 1040;
   const PX = 'clamp(20px, 5vw, 64px)';
@@ -576,44 +490,12 @@ export default function Home() {
         </section>
 
         {/* ╔══════════════════════════════╗
-            ║        LINKEDIN             ║
-            ╚══════════════════════════════╝ */}
-        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`0 ${PX} 96px` }}>
-          <Reveal>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:48 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:16 }}>
-                <Label>03</Label>
-                <div style={{ width:40, height:'1px', background:t.border }} />
-                <Label>Thinking in Public</Label>
-              </div>
-              <a href={linkedinUrl} target="_blank" rel="noopener noreferrer"
-                style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, textDecoration:'none', letterSpacing:'0.12em', textTransform:'uppercase', display:'flex', alignItems:'center', gap:5 }}>
-                <Linkedin size={9} /> View profile <ArrowUpRight size={9} />
-              </a>
-            </div>
-          </Reveal>
-
-          {liError ? (
-            <p style={{ fontFamily:t.mono, fontSize:11, color:t.inkFaint }}>{liError}</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-0 sm:gap-x-[52px]">
-              {(liLoading && posts.length === 0)
-                ? Array.from({length:4}).map((_,i)=><Skel key={i}/>)
-                : livePosts.map((p,i)=>(
-                    <Post key={p.id} post={p} i={i} dpUrl={dpUrl} name={name} />
-                  ))
-              }
-            </div>
-          )}
-        </section>
-
-        {/* ╔══════════════════════════════╗
             ║         CONTACT             ║
             ╚══════════════════════════════╝ */}
         <section style={{ maxWidth:MAX, margin:'0 auto', padding:`0 ${PX} 96px` }}>
           <Reveal>
             <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:56 }}>
-              <Label>04</Label>
+              <Label>03</Label>
               <div style={{ width:40, height:'1px', background:t.border }} />
               <Label>Contact</Label>
             </div>
