@@ -23,8 +23,9 @@ type Doc = {
   description?: string; tag?: string; content?: string[];
 };
 type Portfolio = {
-  site: { name: string; dpUrl?: string; linkedinUrl?: string };
-  hero: { description: string; link: string; linkText: string };
+  site: { name: string; dpUrl?: string; linkedinUrl?: string; role?: string };
+  hero: { tag?: string; title?: string; description: string; link: string; linkText: string; coverImage?: string };
+  about?: { location?: string };
   highlightedProjects: { id: string }[];
   docs: Doc[];
   contact: { heading: string };
@@ -446,16 +447,16 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-[40px] sm:mb-[64px]">
               <div style={{ display:'flex', alignItems:'center', gap:9 }}>
                 <div style={{ width:7, height:7, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 8px rgba(74,222,128,0.5)' }} />
-                <Label>Available for collaboration</Label>
+                <Label>{portfolio?.hero?.tag || 'Available for collaboration'}</Label>
               </div>
               <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-16">
                 <div style={{ display:'flex', alignItems:'center', gap:5 }}>
                   <MapPin size={9} color={t.inkFaint} />
-                  <Label>Remote / Worldwide</Label>
+                  <Label>{portfolio?.about?.location || 'Remote / Worldwide'}</Label>
                 </div>
                 <div style={{ display:'flex', alignItems:'center', gap:5 }}>
                   <Briefcase size={9} color={t.inkFaint} />
-                  <Label>AI Product</Label>
+                  <Label>{portfolio?.site?.role || 'AI Product'}</Label>
                 </div>
               </div>
             </div>
@@ -464,17 +465,24 @@ export default function Home() {
           {/* name + avatar */}
           <div className="flex flex-col-reverse sm:flex-row items-start sm:items-end justify-between gap-8 sm:gap-[32px]">
             <Reveal delay={60}>
-              <h1 style={{
-                fontFamily: t.serif,
-                fontSize: 'clamp(56px, 12vw, 114px)',
-                fontWeight: 400,
-                lineHeight: 0.88,
-                letterSpacing: '-0.02em',
-                color: t.ink,
-                margin: 0,
-              }}>
-                {name}
-              </h1>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {portfolio?.hero?.title && (
+                  <span style={{ fontFamily: t.mono, fontSize: 10, color: t.accent, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 12 }}>
+                    {portfolio.hero.title}
+                  </span>
+                )}
+                <h1 style={{
+                  fontFamily: t.serif,
+                  fontSize: 'clamp(56px, 12vw, 114px)',
+                  fontWeight: 400,
+                  lineHeight: 0.88,
+                  letterSpacing: '-0.02em',
+                  color: t.ink,
+                  margin: 0,
+                }}>
+                  {name}
+                </h1>
+              </div>
             </Reveal>
 
             <Reveal delay={120}>
@@ -493,12 +501,21 @@ export default function Home() {
                   }
                 </div>
                 <div style={{ display:'flex', gap:6 }}>
-                  <RoleTag>AI Product</RoleTag>
-                  <RoleTag>Systems</RoleTag>
+                  <RoleTag>{portfolio?.site?.role || 'AI Product'}</RoleTag>
+                  {portfolio?.hero?.tag && <RoleTag>{portfolio.hero.tag}</RoleTag>}
                 </div>
               </div>
             </Reveal>
           </div>
+
+          {/* cover image if exists */}
+          {portfolio?.hero?.coverImage && (
+            <Reveal delay={150}>
+              <div style={{ marginTop: 48, width: '100%', height: 'clamp(200px, 40vh, 400px)', borderRadius: 12, overflow: 'hidden', border: `1px solid ${t.border}`, boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
+                <img src={portfolio.hero.coverImage} alt={portfolio.hero.title || 'Hero'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+            </Reveal>
+          )}
 
           {/* rule + bio + cta */}
           <Reveal delay={180}>

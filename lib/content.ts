@@ -20,6 +20,7 @@ export interface Hero {
   description: string;
   link: string;
   linkText: string;
+  coverImage?: string;
 }
 
 export interface HighlightedProject {
