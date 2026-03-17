@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "PaperLoop | Scanner for Educators",
     description: "Handwritten to print-ready in seconds. Powered by Gemini Vision AI.",
-    images: ["/paperloop-logo.png"], // <-- Update this to match your uploaded image filename
+    images: ["/public/icon.png"], // <-- Update this to match your uploaded image filename
     type: "website",
   },
   twitter: {
