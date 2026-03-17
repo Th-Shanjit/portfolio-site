@@ -32,32 +32,16 @@ export default function DownloadPage() {
                 </div>
                 <p className="text-[#EDE8DB]/60 mb-6">Available now on the Google Play Store for Android devices.</p>
                 
-                <div className="bg-black/20 rounded-xl p-5 border border-white/5 space-y-4">
-                  <h3 className="text-sm font-mono tracking-wider text-[#CF8610] uppercase">Installation Instructions</h3>
-                  
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#CF8610] text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</div>
-                    <div>
-                      <p className="text-[#EDE8DB] mb-2">Join our testing group for access</p>
-                      <a href="https://groups.google.com/g/paperloopmvp" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-between w-full md:w-auto md:min-w-[200px] px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-medium transition-colors">
-                        Join Google Group
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                      </a>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3 pt-2">
-                    <div className="w-6 h-6 rounded-full bg-[#CF8610] text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
-                    <div>
-                      <p className="text-[#EDE8DB] mb-2">Download from the Play Store</p>
-                      <a href="https://play.google.com/store/apps/details?id=com.paperloop.official" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-between w-full md:w-auto md:min-w-[200px] px-4 py-2.5 bg-[#CF8610] hover:bg-[#B07610] text-white rounded-lg text-sm font-medium transition-colors shadow-[0_4px_14px_rgba(207,134,16,0.3)] hover:shadow-[0_6px_20px_rgba(207,134,16,0.4)] hover:-translate-y-0.5 transform">
-                        <span className="flex items-center gap-2">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                          Get it on Google Play
-                        </span>
-                      </a>
-                    </div>
-                  </div>
+                <div className="bg-black/20 rounded-xl p-5 border border-white/5 flex flex-col items-start gap-4">
+                  <a href="https://play.google.com/store/apps/details?id=com.paperloop.official" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full md:w-auto md:min-w-[200px] px-6 py-3 bg-[#CF8610] hover:bg-[#B07610] text-white rounded-lg text-sm font-medium transition-colors shadow-[0_4px_14px_rgba(207,134,16,0.3)] hover:shadow-[0_6px_20px_rgba(207,134,16,0.4)] hover:-translate-y-0.5 transform">
+                    <span className="flex items-center gap-2">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      Get it on Google Play
+                    </span>
+                  </a>
+                  <p className="text-[#EDE8DB]/60 text-sm">
+                    Note: Currently, only registered users can access the app.
+                  </p>
                 </div>
               </div>
             </div>
