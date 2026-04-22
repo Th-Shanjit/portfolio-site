@@ -3,7 +3,7 @@ import { Redis } from '@upstash/redis';
 
 export const dynamic = 'force-dynamic';
 
-const SUPPORT_EMAIL = 'hello@shanjitthokchom.xyz';
+const SUPPORT_EMAIL = 'contact@shanjitthokchom.xyz';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const getRedis = () => {

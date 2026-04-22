@@ -119,9 +119,9 @@ export default function DownloadPage() {
           <p className="font-sans text-[14px] text-[#EDE8DB]/55 mb-5 max-w-[420px] mx-auto">
             Having trouble with access or the app? Email support — a human replies.
           </p>
-          <a href="mailto:hello@shanjitthokchom.xyz?subject=PaperLoop%20support"
+          <a href="mailto:contact@shanjitthokchom.xyz?subject=PaperLoop%20support"
             className="inline-flex items-center gap-2 font-sans text-[14px] text-[#F0A535] hover:text-[#EDE8DB] transition-colors no-underline font-medium">
-            <Mail size={16} /> hello@shanjitthokchom.xyz
+            <Mail size={16} /> contact@shanjitthokchom.xyz
           </a>
         </section>
       </main>
@@ -140,7 +140,7 @@ function RequestAccessForm() {
     const body = encodeURIComponent(
       `Hi Shanjit,\n\nI'd like access to the PaperLoop closed beta.\n\nMy email: ${addr}\n\nThanks!`
     );
-    window.location.href = `mailto:hello@shanjitthokchom.xyz?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:contact@shanjitthokchom.xyz?subject=${subject}&body=${body}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -5,7 +5,7 @@
     "linkedinUrl": "https://www.linkedin.com/in/shanjit-thokchom-7101202b6",
     "dpUrl": "/profile.jpg",
     "resumeUrl": "/resume.pdf",
-    "email": "hello@shanjitthokchom.xyz"
+    "email": "contact@shanjitthokchom.xyz"
   },
   "socials": [
     {
@@ -14,7 +14,7 @@
     },
     {
       "name": "Email",
-      "url": "mailto:hello@shanjitthokchom.xyz"
+      "url": "mailto:contact@shanjitthokchom.xyz"
     },
     {
       "name": "Resume (PDF)",
@@ -39,7 +39,7 @@
   "contact": {
     "heading": "Let's build something teachers actually use.",
     "subheading": "Whether you're hiring a PM who ships, exploring agentic architectures, or want to exchange notes — my inbox is open.",
-    "email": "hello@shanjitthokchom.xyz"
+    "email": "contact@shanjitthokchom.xyz"
   },
   "about": {
     "heading": "Law, narrative, product.",

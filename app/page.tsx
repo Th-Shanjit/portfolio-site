@@ -70,7 +70,7 @@ export default async function Home() {
   const linkedinUrl =
     portfolio.site?.linkedinUrl ||
     'https://www.linkedin.com/in/shanjit-thokchom-7101202b6';
-  const email = portfolio.site?.email || 'hello@shanjitthokchom.xyz';
+  const email = portfolio.site?.email || 'contact@shanjitthokchom.xyz';
   const resumeUrl = portfolio.site?.resumeUrl || '/resume.pdf';
 
   const hero = (portfolio.hero || {}) as Record<string, string | undefined>;
