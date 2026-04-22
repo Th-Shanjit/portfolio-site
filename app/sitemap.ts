@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next';
 import { getPortfolio, publicDocs } from '@/lib/getPortfolio';
 
+export const dynamic = 'force-dynamic';
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://shanjitthokchom.xyz';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
