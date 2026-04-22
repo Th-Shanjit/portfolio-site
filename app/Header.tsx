@@ -1,42 +1,38 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { t } from '@/lib/design';
+
+const LINKS = [
+  { name: 'Work', path: '/' },
+  { name: 'About', path: '/about' },
+  { name: 'Writing', path: '/docs' },
+];
 
 export default function Header() {
   const pathname = usePathname();
 
-  if (pathname && (pathname.startsWith('/paperloop') || pathname.startsWith('/admin') || pathname.startsWith('/login'))) {
+  if (
+    pathname &&
+    (pathname.startsWith('/paperloop') ||
+      pathname.startsWith('/admin') ||
+      pathname.startsWith('/login'))
+  ) {
     return null;
   }
 
   return (
-    <header style={{ 
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-      padding: '24px clamp(20px, 5vw, 64px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 24,
-      fontFamily: t.mono, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase',
-      background: 'rgba(248, 244, 239, 0.85)',
-      backdropFilter: 'blur(12px)',
-      borderBottom: `1px solid ${t.borderFaint}`
-    }}>
-      {[
-        { name: 'Portfolio', path: '/' },
-        { name: 'About', path: '/about' },
-        { name: 'Data Room', path: '/docs' }
-      ].map((link) => {
-        const isActive = pathname === link.path || (link.name === 'Data Room' && pathname.startsWith('/docs'));
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-end gap-6 px-[clamp(20px,5vw,64px)] py-6 bg-[#f8f4ef]/85 backdrop-blur-xl border-b border-[#ede8e1] font-mono text-[10px] tracking-[0.1em] uppercase">
+      {LINKS.map((link) => {
+        const isActive =
+          pathname === link.path ||
+          (link.name === 'Writing' && pathname?.startsWith('/docs'));
         return (
           <Link
             key={link.name}
             href={link.path}
-            style={{
-              color: isActive ? t.ink : t.inkFaint,
-              textDecoration: 'none',
-              transition: 'color 0.2s'
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = t.ink)}
-            onMouseLeave={(e) => (e.currentTarget.style.color = isActive ? t.ink : t.inkFaint)}
+            className={`no-underline transition-colors ${
+              isActive ? 'text-[#1c1916]' : 'text-[#b8b2aa] hover:text-[#1c1916]'
+            }`}
           >
             {link.name}
           </Link>

@@ -1,0 +1,3 @@
+components/ui/Button.tsx(104,43): error TS2322: Type 'MouseEventHandler<HTMLAnchorElement> | MouseEventHandler<HTMLButtonElement> | undefined' is not assignable to type 'MouseEventHandler<HTMLButtonElement> | undefined'.
+  Type 'MouseEventHandler<HTMLAnchorElement>' is not assignable to type 'MouseEventHandler<HTMLButtonElement>'.
+    Type 'HTMLAnchorElement' is missing the following properties from type 'HTMLButtonElement': disabled, form, formAction, formEnctype, and 13 more.

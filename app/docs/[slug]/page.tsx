@@ -1,118 +1,198 @@
-'use client';
-
-import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Clock, Calendar, Hash, Download } from 'lucide-react';
-import { t, Reveal, RoleTag } from '@/lib/design';
+import type { Metadata } from 'next';
+import { ArrowLeft, ArrowRight, Clock, Calendar, Hash, Download, ChevronLeft } from 'lucide-react';
+import { Reveal } from '@/lib/design';
+import Tag from '@/components/ui/Tag';
+import { getPortfolio, publicDocs, type Doc } from '@/lib/getPortfolio';
+import DocReaderClient from './DocReaderClient';
+import fallbackData from '@/data/portfolio.json';
 
-export default function DocumentReader({ params }: { params: Promise<{ slug: string }> }) {
-  const [progress, setProgress] = useState(0);
-  const [data, setData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const resolvedParams = use(params);
+export const dynamic = 'force-dynamic';
 
-  useEffect(() => {
-    setIsLoading(true); 
-    fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
-      .then(res => res.json())
-      .then(json => {
-        setData(json);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        setIsLoading(false);
-      });
+export async function generateStaticParams() {
+  return publicDocs((fallbackData as { docs?: Doc[] }).docs).map((d) => ({ slug: d.id }));
+}
 
-    fetch(`/api/views/${resolvedParams.slug}`, { method: 'POST' }).catch(() => {});
-    
-    const updateProgress = () => {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollHeight > 0) setProgress((window.scrollY / scrollHeight) * 100);
-    };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getPortfolio();
+  const doc = data.docs?.find((d) => d.id === slug);
 
-    window.addEventListener('scroll', updateProgress);
-    return () => window.removeEventListener('scroll', updateProgress);
-  }, [resolvedParams.slug]);
-
-  if (isLoading || !data) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: t.bg, color: t.inkMuted, textTransform: 'uppercase', letterSpacing: '0.15em', fontSize: 11, fontFamily: t.mono }}>
-        Loading Document...
-      </div>
-    );
+  if (!doc) {
+    return { title: 'Document' };
   }
 
-  const doc = data.docs?.find((d: any) => d.id === resolvedParams.slug);
+  const description = doc.description || 'Writing and case studies by Shanjit Thokchom.';
+
+  return {
+    title: doc.title,
+    description,
+    openGraph: {
+      title: doc.title,
+      description,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: doc.title,
+      description,
+    },
+  };
+}
+
+export default async function DocumentReader({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const data = await getPortfolio();
+
+  const docs = publicDocs(data.docs);
+  const idx = docs.findIndex((d) => d.id === slug);
+
+  let doc: Doc | undefined;
+  let prev: Doc | undefined;
+  let next: Doc | undefined;
+
+  if (idx === -1) {
+    doc = data.docs?.find((d) => d.id === slug);
+  } else {
+    doc = docs[idx];
+    prev = idx > 0 ? docs[idx - 1] : undefined;
+    next = idx < docs.length - 1 ? docs[idx + 1] : undefined;
+  }
+
+  const authorName = data.site?.name || 'Shanjit Thokchom';
+  const authorRole = data.site?.role || 'Product Manager · Agentic AI';
+  const authorImg = data.site?.dpUrl || '/profile.jpg';
 
   if (!doc) {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: t.bg, color: t.ink }}>
-        <h1 style={{ fontFamily: t.serif, fontSize: 32, marginBottom: 8 }}>Document Unavailable</h1>
-        <p style={{ fontFamily: t.sans, fontSize: 15, color: t.inkMuted, marginBottom: 32 }}>The requested architecture might be private or deleted.</p>
-        <Link href="/docs" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10, fontFamily: t.mono, color: t.inkMuted, textTransform: 'uppercase', textDecoration: 'none', letterSpacing: '0.1em' }}>
-          <ArrowLeft size={14} /> Return to Archive
+      <main className="bg-[#f8f4ef] min-h-screen flex flex-col items-center justify-center text-[#1c1916]">
+        <h1 className="font-serif text-[32px] mb-2">Document unavailable</h1>
+        <p className="font-sans text-[15px] text-[#7a7470] mb-8">
+          The requested write-up might be private or deleted.
+        </p>
+        <Link
+          href="/docs"
+          className="flex items-center gap-2 font-mono text-[10px] text-[#7a7470] uppercase tracking-[0.1em] no-underline hover:text-[#c8873c] transition-colors"
+        >
+          <ArrowLeft size={14} /> Return to writing
         </Link>
       </main>
     );
   }
 
+  const bodyHtml = Array.isArray(doc.content) ? doc.content.join('\n\n') : (doc.content || '');
+
   return (
-    <main style={{ background: t.bg, minHeight: '100vh', color: t.ink, padding: '120px clamp(20px, 5vw, 64px) 160px', maxWidth: 800, margin: '0 auto' }}>
-      
-      {/* Scroll Progress Bar */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: 3, zIndex: 100, background: 'transparent' }}>
-        <div style={{ height: '100%', background: t.accent, width: `${progress}%`, transition: 'width 0.1s ease-out' }}></div>
-      </div>
+    <main className="bg-[#f8f4ef] min-h-screen text-[#1c1916] max-w-[800px] mx-auto px-[clamp(20px,5vw,64px)] pt-[120px] pb-40">
+      <DocReaderClient slug={slug} />
 
       <article>
         <Reveal>
-          <div style={{ marginBottom: 48 }}>
-            <Link href="/docs" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 10, fontFamily: t.mono, color: t.inkFaint, textTransform: 'uppercase', textDecoration: 'none', letterSpacing: '0.1em', marginBottom: 48 }}>
-              <ArrowLeft size={14} /> Back to Data Room
+          <div className="mb-12">
+            <Link
+              href="/docs"
+              className="inline-flex items-center gap-2 font-mono text-[10px] text-[#b8b2aa] uppercase tracking-[0.1em] no-underline hover:text-[#1c1916] transition-colors mb-12"
+            >
+              <ArrowLeft size={14} /> Back to writing
             </Link>
-            
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 32 }}>
-              <RoleTag><Hash size={10} style={{ display: 'inline', marginRight: 4, verticalAlign: 'text-bottom' }} />{doc.type}</RoleTag>
-              {doc.date && <RoleTag><Calendar size={10} style={{ display: 'inline', marginRight: 4, verticalAlign: 'text-bottom' }} />{doc.date}</RoleTag>}
-              {doc.readTime && <RoleTag><Clock size={10} style={{ display: 'inline', marginRight: 4, verticalAlign: 'text-bottom' }} />{doc.readTime}</RoleTag>}
+
+            <div className="flex flex-wrap gap-2 mb-8">
+              <Tag tone="neutral" size="sm">
+                <Hash size={10} className="inline mr-1" />
+                {doc.type}
+              </Tag>
+              {doc.tag && (
+                <Tag tone="accent" size="sm">
+                  {doc.tag}
+                </Tag>
+              )}
+              {doc.date && (
+                <Tag tone="neutral" size="sm">
+                  <Calendar size={10} className="inline mr-1" />
+                  {doc.date}
+                </Tag>
+              )}
+              {doc.readTime && (
+                <Tag tone="neutral" size="sm">
+                  <Clock size={10} className="inline mr-1" />
+                  {doc.readTime}
+                </Tag>
+              )}
             </div>
 
-            <h1 style={{ fontFamily: t.serif, fontSize: 'clamp(40px, 6vw, 64px)', fontWeight: 400, color: t.ink, lineHeight: 1.05, marginBottom: 32 }}>
+            <h1 className="font-serif font-normal text-[#1c1916] leading-[1.05] tracking-[-0.02em] mb-8 text-[clamp(36px,5.5vw,60px)]">
               {doc.title}
             </h1>
+
+            {doc.description && (
+              <p className="font-sans text-[17px] text-[#7a7470] font-light leading-[1.6] max-w-[620px] mb-10">
+                {doc.description}
+              </p>
+            )}
+
+            <div className="flex items-center gap-3 py-5 border-y border-[#ede8e1]">
+              <div className="w-10 h-10 rounded-full overflow-hidden border border-[#e6ded4] shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={authorImg}
+                  alt={`${authorName} profile photo`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-serif text-[15px] text-[#1c1916]">{authorName}</span>
+                <span className="font-mono text-[9px] text-[#b8b2aa] tracking-[0.14em] uppercase">
+                  {authorRole}
+                </span>
+              </div>
+            </div>
           </div>
 
           {doc.coverImage && (
-            <div style={{ width: '100%', height: 400, marginBottom: 64, borderRadius: 24, overflow: 'hidden', border: `1px solid ${t.border}` }}>
-              <img src={doc.coverImage} alt={doc.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div className="w-full h-[360px] md:h-[420px] mb-14 rounded-2xl overflow-hidden border border-[#e6ded4]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={doc.coverImage} alt={doc.title} className="w-full h-full object-cover" />
             </div>
           )}
         </Reveal>
 
-        {/* Content Body */}
         <Reveal delay={100}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-            <div 
-              className="rich-text-content"
-              style={{ fontFamily: t.sans, fontSize: 18, color: t.inkMuted, fontWeight: 300, lineHeight: 1.8 }}
-              dangerouslySetInnerHTML={{ __html: Array.isArray(doc.content) ? doc.content.join('\n\n') : doc.content }}
+          <div className="flex flex-col gap-8">
+            <div
+              className="rich-text-content font-sans text-[17px] md:text-[18px] text-[#2f2a26] font-light leading-[1.8]"
+              dangerouslySetInnerHTML={{ __html: bodyHtml }}
             />
 
             {doc.pdfUrl && (
-              <div style={{ marginTop: 64, background: t.bgSurface, borderRadius: 24, border: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                <div style={{ padding: '24px 32px', borderBottom: `1px solid ${t.borderFaint}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div className="mt-14 bg-white rounded-2xl border border-[#e6ded4] flex flex-col overflow-hidden">
+                <div className="px-7 py-6 border-b border-[#ede8e1] flex items-center justify-between gap-4">
                   <div>
-                    <h3 style={{ fontFamily: t.serif, fontSize: 'clamp(18px, 4vw, 24px)', color: t.ink, marginBottom: 4 }}>Architecture Diagram</h3>
-                    <p style={{ fontFamily: t.sans, fontSize: 13, color: t.inkMuted, margin: 0 }}>PDF Viewer</p>
+                    <h3 className="font-serif text-[18px] md:text-[22px] text-[#1c1916] mb-1">
+                      Attached document
+                    </h3>
+                    <p className="font-sans text-[12px] text-[#7a7470] m-0">PDF viewer</p>
                   </div>
-                  <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: t.bgMuted, color: t.ink, border: `1px solid ${t.border}`, borderRadius: 99, fontFamily: t.sans, fontSize: 13, textDecoration: 'none', transition: 'background 0.2s', whiteSpace: 'nowrap' }} onMouseEnter={e => e.currentTarget.style.background = t.borderFaint} onMouseLeave={e => e.currentTarget.style.background = t.bgMuted}>
-                    <Download size={14} /> Open External
+                  <a
+                    href={doc.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#f2ede5] border border-[#e6ded4] hover:bg-[#e6ded4] rounded-full font-sans text-[12px] text-[#1c1916] no-underline transition-colors whitespace-nowrap"
+                  >
+                    <Download size={13} /> Open external
                   </a>
                 </div>
-                <div style={{ width: '100%', height: 'calc(100vh - 120px)', minHeight: '500px', maxHeight: '1000px', background: '#f8f9fa', position: 'relative' }}>
-                  <iframe 
-                    src={`${doc.pdfUrl}#view=FitH&toolbar=1`} 
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                <div className="w-full h-[calc(100vh-120px)] min-h-[500px] max-h-[1000px] bg-[#f8f9fa] relative">
+                  <iframe
+                    src={`${doc.pdfUrl}#view=FitH&toolbar=1`}
+                    className="absolute inset-0 w-full h-full border-none"
                     title="PDF Viewer"
                   />
                 </div>
@@ -120,6 +200,41 @@ export default function DocumentReader({ params }: { params: Promise<{ slug: str
             )}
           </div>
         </Reveal>
+
+        {(prev || next) && (
+          <div className="mt-20 pt-10 border-t border-[#e6ded4] grid grid-cols-1 md:grid-cols-2 gap-4">
+            {prev ? (
+              <Link
+                href={`/docs/${prev.id}`}
+                className="group bg-white border border-[#e6ded4] rounded-2xl p-5 no-underline hover:border-[#1c1916]/40 transition-colors"
+              >
+                <span className="flex items-center gap-1.5 font-mono text-[9px] text-[#b8b2aa] uppercase tracking-[0.14em] mb-2">
+                  <ChevronLeft size={11} /> Previous
+                </span>
+                <span className="font-serif text-[17px] text-[#1c1916] group-hover:text-[#c8873c] transition-colors line-clamp-2">
+                  {prev.title}
+                </span>
+              </Link>
+            ) : (
+              <div />
+            )}
+            {next ? (
+              <Link
+                href={`/docs/${next.id}`}
+                className="group bg-white border border-[#e6ded4] rounded-2xl p-5 no-underline hover:border-[#1c1916]/40 transition-colors md:text-right"
+              >
+                <span className="flex items-center md:justify-end gap-1.5 font-mono text-[9px] text-[#b8b2aa] uppercase tracking-[0.14em] mb-2">
+                  Next <ArrowRight size={11} />
+                </span>
+                <span className="font-serif text-[17px] text-[#1c1916] group-hover:text-[#c8873c] transition-colors line-clamp-2">
+                  {next.title}
+                </span>
+              </Link>
+            ) : (
+              <div />
+            )}
+          </div>
+        )}
       </article>
     </main>
   );

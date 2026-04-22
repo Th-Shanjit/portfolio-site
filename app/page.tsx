@@ -1,535 +1,289 @@
-'use client';
-
-/*
-  layout.tsx fonts (next/font/google):
-  ─ Cormorant_Garamond  weights: 300,400,500,600  styles: normal,italic
-  ─ DM_Sans             weights: 300,400,500
-*/
-
-import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowUpRight, Linkedin,
-  FolderOpen, BookOpen, FileText, LayoutGrid,
-  ChevronRight, Clock, HardDrive, ChevronLeft,
-  MapPin, Briefcase,
+  ArrowUpRight,
+  Linkedin,
+  Mail,
+  MapPin,
 } from 'lucide-react';
-import { t, Reveal, Label, RoleTag } from '@/lib/design';
+import { Reveal, Label } from '@/lib/design';
+import Button from '@/components/ui/Button';
+import Tag from '@/components/ui/Tag';
+import Filmstrip from './_components/Filmstrip';
+import HomeAvatar from './_components/HomeAvatar';
+import ResumeButton from './_components/ResumeButton';
+import { getPortfolio, type Doc } from '@/lib/getPortfolio';
 
-// ─── types ─────────────────────────────────────────────────────────────────
-type Doc = {
-  id: string; title: string; type: string; published?: boolean;
-  thumbnail?: string; coverImage?: string; link?: string;
-  description?: string; tag?: string; content?: string[];
-};
-type Portfolio = {
-  site: { name: string; dpUrl?: string; linkedinUrl?: string; role?: string };
-  hero: { tag?: string; title?: string; description: string; link: string; linkText: string; coverImage?: string };
-  about?: { location?: string };
-  highlightedProjects: { id: string }[];
-  docs: Doc[];
-  contact: { heading: string };
-};
+export const dynamic = 'force-dynamic';
 
-// ─── placeholder data ───────────────────────────────────────────────────────
-const PLACEHOLDER_PROJECTS: Doc[] = [
-  { id: 'p1', title: 'AgentFlow', type: 'case-study', tag: 'Agentic AI', published: true, thumbnail: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80', description: 'End-to-end agentic workflow platform' },
-  { id: 'p2', title: 'Memoria', type: 'project', tag: 'LLM Infra', published: true, thumbnail: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80', description: 'LLM-powered knowledge management' },
-  { id: 'p3', title: 'Threadcraft', type: 'case-study', tag: 'Product', published: true, thumbnail: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=80', description: 'AI content strategy & scheduling' },
-  { id: 'p4', title: 'Cortex', type: 'project', tag: 'Evaluation', published: true, thumbnail: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=80', description: 'Enterprise AI evaluation framework' },
-  { id: 'p5', title: 'Nexus', type: 'case-study', tag: 'Multi-agent', published: true, thumbnail: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80', description: 'Multi-agent orchestration OS' },
-];
-
-const PLACEHOLDER_DOCS: Doc[] = [
-  { id: 'd1', title: 'Building Production-Grade Agentic Systems', type: 'case-study', published: true },
-  { id: 'd2', title: 'Context Window Management at Scale', type: 'case-study', published: true },
-  { id: 'd3', title: 'Multi-Agent Coordination Patterns', type: 'case-study', published: true },
-  { id: 'd4', title: 'AgentFlow Technical Architecture', type: 'project', published: true },
-  { id: 'd5', title: 'Memoria: Knowledge Graph Design', type: 'project', published: true },
-  { id: 'd6', title: 'Evaluating LLMs for Agentic Tasks', type: 'doc', published: true },
-  { id: 'd7', title: 'The State of AI in 2025', type: 'blog', published: true },
-  { id: 'd8', title: 'Why Most AI Products Fail', type: 'blog', published: true },
-];
-
-
-// ─── project filmstrip ─────────────────────────────────────────────────────
-function Filmstrip({ items }: { items: Doc[] }) {
-  const rail = useRef<HTMLDivElement>(null);
-  const [canL, setL] = useState(false);
-  const [canR, setR] = useState(false);
-
-  const sync = () => {
-    const el = rail.current; if (!el) return;
-    setL(el.scrollLeft > 10);
-    setR(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
-  };
-  useEffect(() => {
-    const el = rail.current; if (!el) return;
-    el.addEventListener('scroll', sync, { passive: true });
-    setTimeout(sync, 120);
-    return () => el.removeEventListener('scroll', sync);
-  }, [items]);
-
-  const scroll = (dir: 1 | -1) =>
-    rail.current?.scrollBy({ left: dir * 300, behavior: 'smooth' });
-
+function WritingList({ docs }: { docs: Doc[] }) {
+  const visible = docs.slice(0, 5);
+  if (visible.length === 0) return null;
   return (
-    <div style={{ position: 'relative' }}>
-      {/* fade edges */}
-      {canL && <div style={{ position:'absolute', left:0, top:0, bottom:18, width:80, background:`linear-gradient(to right, ${t.bg}, transparent)`, zIndex:3, pointerEvents:'none' }} />}
-      {canR && <div style={{ position:'absolute', right:0, top:0, bottom:18, width:100, background:`linear-gradient(to left, ${t.bg}, transparent)`, zIndex:3, pointerEvents:'none' }} />}
-
-      {/* nav buttons */}
-      {canL && (
-        <button className="hidden sm:flex" onClick={() => scroll(-1)} style={{ position:'absolute', left:-14, top:70, zIndex:4, width:32, height:32, borderRadius:'50%', background:t.bgSurface, border:`1px solid ${t.border}`, cursor:'pointer', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
-          <ChevronLeft size={13} color={t.inkMuted} />
-        </button>
-      )}
-      {canR && (
-        <button className="hidden sm:flex" onClick={() => scroll(1)} style={{ position:'absolute', right:-14, top:70, zIndex:4, width:32, height:32, borderRadius:'50%', background:t.bgSurface, border:`1px solid ${t.border}`, cursor:'pointer', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
-          <ChevronRight size={13} color={t.inkMuted} />
-        </button>
-      )}
-
-      {/* rail */}
-      <div ref={rail} style={{ display:'flex', gap:20, overflowX:'auto', paddingBottom:6, scrollSnapType:'x mandatory', scrollbarWidth:'none' }}>
-        {items.map((doc, i) => <FilmCard key={doc.id} doc={doc} i={i} />)}
-      </div>
+    <div className="flex flex-col divide-y divide-[#ede8e1] border-y border-[#ede8e1]">
+      {visible.map((doc) => (
+        <Link
+          key={doc.id}
+          href={doc.link || `/docs/${doc.id}`}
+          target={doc.link ? '_blank' : undefined}
+          className="group grid grid-cols-[1fr_auto] items-center gap-6 py-5 no-underline transition-colors"
+        >
+          <div className="min-w-0">
+            <div className="flex items-center gap-3 mb-1.5">
+              <Tag tone="neutral" size="sm">
+                {doc.type}
+              </Tag>
+              {doc.readTime && (
+                <span className="font-mono text-[9px] text-[#b8b2aa] tracking-[0.12em] uppercase">
+                  {doc.readTime}
+                </span>
+              )}
+              {doc.date && (
+                <span className="font-mono text-[9px] text-[#b8b2aa] tracking-[0.12em] uppercase">
+                  · {doc.date}
+                </span>
+              )}
+            </div>
+            <h3 className="font-serif text-[22px] font-medium text-[#1c1916] group-hover:text-[#c8873c] transition-colors leading-tight truncate">
+              {doc.title}
+            </h3>
+            {doc.description && (
+              <p className="font-sans text-[13px] text-[#7a7470] mt-1 line-clamp-1">
+                {doc.description}
+              </p>
+            )}
+          </div>
+          <ArrowUpRight
+            size={16}
+            className="shrink-0 text-[#b8b2aa] group-hover:text-[#c8873c] transition-colors"
+          />
+        </Link>
+      ))}
     </div>
   );
 }
 
-function FilmCard({ doc, i }: { doc: Doc; i: number }) {
-  const [hov, setHov] = useState(false);
+export default async function Home() {
+  const portfolio = await getPortfolio();
+
+  const name = portfolio.site?.name || 'Shanjit Thokchom';
+  const dpUrl = portfolio.site?.dpUrl || '/profile.jpg';
+  const linkedinUrl =
+    portfolio.site?.linkedinUrl ||
+    'https://www.linkedin.com/in/shanjit-thokchom-7101202b6';
+  const email = portfolio.site?.email || 'hello@shanjitthokchom.xyz';
+  const resumeUrl = portfolio.site?.resumeUrl || '/resume.pdf';
+
+  const hero = (portfolio.hero || {}) as Record<string, string | undefined>;
+  const eyebrow = hero.eyebrow || portfolio.site?.role || 'Product Manager · Agentic AI';
+  const headline =
+    hero.headline || 'I ship AI products that survive contact with real users.';
+  const subhead =
+    hero.subhead ||
+    hero.description ||
+    'Currently turning handwritten exams into print-ready PDFs with PaperLoop — a Gemini-powered scanner for educators, live on the Play Store.';
+  const ctaLink = hero.link || '/paperloop';
+  const ctaText = hero.linkText || 'See PaperLoop';
+  const availability = hero.tag || 'Available for product roles';
+
+  const about = (portfolio.about || {}) as Record<string, string | undefined>;
+  const location = about.location || 'Shillong, India';
+
+  const contactH = portfolio.contact?.heading || "Let's build something teachers actually use.";
+  const contactSub =
+    portfolio.contact?.subheading ||
+    "Whether you're hiring a PM who ships, exploring agentic architectures, or want to exchange notes — my inbox is open.";
+
+  const rawProjects = (portfolio.highlightedProjects || [])
+    .map((p) => portfolio.docs?.find((d) => d.id === p.id))
+    .filter((d): d is Doc => !!d && d.published !== false);
+
+  const writing = (portfolio.docs || [])
+    .filter(
+      (d) =>
+        d.published !== false &&
+        d.type !== 'legal' &&
+        !rawProjects.some((p) => p.id === d.id)
+    )
+    .slice(0, 5);
+
   return (
-    <a
-      href={doc.link || `/docs/${doc.id}`}
-      target={doc.link ? '_blank' : undefined}
-      rel="noopener noreferrer"
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{ display:'flex', flexDirection:'column', flexShrink:0, width:248, scrollSnapAlign:'start', textDecoration:'none' }}
-    >
-      {/* image */}
-      <div style={{ position:'relative', width:'100%', height:152, overflow:'hidden', background:t.bgMuted, borderRadius:8, border:`1px solid ${t.borderFaint}` }}>
-        {doc.thumbnail ? (
-          <img src={doc.thumbnail} alt={doc.title} style={{ width:'100%', height:'100%', objectFit:'cover', transform: hov ? 'scale(1.05)' : 'scale(1)', transition:'transform 0.6s cubic-bezier(0.16,1,0.3,1)' }} />
+    <main className="bg-[#f8f4ef] min-h-screen text-[#1c1916]">
+
+      <section className="max-w-[1040px] mx-auto px-[clamp(20px,5vw,64px)] pt-[96px] pb-20 md:pt-[120px] md:pb-28">
+
+        <Reveal>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-12 sm:mb-16">
+            <div className="flex items-center gap-[9px]">
+              <div className="w-[7px] h-[7px] rounded-full bg-[#4ade80] shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+              <Label>{availability}</Label>
+            </div>
+            <div className="flex items-center gap-6 sm:gap-10">
+              <div className="flex items-center gap-1.5">
+                <MapPin size={10} className="text-[#b8b2aa]" />
+                <Label>{location}</Label>
+              </div>
+              <Label>{eyebrow}</Label>
+            </div>
+          </div>
+        </Reveal>
+
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 md:gap-12 items-start">
+          <div className="flex flex-col">
+            <Reveal>
+              <span className="font-mono text-[10px] text-[#9b5f1b] tracking-[0.22em] uppercase mb-3">
+                {eyebrow}
+              </span>
+            </Reveal>
+            <Reveal delay={60}>
+              <h1 className="font-serif font-normal text-[#1c1916] tracking-[-0.025em] leading-[0.96] m-0 text-[clamp(44px,7.5vw,88px)]">
+                {headline}
+              </h1>
+            </Reveal>
+            <Reveal delay={140}>
+              <p className="mt-6 md:mt-8 font-sans font-light text-[16px] md:text-[17px] text-[#7a7470] leading-[1.7] max-w-[560px]">
+                {subhead}
+              </p>
+            </Reveal>
+            <Reveal delay={200}>
+              <div className="mt-7 md:mt-9 flex flex-wrap gap-2.5">
+                <Button href={ctaLink} variant="primary" size="md">
+                  {ctaText}
+                </Button>
+                <ResumeButton href={resumeUrl} label="Resume" source="home_hero" />
+                <Button
+                  href={linkedinUrl}
+                  external
+                  variant="ghost"
+                  size="md"
+                  icon={<Linkedin size={11} />}
+                  trailingIcon={false}
+                >
+                  LinkedIn
+                </Button>
+              </div>
+            </Reveal>
+          </div>
+
+          <Reveal delay={180}>
+            <div className="flex flex-row md:flex-col items-center md:items-end gap-3 shrink-0">
+              <div className="w-[86px] h-[86px] md:w-[104px] md:h-[104px] rounded-[10px] overflow-hidden border border-[#e6ded4] shadow-[0_6px_24px_rgba(28,25,22,0.10)]">
+                <HomeAvatar src={dpUrl} alt={name} />
+              </div>
+              <div className="flex flex-col md:items-end gap-1">
+                <span className="font-serif text-[16px] text-[#1c1916]">{name}</span>
+                <span className="font-mono text-[9px] text-[#b8b2aa] tracking-[0.14em] uppercase">
+                  {eyebrow}
+                </span>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="max-w-[1040px] mx-auto px-[clamp(20px,5vw,64px)] pb-24">
+        <Reveal>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <Label>01</Label>
+              <div className="w-10 h-px bg-[#e6ded4]" />
+              <Label>Selected Work</Label>
+            </div>
+            <Link
+              href="/docs"
+              className="font-mono text-[9px] text-[#b8b2aa] hover:text-[#c8873c] transition-colors tracking-[0.14em] uppercase flex items-center gap-1.5"
+            >
+              All work <ArrowUpRight size={10} />
+            </Link>
+          </div>
+        </Reveal>
+        {rawProjects.length > 0 ? (
+          <Filmstrip items={rawProjects} />
         ) : (
-          <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, letterSpacing:'0.15em' }}>NO PREVIEW</span>
+          <div className="py-16 text-center border border-dashed border-[#e6ded4] rounded-xl">
+            <p className="font-mono text-[10px] text-[#b8b2aa] tracking-[0.15em] uppercase">
+              No featured work yet.
+            </p>
           </div>
         )}
-        {/* index badge */}
-        <div style={{ position:'absolute', top:10, left:10, fontFamily:t.mono, fontSize:9, color:'rgba(255,255,255,0.7)', background:'rgba(0,0,0,0.35)', backdropFilter:'blur(6px)', padding:'3px 7px', borderRadius:3, letterSpacing:'0.1em' }}>
-          {String(i + 1).padStart(2, '0')}
-        </div>
-      </div>
+      </section>
 
-      {/* caption */}
-      <div style={{ paddingTop:10, display:'flex', flexDirection:'column', gap:3 }}>
-        <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:8 }}>
-          <span style={{ fontFamily:t.serif, fontSize:16, fontWeight:500, color: hov ? t.ink : '#5a5450', transition:'color 0.2s', lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-            {doc.title}
-          </span>
-          <ArrowUpRight size={12} color={hov ? t.accent : t.borderFaint} style={{ flexShrink:0, transition:'color 0.2s' }} />
-        </div>
-        <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, letterSpacing:'0.12em', textTransform:'uppercase' }}>
-          {doc.tag || doc.type}
-        </span>
-      </div>
-    </a>
-  );
-}
-
-// ─── browser / data room ───────────────────────────────────────────────────
-const DEFAULT_ICONS: Record<string, any> = {
-  'case-study': LayoutGrid,
-  'project': FolderOpen,
-  'blog': BookOpen,
-  'doc': FileText,
-};
-
-const DEFAULT_LABELS: Record<string, string> = {
-  'case-study': 'Case Studies',
-  'project': 'Projects',
-  'blog': 'Blog',
-  'doc': 'Docs',
-};
-
-function DataRoom({ docs }: { docs: Doc[] }) {
-  const allDocs = docs.length > 0 ? docs : PLACEHOLDER_DOCS;
-  
-  const uniqueTypes = Array.from(new Set(allDocs.map(d => d.type))).filter(Boolean) as string[];
-  
-  const folders = uniqueTypes.map(type => ({
-    id: type,
-    label: DEFAULT_LABELS[type] || (type.charAt(0).toUpperCase() + type.slice(1)),
-    icon: DEFAULT_ICONS[type] || FileText,
-    count: allDocs.filter(d => d.type === type).length
-  }));
-
-  const [active, setActive] = useState(folders.length > 0 ? folders[0].id : 'case-study');
-  const [hRow, setHRow] = useState<string | null>(null);
-  const [hFold, setHFold] = useState<string | null>(null);
-
-  // If active type is deleted, fallback to the first available
-  useEffect(() => {
-    if (folders.length > 0 && !folders.find(f => f.id === active)) {
-      setActive(folders[0].id);
-    }
-  }, [folders, active]);
-
-  const rows = allDocs.filter(d => d.type === active).slice(0, 7);
-  const af = folders.find(f => f.id === active) || { label: 'Unknown', icon: FileText };
-
-  return (
-    <div className="flex flex-col sm:flex-row min-h-[380px]" style={{ fontFamily:t.mono }}>
-      {/* sidebar */}
-      <div className="flex flex-row sm:flex-col overflow-x-auto no-scrollbar shrink-0 w-full sm:w-[192px] border-b sm:border-b-0 sm:border-r" style={{ borderColor:t.borderFaint, background:'#fcfaf7' }}>
-        
-        <div className="hidden sm:block" style={{ padding:'18px 14px 10px' }}>
-          <span style={{ fontSize:9, color:t.inkFaint, letterSpacing:'0.18em', textTransform:'uppercase' }}>Locations</span>
-        </div>
-
-        <div className="flex flex-row sm:flex-col w-max sm:w-full">
-          {folders.map(f => {
-            const isA = f.id === active;
-            return (
-              <button key={f.id} onClick={() => setActive(f.id)}
-                onMouseEnter={() => setHFold(f.id)} onMouseLeave={() => setHFold(null)}
-                className="flex items-center justify-between sm:justify-start gap-2 px-4 py-3 sm:py-2 border-b-2 sm:border-b-0 sm:border-l-2 transition-colors cursor-pointer"
-                style={{ 
-                  background: isA ? t.bgSurface : hFold===f.id ? 'rgba(0,0,0,0.02)' : 'transparent', 
-                  borderColor: isA ? t.accent : 'transparent' 
-                }}
+      {writing.length > 0 && (
+        <section className="max-w-[1040px] mx-auto px-[clamp(20px,5vw,64px)] pb-24">
+          <Reveal>
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <Label>02</Label>
+                <div className="w-10 h-px bg-[#e6ded4]" />
+                <Label>Writing</Label>
+              </div>
+              <Link
+                href="/docs"
+                className="font-mono text-[9px] text-[#b8b2aa] hover:text-[#c8873c] transition-colors tracking-[0.14em] uppercase flex items-center gap-1.5"
               >
-                <div className="flex items-center gap-2">
-                  <f.icon size={11} color={isA ? t.accent : t.inkFaint} />
-                  <span style={{ fontSize:11, color: isA ? t.ink : t.inkMuted }}>{f.label}</span>
-                </div>
-                <span className="hidden sm:block ml-auto" style={{ fontSize:9, color:t.inkFaint, background: isA ? t.bgMuted : 'transparent', padding:'1px 6px', borderRadius:3 }}>{f.count}</span>
-              </button>
-            );
-          })}
-
-          <div className="hidden sm:block mx-3.5 my-3.5 h-px" style={{ background:t.borderFaint }} />
-          
-          <Link href="/docs" className="flex items-center gap-2 px-4 py-3 sm:py-2 border-b-2 sm:border-b-0 sm:border-l-2 border-transparent transition-colors" style={{ textDecoration:'none' }}>
-            <ChevronRight size={10} color={t.inkFaint} />
-            <span style={{ fontSize:11, color:t.inkFaint }}>Browse All</span>
-          </Link>
-        </div>
-      </div>
-
-      {/* main pane */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* breadcrumb */}
-        <div className="flex items-center gap-1.5 px-4 py-2 border-b whitespace-nowrap overflow-hidden" style={{ textOverflow: 'ellipsis', borderColor:t.borderFaint, background:'#fdfcf9' }}>
-          <HardDrive size={9} color={t.inkFaint} className="shrink-0" />
-          <ChevronRight size={8} color={t.borderFaint} className="shrink-0" />
-          <span style={{ fontSize:9, color:t.inkFaint }}>portfolio</span>
-          <ChevronRight size={8} color={t.borderFaint} className="shrink-0" />
-          <span style={{ fontSize:9, color:t.accent }}>{af.label}</span>
-        </div>
-
-        {/* header row */}
-        <div className="grid grid-cols-[1fr_70px] sm:grid-cols-[1fr_90px_70px] px-4 py-1.5 border-b" style={{ borderColor:t.borderFaint, background:'#fdfcf9' }}>
-          <span style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.15em' }}>Name</span>
-          <span className="hidden sm:block" style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.15em' }}>Type</span>
-          <span style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.15em' }}>Modified</span>
-        </div>
-
-        {/* rows */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden">
-          {rows.length === 0 ? (
-            <div style={{ padding:'48px 16px', textAlign:'center', color:t.inkFaint, fontSize:10 }}>No items</div>
-          ) : rows.map((doc, i) => (
-            <Link key={doc.id} href={doc.link || `/docs/${doc.id}`}
-              target={doc.link ? "_blank" : undefined}
-              onMouseEnter={() => setHRow(doc.id)} onMouseLeave={() => setHRow(null)}
-              className="grid grid-cols-[1fr_70px] sm:grid-cols-[1fr_90px_70px] px-4 py-2.5 items-center border-b transition-colors"
-              style={{ textDecoration: 'none', background: hRow===doc.id ? '#fdf7f0' : i%2 ? '#fdfcf9' : t.bgSurface, borderColor:t.borderFaint }}
-            >
-              <div className="flex items-center gap-2.5 overflow-hidden">
-                <af.icon size={10} color={hRow===doc.id ? t.accent : t.inkFaint} className="shrink-0" />
-                <span className="truncate transition-colors" style={{ fontSize:11, color: hRow===doc.id ? t.ink : t.inkMuted }}>{doc.title}</span>
-              </div>
-              <span className="hidden sm:block" style={{ fontSize:9, color:t.inkFaint, textTransform:'uppercase', letterSpacing:'0.07em' }}>{doc.type}</span>
-              <div className="flex items-center gap-1 shrink-0">
-                <Clock size={8} color={t.borderFaint} />
-                <span style={{ fontSize:9, color:t.borderFaint }}>—</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* status */}
-        <div className="flex items-center justify-between px-4 py-1.5 border-t mt-auto" style={{ borderColor:t.borderFaint, background:'#fdfcf9' }}>
-          <span style={{ fontSize:9, color:t.inkFaint }}>{rows.length} item{rows.length !== 1 ? 's' : ''}</span>
-          <Link href="/docs" className="flex items-center gap-1" style={{ textDecoration: 'none', fontSize:9, color:t.accent }}>
-            View all <ChevronRight size={8} />
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Browser({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl overflow-hidden border" style={{ borderColor:t.border, boxShadow:`0 8px 40px rgba(28,25,22,0.08), 0 1px 0 ${t.borderFaint}` }}>
-      {/* chrome */}
-      <div className="flex items-center px-4 py-2.5 gap-3 border-b" style={{ background:'#f0ebe2', borderColor:t.border }}>
-        <div className="hidden sm:flex gap-1.5">
-          {['#ff5f56','#ffbd2e','#27c93f'].map(c => <div key={c} style={{ width:10, height:10, borderRadius:'50%', background:c, opacity:0.7 }} />)}
-        </div>
-        {/* tab */}
-        <div className="flex items-center gap-1.5 px-3.5 py-1.5 mb-[-11px] mt-[-2px] border-t border-x rounded-t-[7px] relative z-10" style={{ background:t.bgSurface, borderColor:t.border, borderBottomColor:t.bgSurface }}>
-          <HardDrive size={9} color={t.accent} />
-          <span style={{ fontFamily:t.mono, fontSize:10, color:t.inkMuted }}>Data Room</span>
-        </div>
-        <div className="flex-1" />
-        {/* address */}
-        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 border rounded-[5px] min-w-[210px]" style={{ background:'#e8e2d8', borderColor:t.border }}>
-          <div style={{ width:5, height:5, borderRadius:'50%', background:'#27c93f', opacity:0.8 }} />
-          <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint }}>portfolio.local / data-room</span>
-        </div>
-      </div>
-      <div style={{ background:t.bgSurface }}>{children}</div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// PAGE
-// ═══════════════════════════════════════════════════════════════════════════
-export default function Home() {
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
-
-  useEffect(() => {
-    fetch('/api/content?t=' + Date.now(), { cache:'no-store' })
-      .then(r => r.json())
-      .then(data => {
-        // Only set portfolio if we actually got valid data, otherwise keep null to show placeholders
-        if (data && typeof data === 'object') {
-          setPortfolio(data);
-        }
-      })
-      .catch(console.error);
-  }, []);
-
-  // use real data if available, fall back to placeholders
-  const name        = portfolio?.site?.name || 'Shanjit';
-  const dpUrl       = portfolio?.site?.dpUrl;
-  const linkedinUrl = portfolio?.site?.linkedinUrl || '#';
-  const bio         = portfolio?.hero?.description || 'Building agentic AI products at the intersection of LLMs, product strategy, and systems design. Currently focused on multi-agent orchestration.';
-  const ctaLink     = portfolio?.hero?.link || '/docs';
-  const ctaText     = portfolio?.hero?.linkText || 'View Work';
-  const contactH    = portfolio?.contact?.heading || "Let's build something together";
-
-  // Use placeholders only if portfolio is literally null (not loaded yet)
-  // Otherwise use whatever is in portfolio, even if it's empty arrays.
-  const rawProjects = portfolio
-    ? (portfolio.highlightedProjects || []).map(p => portfolio.docs?.find(d => d.id === p.id)).filter((d): d is Doc => !!d && d.published !== false)
-    : PLACEHOLDER_PROJECTS;
-  const projects = rawProjects;
-
-  const allDocs  = portfolio ? (portfolio.docs || []).filter(d => d.published !== false) : PLACEHOLDER_DOCS;
-
-  const MAX = 1040;
-  const PX = 'clamp(20px, 5vw, 64px)';
-
-  return (
-    <>
-      <style>{`
-        @keyframes pulse{0%,100%{opacity:.4}50%{opacity:.9}}
-        *{box-sizing:border-box}
-        ::-webkit-scrollbar{display:none}
-        a{-webkit-tap-highlight-color:transparent}
-        button{outline:none}
-      `}</style>
-
-      <main style={{ background:t.bg, minHeight:'100vh', color:t.ink }}>
-
-        {/* ╔══════════════════════════════╗
-            ║          HERO               ║
-            ╚══════════════════════════════╝ */}
-        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`72px ${PX} 96px` }}>
-
-          {/* top bar: status left, location + role right */}
-          <Reveal>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-[40px] sm:mb-[64px]">
-              <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-                <div style={{ width:7, height:7, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 8px rgba(74,222,128,0.5)' }} />
-                <Label>{portfolio?.hero?.tag || 'Available for collaboration'}</Label>
-              </div>
-              <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-16">
-                <div style={{ display:'flex', alignItems:'center', gap:5 }}>
-                  <MapPin size={9} color={t.inkFaint} />
-                  <Label>{portfolio?.about?.location || 'Remote / Worldwide'}</Label>
-                </div>
-                <div style={{ display:'flex', alignItems:'center', gap:5 }}>
-                  <Briefcase size={9} color={t.inkFaint} />
-                  <Label>{portfolio?.site?.role || 'AI Product'}</Label>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* name + avatar */}
-          <div className="flex flex-col-reverse sm:flex-row items-start sm:items-end justify-between gap-8 sm:gap-[32px]">
-            <Reveal delay={60}>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {portfolio?.hero?.title && (
-                  <span style={{ fontFamily: t.mono, fontSize: 10, color: t.accent, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 12 }}>
-                    {portfolio.hero.title}
-                  </span>
-                )}
-                <h1 style={{
-                  fontFamily: t.serif,
-                  fontSize: 'clamp(56px, 12vw, 114px)',
-                  fontWeight: 400,
-                  lineHeight: 0.88,
-                  letterSpacing: '-0.02em',
-                  color: t.ink,
-                  margin: 0,
-                }}>
-                  {name}
-                </h1>
-              </div>
-            </Reveal>
-
-            <Reveal delay={120}>
-              <div className="flex flex-row sm:flex-col items-center sm:items-end gap-4 sm:gap-3 pb-0 sm:pb-2 shrink-0">
-                <div style={{ width:78, height:78, borderRadius:8, overflow:'hidden', border:`1px solid ${t.border}`, boxShadow:`0 4px 20px rgba(28,25,22,0.1)` }}>
-                  {dpUrl
-                    ? <img src={dpUrl} alt={name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-                    : (
-                      /* placeholder avatar with initials */
-                      <div style={{ width:'100%', height:'100%', background:'linear-gradient(135deg,#e8d9c8,#d4c4b0)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                        <span style={{ fontFamily:t.serif, fontSize:28, color:'#8a7060', fontWeight:400 }}>
-                          {name[0]}
-                        </span>
-                      </div>
-                    )
-                  }
-                </div>
-                <div style={{ display:'flex', gap:6 }}>
-                  <RoleTag>{portfolio?.site?.role || 'AI Product'}</RoleTag>
-                  {portfolio?.hero?.tag && <RoleTag>{portfolio.hero.tag}</RoleTag>}
-                </div>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* cover image if exists */}
-          {portfolio?.hero?.coverImage && (
-            <Reveal delay={150}>
-              <div style={{ marginTop: 48, width: '100%', height: 'clamp(200px, 40vh, 400px)', borderRadius: 12, overflow: 'hidden', border: `1px solid ${t.border}`, boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
-                <img src={portfolio.hero.coverImage} alt={portfolio.hero.title || 'Hero'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-            </Reveal>
-          )}
-
-          {/* rule + bio + cta */}
-          <Reveal delay={180}>
-            <div className="mt-8 pt-8 sm:mt-[44px] sm:pt-[36px] border-t grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-[40px] items-start" style={{ borderColor: t.border }}>
-              <p style={{ fontFamily:t.sans, fontSize:14, color:t.inkMuted, lineHeight:1.8, margin:0, fontWeight:300, maxWidth:340 }}>
-                {bio}
-              </p>
-              <div className="flex flex-col items-start sm:items-end gap-5">
-                <div className="flex gap-2.5 flex-wrap justify-start sm:justify-end">
-                  <Link href={ctaLink} style={{ fontFamily:t.mono, fontSize:9, color:t.accentFg, background:t.accent, padding:'13px 22px', textDecoration:'none', letterSpacing:'0.14em', textTransform:'uppercase', display:'inline-flex', alignItems:'center', gap:7, borderRadius:3 }}>
-                    {ctaText} <ArrowUpRight size={11} />
-                  </Link>
-                  <a href={linkedinUrl} target="_blank" rel="noopener noreferrer"
-                    style={{ fontFamily:t.mono, fontSize:9, color:t.inkMuted, border:`1px solid ${t.border}`, padding:'12px 18px', textDecoration:'none', letterSpacing:'0.14em', textTransform:'uppercase', display:'inline-flex', alignItems:'center', gap:7, borderRadius:3 }}>
-                    <Linkedin size={10} /> LinkedIn
-                  </a>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </section>
-
-        {/* ╔══════════════════════════════╗
-            ║        PROJECTS             ║
-            ╚══════════════════════════════╝ */}
-        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`0 ${PX} 96px` }}>
-          <Reveal>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:32 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:16 }}>
-                <Label>01</Label>
-                <div style={{ width:40, height:'1px', background:t.border }} />
-                <Label>Selected Work</Label>
-              </div>
-              <Link href="/docs" style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, textDecoration:'none', letterSpacing:'0.12em', textTransform:'uppercase', display:'flex', alignItems:'center', gap:5 }}>
-                All work <ArrowUpRight size={9} />
+                Browse all <ArrowUpRight size={10} />
               </Link>
             </div>
           </Reveal>
-          <Filmstrip items={projects} />
-        </section>
-
-        {/* ╔══════════════════════════════╗
-            ║        DATA ROOM            ║
-            ╚══════════════════════════════╝ */}
-        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`0 ${PX} 96px` }}>
-          <Reveal>
-            <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:32 }}>
-              <Label>02</Label>
-              <div style={{ width:40, height:'1px', background:t.border }} />
-              <Label>Data Room</Label>
-            </div>
-          </Reveal>
           <Reveal delay={80}>
-            <Browser>
-              <DataRoom docs={allDocs} />
-            </Browser>
+            <WritingList docs={writing} />
           </Reveal>
         </section>
+      )}
 
-        {/* ╔══════════════════════════════╗
-            ║         CONTACT             ║
-            ╚══════════════════════════════╝ */}
-        <section style={{ maxWidth:MAX, margin:'0 auto', padding:`0 ${PX} 96px` }}>
-          <Reveal>
-            <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:56 }}>
-              <Label>03</Label>
-              <div style={{ width:40, height:'1px', background:t.border }} />
-              <Label>Contact</Label>
+      <section className="max-w-[1040px] mx-auto px-[clamp(20px,5vw,64px)] pb-24">
+        <Reveal>
+          <div className="flex items-center gap-4 mb-12">
+            <Label>{writing.length > 0 ? '03' : '02'}</Label>
+            <div className="w-10 h-px bg-[#e6ded4]" />
+            <Label>Contact</Label>
+          </div>
+        </Reveal>
+
+        <Reveal delay={60}>
+          <div className="grid grid-cols-1 md:grid-cols-[1.2fr_auto] gap-10 items-start md:items-end pb-12 border-b border-[#e6ded4]">
+            <div>
+              <h2 className="font-serif text-[#1c1916] font-normal tracking-[-0.02em] leading-[1.04] m-0 text-[clamp(32px,5vw,56px)]">
+                {contactH}
+              </h2>
+              <p className="mt-5 font-sans text-[14px] font-light text-[#7a7470] leading-[1.7] max-w-[440px]">
+                {contactSub}
+              </p>
             </div>
-          </Reveal>
-
-          <Reveal delay={60}>
-            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-8 sm:gap-10 items-start sm:items-end pb-[52px] border-b" style={{ borderColor:t.border }}>
-              <div>
-                <h2 style={{ fontFamily:t.serif, fontSize:'clamp(36px, 5vw, 64px)', fontWeight:400, lineHeight:1, letterSpacing:'-0.02em', color:t.ink, margin:'0 0 20px' }}>
-                  {contactH}
-                </h2>
-                <p style={{ fontFamily:t.sans, fontSize:13, color:t.inkMuted, lineHeight:1.8, maxWidth:340, margin:0, fontWeight:300 }}>
-                  Whether you're building an AI product, exploring agentic architectures, or just want to exchange ideas — my inbox is open.
-                </p>
-              </div>
-              <a href={linkedinUrl} target="_blank" rel="noopener noreferrer"
-                style={{ fontFamily:t.mono, fontSize:9, color:t.accentFg, background:t.accent, padding:'14px 24px', textDecoration:'none', letterSpacing:'0.14em', textTransform:'uppercase', whiteSpace:'nowrap', display:'inline-flex', alignItems:'center', gap:7, borderRadius:3 }}>
-                Drop a DM <ArrowUpRight size={11} />
-              </a>
+            <div className="flex flex-col gap-2.5 md:items-end">
+              <Button
+                href={`mailto:${email}`}
+                external
+                variant="primary"
+                size="md"
+                icon={<Mail size={11} />}
+              >
+                Email me
+              </Button>
+              <Button
+                href={linkedinUrl}
+                external
+                variant="ghost"
+                size="md"
+                icon={<Linkedin size={11} />}
+                trailingIcon={false}
+              >
+                LinkedIn
+              </Button>
+              <ResumeButton href={resumeUrl} label="Resume (PDF)" source="home_contact" />
             </div>
+          </div>
 
-            {/* footer */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 pt-7">
-              <span style={{ fontFamily:t.mono, fontSize:9, color:t.inkFaint, letterSpacing:'0.12em' }}>
-                {name.toUpperCase()} © {new Date().getFullYear()}
-              </span>
-              <span style={{ fontFamily:t.mono, fontSize:9, color:t.borderFaint, letterSpacing:'0.08em' }}>
-                Built with Next.js
-              </span>
-            </div>
-          </Reveal>
-        </section>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-7">
+            <span className="font-mono text-[9px] text-[#b8b2aa] tracking-[0.14em] uppercase">
+              {name.toUpperCase()} © {new Date().getFullYear()}
+            </span>
+            <span className="font-mono text-[9px] text-[#c8bfb2] tracking-[0.08em]">
+              Built with Next.js
+            </span>
+          </div>
+        </Reveal>
+      </section>
 
-      </main>
-    </>
+    </main>
   );
 }

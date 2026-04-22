@@ -1,52 +1,65 @@
-'use client';
+import type { Metadata } from 'next';
+import { MapPin, Briefcase, Sparkles } from 'lucide-react';
+import { Reveal, Label } from '@/lib/design';
+import { getPortfolio } from '@/lib/getPortfolio';
 
-import { useEffect, useState } from 'react';
-import { MapPin, Code2, Sparkles, Scale, Briefcase } from 'lucide-react';
-import { t, Reveal, Label, RoleTag } from '@/lib/design';
+export const dynamic = 'force-dynamic';
 
-export default function About() {
-  const [data, setData] = useState<any>(null);
+export const metadata: Metadata = {
+  title: 'About — Shanjit Thokchom',
+  description:
+    'Product manager focused on agentic AI. Law, narrative, product — the three threads behind how I build.',
+};
 
-  useEffect(() => {
-    fetch('/api/content?t=' + Date.now(), { cache: 'no-store' })
-      .then(res => res.json())
-      .then(setData)
-      .catch(console.error);
-  }, []);
+type AboutData = {
+  heading?: string;
+  subheading?: string;
+  originTitle?: string;
+  originText?: string;
+  location?: string;
+  educationTitle?: string;
+  educationSubtitle?: string;
+  focusTitle?: string;
+  focusText?: string;
+  bio?: string[];
+  tools?: string[];
+  experience?: { role: string; company: string; year: string }[];
+};
 
-  if (!data) {
-    return (
-      <main style={{ background: t.bg, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ fontFamily: t.mono, fontSize: 11, color: t.inkMuted, textTransform: 'uppercase', letterSpacing: '0.15em' }}>Loading...</p>
-      </main>
-    );
-  }
-
-  const about = data.about || {};
+export default async function About() {
+  const data = await getPortfolio();
+  const about: AboutData = (data.about as AboutData) || {};
   const experience = about.experience || [];
   const bio = about.bio || [];
+  const tools = about.tools || [];
 
   return (
-    <main style={{ background: t.bg, minHeight: '100vh', color: t.ink, padding: '120px clamp(20px, 5vw, 64px) 160px', maxWidth: 1040, margin: '0 auto', overflow: 'hidden' }}>
-      
-      {/* HEADER & NARRATIVE BIO */}
-      <div style={{ marginBottom: 120 }}>
+    <main className="bg-[#f8f4ef] min-h-screen text-[#1c1916] max-w-[1040px] mx-auto px-[clamp(20px,5vw,64px)] pt-[120px] pb-[160px] overflow-hidden">
+
+      <div className="mb-24">
         <Reveal>
-          <h1 style={{ fontFamily: t.serif, fontSize: 'clamp(56px, 10vw, 96px)', fontWeight: 400, color: t.ink, marginBottom: 40, lineHeight: 0.95, letterSpacing: '-0.02em' }}>
-            {about.heading}
+          <Label>About</Label>
+        </Reveal>
+        <Reveal delay={40}>
+          <h1 className="font-serif font-normal text-[#1c1916] tracking-[-0.02em] leading-[0.98] mt-5 mb-10 text-[clamp(44px,8vw,80px)]">
+            {about.heading || 'Law, narrative, product.'}
           </h1>
         </Reveal>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(40px, 8vw, 80px)', alignItems: 'flex-start' }}>
+
+        <div className="grid gap-10 md:gap-16 items-start grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
           <Reveal delay={100}>
-            <p style={{ fontFamily: t.sans, fontSize: 'clamp(18px, 2.5vw, 24px)', color: t.ink, fontWeight: 300, lineHeight: 1.5, margin: 0 }}>
-              {about.subheading}
+            <p className="font-sans font-light text-[#1c1916] leading-[1.5] m-0 text-[clamp(18px,2.2vw,22px)]">
+              {about.subheading ||
+                'I build products at the seam between regulatory logic, clear storytelling, and machine reasoning.'}
             </p>
           </Reveal>
-          <Reveal delay={200}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-              {bio.map((paragraph: string, i: number) => (
-                <p key={i} style={{ fontFamily: t.sans, fontSize: 16, fontWeight: 300, color: t.inkMuted, lineHeight: 1.8, margin: 0 }}>
+          <Reveal delay={160}>
+            <div className="flex flex-col gap-5">
+              {bio.map((paragraph, i) => (
+                <p
+                  key={i}
+                  className="font-sans font-light text-[15px] md:text-[16px] text-[#7a7470] leading-[1.75] m-0"
+                >
                   {paragraph}
                 </p>
               ))}
@@ -55,85 +68,126 @@ export default function About() {
         </div>
       </div>
 
-      {/* STAGGERED BENTO GRID */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 24, marginBottom: 120 }}>
-        
-        <Reveal delay={100} style={{ gridColumn: '1 / -1', marginBottom: 24 }}>
-          <div style={{ background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 24, padding: 'clamp(32px, 6vw, 64px)', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', right: -50, top: -50, width: 300, height: 300, background: 'radial-gradient(circle, rgba(200,135,60,0.08) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-            <div style={{ width: 48, height: 48, background: t.ink, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 32, position: 'relative', zIndex: 1 }}>
-              <Scale size={20} color={t.bg} />
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-5 mb-24">
+        <div className="col-span-full">
+          <Reveal delay={60}>
+            <div className="bg-white border border-[#e6ded4] rounded-3xl p-8 md:p-14">
+              <Label>01 · Origin</Label>
+              <h2 className="font-serif font-normal text-[#1c1916] mt-5 mb-4 text-[clamp(26px,4vw,38px)]">
+                {about.originTitle || 'The non-linear path'}
+              </h2>
+              <p className="font-sans font-light text-[15px] md:text-[16px] text-[#7a7470] leading-[1.75] max-w-[620px] m-0">
+                {about.originText}
+              </p>
             </div>
-            <h2 style={{ fontFamily: t.serif, fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 400, color: t.ink, marginBottom: 16, position: 'relative', zIndex: 1 }}>{about.originTitle}</h2>
-            <p style={{ fontFamily: t.sans, fontSize: 16, color: t.inkMuted, lineHeight: 1.8, fontWeight: 300, maxWidth: 600, position: 'relative', zIndex: 1 }}>{about.originText}</p>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
 
-        <Reveal delay={200} style={{ gridColumn: '1 / span 5' }}>
-          <div style={{ background: t.bgSurface, border: `1px solid ${t.border}`, borderRadius: 24, padding: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%', minHeight: 320 }}>
-            <div className="relative mb-6">
-              <MapPin size={40} color={t.ink} style={{ position: 'relative', zIndex: 2 }} />
-              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 60, height: 60, borderRadius: '50%', background: 'rgba(200,135,60,0.1)', animation: 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite', zIndex: 1 }} />
-            </div>
-            <h3 style={{ fontFamily: t.serif, fontSize: 24, fontWeight: 400, color: t.ink }}>{about.location}</h3>
-            <div style={{ marginTop: 12 }}><Label>Current Base</Label></div>
-          </div>
-        </Reveal>
-
-        <Reveal delay={300} style={{ gridColumn: 'span 7 / -1' }}>
-          <div style={{ background: t.ink, borderRadius: 24, padding: 'clamp(32px, 4vw, 48px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', color: t.bg, height: '100%', minHeight: 320, position: 'relative', overflow: 'hidden' }}>
-            {/* Spinning geometric mesh */}
-            <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '70%', height: '140%', opacity: 0.15, pointerEvents: 'none', animation: 'spinSlow 40s linear infinite', backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-rule='evenodd'/%3E%3C/svg%3E")` }} />
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32, position: 'relative', zIndex: 1 }}>
-              <div style={{ display: 'flex', gap: 12 }}>
-                <div style={{ width: 48, height: 48, background: 'rgba(255,255,255,0.1)', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
-                  <Sparkles size={20} color={t.bg} />
+        <div className="md:col-span-5">
+          <Reveal delay={120}>
+            <div className="bg-white border border-[#e6ded4] rounded-3xl p-8 md:p-10 h-full min-h-[260px] flex flex-col justify-between">
+              <Label>02 · Base</Label>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <MapPin size={22} className="text-[#1c1916]" />
+                  <h3 className="font-serif font-normal text-[22px] text-[#1c1916] m-0">
+                    {about.location || 'Shillong, India'}
+                  </h3>
                 </div>
-                <div style={{ width: 48, height: 48, background: 'rgba(255,255,255,0.1)', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
-                  <Code2 size={20} color={t.bg} />
-                </div>
+                <p className="font-mono text-[10px] text-[#b8b2aa] tracking-[0.15em] uppercase m-0">
+                  Remote-friendly · Worldwide
+                </p>
               </div>
-              <span style={{ fontFamily: t.mono, fontSize: 9, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Stack & Focus</span>
             </div>
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <h2 style={{ fontFamily: t.serif, fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 400, color: t.bg, marginBottom: 16 }}>{about.focusTitle}</h2>
-              <p style={{ fontFamily: t.sans, fontSize: 16, color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, fontWeight: 300, maxWidth: 500 }}>{about.focusText}</p>
+          </Reveal>
+        </div>
+
+        <div className="md:col-span-7">
+          <Reveal delay={180}>
+            <div className="bg-[#1c1916] text-[#f8f4ef] rounded-3xl p-8 md:p-12 h-full min-h-[260px] flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                    <Sparkles size={18} className="text-[#f8f4ef]" />
+                  </div>
+                </div>
+                <span className="font-mono text-[9px] text-white/40 tracking-[0.22em] uppercase">
+                  03 · Focus
+                </span>
+              </div>
+              <div>
+                <h2 className="font-serif font-normal mb-3 text-[clamp(22px,3vw,30px)]">
+                  {about.focusTitle || 'Agentic AI & Systems'}
+                </h2>
+                <p className="font-sans font-light text-[15px] text-white/70 leading-[1.75] max-w-[480px] m-0">
+                  {about.focusText}
+                </p>
+              </div>
             </div>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
       </div>
 
-      {/* EXPERIENCE TIMELINE */}
-      <div style={{ marginTop: 64 }}>
+      {tools.length > 0 && (
+        <div className="mb-24 border-t border-[#e6ded4] pt-16">
+          <Reveal>
+            <div className="grid gap-12 grid-cols-[repeat(auto-fit,minmax(260px,1fr))]">
+              <div>
+                <Label>Tools I actually use</Label>
+                <p className="font-sans font-light text-[14px] text-[#7a7470] leading-[1.7] mt-4 max-w-[280px]">
+                  Not a &ldquo;skills&rdquo; dump — only things I reach for every week.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {tools.map((tool) => (
+                  <span
+                    key={tool}
+                    className="font-mono text-[11px] text-[#1c1916] bg-[#f2ede5] border border-[#ede8e1] rounded-full px-3.5 py-1.5 tracking-[0.04em]"
+                  >
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      )}
+
+      <div className="border-t border-[#e6ded4] pt-16">
         <Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 48, borderTop: `1px solid ${t.border}`, paddingTop: 64 }}>
+          <div className="grid gap-10 grid-cols-[repeat(auto-fit,minmax(260px,1fr))]">
             <div>
               <Label>Experience</Label>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {experience.map((exp: any, i: number) => (
-                <div key={i} style={{ display: 'flex', gap: 32, position: 'relative', paddingBottom: i !== experience.length - 1 ? 48 : 0 }}>
-                  {/* Timeline track */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{ width: 48, height: 48, background: t.bgSurface, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${t.border}`, flexShrink: 0, zIndex: 2, boxShadow: '0 4px 12px rgba(28,25,22,0.03)' }}>
-                      <Briefcase size={18} color={t.ink} />
+            <div className="flex flex-col">
+              {experience.map((exp, i) => {
+                const isLast = i === experience.length - 1;
+                return (
+                  <div key={i} className={`flex gap-6 relative ${isLast ? '' : 'pb-9'}`}>
+                    <div className="flex flex-col items-center">
+                      <div className="w-11 h-11 rounded-full bg-white border border-[#e6ded4] flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(28,25,22,0.04)] z-[2]">
+                        <Briefcase size={16} className="text-[#1c1916]" />
+                      </div>
+                      {!isLast && (
+                        <div className="w-px flex-grow mt-3 -mb-9 bg-gradient-to-b from-[#e6ded4] to-transparent" />
+                      )}
                     </div>
-                    {i !== experience.length - 1 && (
-                      <div style={{ width: 1, flexGrow: 1, background: `linear-gradient(to bottom, ${t.border}, transparent)`, marginTop: 12, marginBottom: -48 }} />
-                    )}
-                  </div>
-                  
-                  {/* Content */}
-                  <div style={{ paddingTop: 8 }}>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
-                      <h3 style={{ fontFamily: t.serif, fontSize: 24, fontWeight: 400, color: t.ink, margin: 0, lineHeight: 1.2 }}>{exp.role}</h3>
-                      <span style={{ fontFamily: t.mono, fontSize: 10, color: t.inkFaint, letterSpacing: '0.1em' }}>{exp.year}</span>
+                    <div className="pt-1.5 min-w-0">
+                      <div className="flex items-baseline gap-3 mb-1.5 flex-wrap">
+                        <h3 className="font-serif font-normal text-[22px] text-[#1c1916] leading-tight m-0">
+                          {exp.role}
+                        </h3>
+                        <span className="font-mono text-[10px] text-[#b8b2aa] tracking-[0.1em]">
+                          {exp.year}
+                        </span>
+                      </div>
+                      <p className="font-sans text-[15px] text-[#7a7470] font-light m-0">
+                        {exp.company}
+                      </p>
                     </div>
-                    <p style={{ fontFamily: t.sans, fontSize: 16, color: t.inkMuted, margin: 0, fontWeight: 300 }}>{exp.company}</p>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </Reveal>

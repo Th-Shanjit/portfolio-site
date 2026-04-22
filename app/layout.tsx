@@ -1,33 +1,57 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./Header";
-import { ArrowRight, MoveUpRight } from "lucide-react";
 import data from "@/data/portfolio.json";
-import { Cormorant_Garamond, DM_Sans, DM_Mono } from 'next/font/google';
+import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
 
-const serif = Cormorant_Garamond({ subsets: ['latin'], weight: ['300','400','500','600'], style: ['normal','italic'], variable: '--font-serif' });
-const sans = DM_Sans({ subsets: ['latin'], weight: ['300','400','500'], variable: '--font-sans' });
-const mono = DM_Mono({ subsets: ['latin'], weight: ['300','400','500'], variable: '--font-mono' });
+const serif = Fraunces({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
+  display: 'swap',
+});
+
+const sans = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+  display: 'swap',
+});
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://shanjitthokchom.xyz';
 
 export const metadata: Metadata = {
-  // 🚀 SEO UPGRADE: Pulling dynamic values from portfolio.json
-  title: `${data.site.name} | ${data.site.role}`,
-  description: "Portfolio and Data Room centered on Product Management and Agentic AI workflows.",
-  
-  // 🚀 SOCIAL PREVIEW: OpenGraph tags for LinkedIn/Facebook
-  openGraph: {
-    title: `${data.site.name} | Portfolio`,
-    description: "Architecting the future of Product & AI through system design and technical strategy.",
-    images: ["/profile.jpg"], // Ensure profile.jpg exists in your /public folder
-    type: "website",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: `${data.site.name} — ${data.site.role}`,
+    template: `%s — ${data.site.name}`,
   },
-  
-  // 🚀 SOCIAL PREVIEW: Twitter Card tags
+  description:
+    "Product manager shipping agentic AI products. Currently: PaperLoop, a Gemini-powered scanner for educators, live on the Play Store.",
+  openGraph: {
+    title: `${data.site.name} — Product · Agentic AI`,
+    description:
+      "Product manager shipping agentic AI products. Currently: PaperLoop, live on the Play Store.",
+    type: "website",
+    siteName: data.site.name,
+  },
   twitter: {
     card: "summary_large_image",
     title: data.site.name,
-    description: "Product Management & Agentic AI Portfolio",
-    images: ["/profile.jpg"],
+    description: "Product · Agentic AI. PaperLoop is live on the Play Store.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -43,7 +67,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <main className="flex-grow relative z-10 w-full p-0 m-0">
           {children}
         </main>
-        
+        <Analytics />
       </body>
     </html>
   );
