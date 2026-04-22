@@ -14,6 +14,7 @@ type CommonProps = {
   icon?: React.ReactNode;
   trailingIcon?: React.ReactNode | false;
   className?: string;
+  disabled?: boolean;
 };
 
 type LinkBtnProps = CommonProps & {
@@ -33,7 +34,7 @@ type ButtonBtnProps = CommonProps & {
 type Props = LinkBtnProps | ButtonBtnProps;
 
 const base =
-  'inline-flex items-center justify-center gap-2 font-mono uppercase tracking-[0.14em] rounded-[4px] transition-all duration-200 whitespace-nowrap select-none';
+  'inline-flex items-center justify-center gap-2 font-mono uppercase tracking-[0.14em] rounded-[4px] transition-all duration-200 whitespace-nowrap select-none disabled:opacity-50 disabled:pointer-events-none';
 
 const sizes: Record<Size, string> = {
   sm: 'text-[9px] px-3.5 py-2',
@@ -60,6 +61,7 @@ export default function Button(props: Props) {
     icon,
     trailingIcon,
     className = '',
+    disabled = false,
   } = props;
 
   const cls = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
@@ -77,9 +79,10 @@ export default function Button(props: Props) {
     </>
   );
 
-  if ('href' in props && props.href) {
+  if ('href' in props) {
     const { href, external, onClick } = props;
     const isExternal = external ?? /^https?:|^mailto:|^tel:/.test(href);
+
     if (isExternal) {
       return (
         <a
@@ -87,21 +90,31 @@ export default function Button(props: Props) {
           className={cls}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={onClick}
+          onClick={onClick as React.MouseEventHandler<HTMLAnchorElement>}
         >
           {content}
         </a>
       );
     }
     return (
-      <Link href={href} className={cls} onClick={onClick}>
+      <Link
+        href={href}
+        className={cls}
+        onClick={onClick as React.MouseEventHandler<HTMLAnchorElement>}
+      >
         {content}
       </Link>
     );
   }
 
+  const btnProps = props as ButtonBtnProps;
   return (
-    <button type={props.type ?? 'button'} onClick={props.onClick} className={cls}>
+    <button
+      type={btnProps.type ?? 'button'}
+      onClick={btnProps.onClick}
+      disabled={disabled}
+      className={cls}
+    >
       {content}
     </button>
   );
