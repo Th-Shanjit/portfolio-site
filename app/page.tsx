@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import {
   ArrowUpRight,
-  Linkedin,
   Mail,
   MapPin,
 } from 'lucide-react';
+import { FiLinkedin } from 'react-icons/fi';
 import { Reveal, Label } from '@/lib/design';
 import Button from '@/components/ui/Button';
 import Tag from '@/components/ui/Tag';
@@ -155,7 +155,7 @@ export default async function Home() {
                   external
                   variant="ghost"
                   size="md"
-                  icon={<Linkedin size={11} />}
+                  icon={<FiLinkedin size={11} />}
                   trailingIcon={false}
                 >
                   LinkedIn
@@ -264,7 +264,7 @@ export default async function Home() {
                 external
                 variant="ghost"
                 size="md"
-                icon={<Linkedin size={11} />}
+                icon={<FiLinkedin size={11} />}
                 trailingIcon={false}
               >
                 LinkedIn
