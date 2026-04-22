@@ -79,7 +79,7 @@ export default function Button(props: Props) {
     </>
   );
 
-  if ('href' in props) {
+  if ('href' in props && typeof props.href === 'string') {
     const { href, external, onClick } = props;
     const isExternal = external ?? /^https?:|^mailto:|^tel:/.test(href);
 
