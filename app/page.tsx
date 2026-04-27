@@ -76,7 +76,7 @@ export default async function Home() {
   const hero = (portfolio.hero || {}) as Record<string, string | undefined>;
   const eyebrow = hero.eyebrow || portfolio.site?.role || 'Product Manager · Agentic AI';
   const headline =
-    hero.headline || 'I ship AI products that survive contact with real users.';
+    hero.headline || 'Early in my career. Already shipping.';
   const subhead =
     hero.subhead ||
     hero.description ||
