@@ -6,8 +6,8 @@ import { useReveal } from './useReveal';
 const PROOF_ITEMS = [
   {
     icon: <Users size={20} />,
-    title: '5 teachers & tutors',
-    body: 'Input across chemistry, high school, tuition, and test-prep contexts.',
+    title: 'Real teachers & tutors',
+    body: 'Built with input from teachers and tutors across chemistry, high school, tuition, and test-prep contexts.',
   },
   {
     icon: <ClipboardCheck size={20} />,

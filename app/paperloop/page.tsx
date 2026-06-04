@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import PLNav from './_components/PLNav';
 import HeroSection from './_components/HeroSection';
 import PainSection from './_components/PainSection';
-import DemoSection from './_components/DemoSection';
 import RealWorkflowSection from './_components/RealWorkflowSection';
 import TestingPivotsSection from './_components/TestingPivotsSection';
 import HowItWorksSection from './_components/HowItWorksSection';
@@ -42,7 +41,6 @@ export default function PaperLoopLanding() {
       <PLNav />
       <HeroSection />
       <PainSection />
-      <DemoSection />
       <RealWorkflowSection />
       <TestingPivotsSection />
       <HowItWorksSection />
