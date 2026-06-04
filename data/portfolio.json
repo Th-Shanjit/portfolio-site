@@ -4,7 +4,7 @@
     "role": "Product Manager · Agentic AI",
     "linkedinUrl": "https://www.linkedin.com/in/shanjit-thokchom-7101202b6",
     "dpUrl": "/profile.jpg",
-    "resumeUrl": "/public/uploads/resume_shanjit_thokchom.pdf",
+    "resumeUrl": "/uploads/resume_shanjit.pdf",
     "email": "th.shanjit@gmail.com"
   },
   "socials": [
@@ -18,7 +18,7 @@
     },
     {
       "name": "Resume (PDF)",
-      "url": "/public/uploads/resume_shanjit_thokchom.pdf"
+      "url": "/uploads/resume_shanjit.pdf"
     }
   ],
   "hero": {
