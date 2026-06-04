@@ -16,14 +16,14 @@ const STEPS = [
     icon: <Sparkles size={26} />,
     iconBg: 'bg-[#0B7A70]/15',
     title: 'Review the extraction',
-    body: 'AI drafts questions, MCQs, section headers, chemistry notation, and equations — you check and edit before export.',
+    body: 'AI drafts questions, MCQs, section headers, chemistry notation, and equations. You check and edit before export.',
   },
   {
     n: '03',
     icon: <Download size={26} />,
     iconBg: 'bg-[#CF8610]/15',
     title: 'Export your PDF',
-    body: 'Export a formatted, print-ready PDF when you are satisfied with the content. Multi-column layouts supported.',
+    body: 'When you are satisfied with the content, export a formatted, PDF-ready paper. Multi-column layouts supported.',
   },
 ];
 
@@ -39,6 +39,9 @@ export default function HowItWorksSection() {
           <h2 className="font-serif font-bold text-[#EDE8DB] leading-[1.07] tracking-[-0.02em] mt-3 max-w-[620px] mx-auto text-[clamp(30px,4.2vw,46px)]">
             Three steps. <em className="italic text-[#F0A535]">Scan, review, export.</em>
           </h2>
+          <p className="font-sans text-[14px] text-[#EDE8DB]/50 leading-[1.7] max-w-[520px] mx-auto mt-4 mb-0">
+            AI-assisted extraction with a teacher review step before any PDF is generated.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-0 md:divide-x md:divide-white/[0.07] border border-white/[0.07] rounded-2xl overflow-hidden bg-white/[0.015]">

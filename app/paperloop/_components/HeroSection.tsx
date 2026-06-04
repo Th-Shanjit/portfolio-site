@@ -6,10 +6,10 @@ import { useReveal } from './useReveal';
 import HeroVisual from './HeroVisual';
 
 const TRUST_CHIPS = [
-  'No login in MVP',
-  'Closed beta on Google Play',
+  'No login needed',
   'Review before export',
-  'Failed scans not charged',
+  'Fair scan credits',
+  'Public demo available',
 ];
 
 export default function HeroSection() {
@@ -21,19 +21,17 @@ export default function HeroSection() {
           <div className="pl-reveal inline-flex items-center gap-2 bg-[#CF8610]/10 border border-[#CF8610]/20 rounded-full px-3 py-1.5 mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-[#F0A535] animate-[pl-pulse_2.5s_infinite]" />
             <span className="font-mono text-[10px] text-[#F0A535] tracking-[0.15em] uppercase">
-              Android closed beta · Gemini Vision
+              Android closed beta on Google Play
             </span>
           </div>
 
-          <h1 className="pl-reveal font-serif font-bold text-[#EDE8DB] leading-[1.04] tracking-[-0.025em] mb-6 text-[clamp(40px,6.5vw,72px)]">
-            Handwritten<br />
-            to <em className="not-italic text-[#F0A535] font-bold italic">PDF-ready</em><br />
-            papers.
+          <h1 className="pl-reveal font-serif font-bold text-[#EDE8DB] leading-[1.06] tracking-[-0.025em] mb-6 text-[clamp(36px,5.5vw,64px)]">
+            Turn handwritten question drafts into editable, PDF-ready papers
           </h1>
 
           <p className="pl-reveal font-sans text-[15px] md:text-[17px] text-[#EDE8DB]/60 leading-[1.7] max-w-[520px] mb-9">
-            PaperLoop helps teachers turn handwritten question-paper drafts into editable,
-            PDF-ready papers using AI. Scan, review the extraction, edit if needed, then export.
+            PaperLoop helps teachers scan handwritten exam drafts, review AI-extracted questions,
+            fix formatting, and export clean question papers without retyping everything from scratch.
           </p>
 
           <div className="pl-reveal mb-7">

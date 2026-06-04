@@ -5,6 +5,9 @@ import { PAPERLOOP_DEMO_EMBED_URL, PAPERLOOP_DEMO_WATCH_URL } from '../constants
 const WORKFLOW_LINE =
   'Watch the demo to see the workflow from handwritten draft → scan/upload → AI extraction → review/edit → PDF-ready output.';
 
+const PROOF_LINE =
+  'Tested with ~15 real handwritten papers, including chemistry-heavy and mixed-format question papers.';
+
 export default function HeroVisual() {
   return (
     <div id="demo" className="pl-reveal relative mt-4 md:mt-0">
@@ -41,6 +44,9 @@ export default function HeroVisual() {
 
       <p className="mt-4 font-sans text-[13px] text-[#EDE8DB]/50 leading-[1.65] m-0">
         {WORKFLOW_LINE}
+      </p>
+      <p className="mt-2 font-sans text-[12px] text-[#EDE8DB]/40 leading-[1.6] m-0">
+        {PROOF_LINE}
       </p>
     </div>
   );

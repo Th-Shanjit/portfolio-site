@@ -6,8 +6,9 @@ import { ArrowRight, Scan } from 'lucide-react';
 
 const LINKS = [
   { href: '#demo', label: 'Demo' },
-  { href: '#proof', label: 'How we built it' },
-  { href: '#how', label: 'How it works' },
+  { href: '#proof', label: 'Testing' },
+  { href: '#pivots', label: 'Pivots' },
+  { href: '#how', label: 'Workflow' },
   { href: '#pricing', label: 'Pricing' },
 ];
 
@@ -54,7 +55,7 @@ export default function PLNav() {
         href="/paperloop/download"
         className="inline-flex items-center gap-1.5 bg-[#CF8610] hover:bg-[#B07610] text-white px-4 py-2 rounded-[6px] font-sans text-[13px] font-medium no-underline transition-all hover:-translate-y-[1px] shadow-[0_4px_14px_rgba(207,134,16,0.3)]"
       >
-        Beta access <ArrowRight size={13} />
+        Request beta <ArrowRight size={13} />
       </Link>
     </nav>
   );

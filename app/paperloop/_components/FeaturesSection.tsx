@@ -34,43 +34,43 @@ export default function FeaturesSection() {
             icon={<BookOpen size={20} />}
             iconBg="bg-[#CF8610]/12 text-[#CF8610]"
             title="Built for exam formats"
-            body="Chemistry subscripts, MCQ grids, section headers, bilingual scripts — tested against real teacher-written papers and tuned around exam-paper formats."
+            body="Chemistry subscripts, MCQ grids, section headers, bilingual scripts — tested with real handwritten question papers and refined around exam-paper workflows."
             tag="Education-native"
           />
           <FeatureCard
             icon={<ShieldCheck size={20} />}
             iconBg="bg-[#0B7A70]/12 text-[#0B7A70]"
-            title="Private by default"
-            body="Scans process on-device where possible. Nothing is stored on our servers without your explicit action."
-            tag="Zero data retention"
+            title="Review-first document AI"
+            body="Designed for review-first document AI, not blind automation. Draft review is local-first; AI scan requires processing via Gemini Vision."
+            tag="Teacher in control"
           />
           <FeatureCard
             icon={<Layers size={20} />}
             iconBg="bg-[#CF8610]/12 text-[#CF8610]"
             title="Multi-column, multi-page"
-            body="Stitch multiple pages into one exam. Add your school logo. Export as A4 or Letter when the content is ready."
+            body="Stitch multiple pages into one exam. Add your school logo. Export as A4 or Letter when you are satisfied with the content."
             tag="Layout engine"
           />
           <FeatureCard
             icon={<Wand2 size={20} />}
             iconBg="bg-[#0B7A70]/12 text-[#0B7A70]"
-            title="Manual edit when needed"
-            body="AI handles most of the structure, while teachers can review and edit before export. Tap any question to tweak text, numbering, or marks inline."
+            title="Edit before export"
+            body="AI extracts the structure, while teachers review and edit before export. Tap any question to tweak text, numbering, or marks inline."
             tag="Human-in-the-loop"
           />
 
           <div className="col-span-full bg-[#0B1825] text-[#EDE8DB] rounded-2xl p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center border border-transparent">
             <div>
               <span className="font-mono text-[10px] text-[#F0A535] tracking-[0.2em] uppercase">
-                Accuracy
+                Extraction approach
               </span>
               <h3 className="font-serif font-bold text-[26px] md:text-[30px] leading-tight mt-3 mb-3">
-                Gemini-native. Not <em className="italic">another OCR wrapper.</em>
+                Gemini Vision workflow. Not <em className="italic">blind OCR.</em>
               </h3>
               <p className="font-sans text-[14px] text-[#EDE8DB]/60 leading-[1.7] max-w-[440px]">
-                We pass the raw page to Gemini Vision, not a pre-processed text blob. It sees
-                diagrams, handwriting quirks, and marginalia — then you review structure before
-                export.
+                PaperLoop helps extract questions, sections, and formatting so teachers can review,
+                correct, and export faster. AI handles the first draft of the structure; the teacher
+                stays in control before the PDF is generated.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">

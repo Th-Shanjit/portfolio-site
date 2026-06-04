@@ -16,7 +16,7 @@ const ITEMS = [
     tagClass: 'bg-[#CF8610]/15 text-[#CF8610]',
     icon: <Wand2 size={20} />,
     title: 'Vector Formula Generation',
-    body: 'Sketch a chemistry diagram or physics circuit and get a perfectly scaled, editable vector — no more raster crops.',
+    body: 'Sketch a chemistry diagram or physics circuit and get a scaled, editable vector — no more raster crops.',
   },
   {
     tag: 'V2',

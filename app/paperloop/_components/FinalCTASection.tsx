@@ -23,8 +23,8 @@ export default function FinalCTASection() {
           Try the workflow <em className="italic text-[#F0A535]">on real papers.</em>
         </h2>
         <p className="pl-reveal font-sans text-[15px] text-[#EDE8DB]/55 leading-[1.7] mb-9">
-          Request closed-beta access, scan a handwritten draft, review the extraction, and export a
-          PDF-ready paper.
+          Public demo available above. Android app currently in closed beta on Google Play — request
+          access to try scanning on your own handwritten drafts.
         </p>
         <div className="pl-reveal">
           <Link
@@ -34,7 +34,7 @@ export default function FinalCTASection() {
             Request beta access <ArrowRight size={16} />
           </Link>
           <p className="mt-6 font-mono text-[10px] text-[#EDE8DB]/30 tracking-[0.14em] uppercase">
-            Currently in closed beta on Google Play · iOS on the roadmap
+            Closed beta for registered testers · iOS on the roadmap
           </p>
         </div>
       </div>

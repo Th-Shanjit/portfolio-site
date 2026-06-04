@@ -34,11 +34,11 @@ export default function DownloadPage() {
 
         {/* heading */}
         <h1 className="font-serif font-bold text-white leading-[1.05] tracking-[-0.02em] mb-5 text-[clamp(36px,6vw,58px)]">
-          Get PaperLoop.
+          Closed beta access
         </h1>
         <p className="font-sans text-[16px] md:text-[17px] text-[#EDE8DB]/60 leading-[1.65] max-w-[520px] mb-14">
-          Scan handwritten exam drafts into print-ready PDFs in seconds.
-          Currently in closed beta — we reply to access requests within 24 hours.
+          PaperLoop is in Android closed beta on Google Play. Public demo is on the landing page;
+          registered testers can install after access is approved. We reply within 24 hours.
         </p>
 
         {/* ─── Android card (primary) ───────────────────────────────── */}
@@ -62,7 +62,7 @@ export default function DownloadPage() {
             <a href="https://play.google.com/store/apps/details?id=com.paperloop.official"
               target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-[#CF8610] hover:bg-[#B07610] text-white px-6 py-3.5 rounded-[6px] font-sans text-[14px] font-medium no-underline transition-all hover:-translate-y-[1px] shadow-[0_4px_16px_rgba(207,134,16,0.35)] hover:shadow-[0_8px_24px_rgba(207,134,16,0.5)]">
-              Get it on Google Play <ArrowRight size={15} />
+              Closed beta on Google Play <ArrowRight size={15} />
             </a>
             <RequestAccessForm />
           </div>

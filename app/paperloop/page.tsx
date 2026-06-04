@@ -15,7 +15,7 @@ import PLFooter from './_components/PLFooter';
 export const metadata: Metadata = {
   title: 'PaperLoop — Handwritten drafts to PDF-ready papers',
   description:
-    'PaperLoop helps teachers turn handwritten question-paper drafts into editable, PDF-ready papers using AI. Android closed beta on Google Play.',
+    'Turn handwritten question drafts into editable, PDF-ready papers. Review-first AI workflow. Android closed beta on Google Play.',
   openGraph: {
     title: 'PaperLoop — Handwritten drafts to PDF-ready papers',
     description:

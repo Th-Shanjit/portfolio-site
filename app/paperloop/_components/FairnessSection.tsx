@@ -4,11 +4,11 @@ import { useReveal } from './useReveal';
 
 const RULES = [
   {
-    badge: 'Zero tokens deducted',
+    badge: 'Credit only on success',
     badgeClass: 'bg-[#0B7A70]/15 text-[#0B7A70]',
     rule: 'Rule 1 · Total failure',
     title: 'Blurry page? No charge.',
-    body: "If Gemini can't detect any text, the scan aborts instantly. No question found, no token taken. Period.",
+    body: "If extraction can't detect usable text, the scan stops and no credit is used. Designed to reduce payment anxiety around unreliable AI outputs.",
     dot: 'bg-[#ef4444]',
   },
   {
@@ -16,7 +16,7 @@ const RULES = [
     badgeClass: 'bg-[#CF8610]/15 text-[#CF8610]',
     rule: 'Rule 2 · Low yield',
     title: 'Only 1–2 questions? Your call.',
-    body: 'Poor lighting? The app pauses and asks: "Keep 2 questions (−1 token) or retry for free?" You choose.',
+    body: 'Poor lighting? The app pauses and asks whether to keep partial results (using a credit) or retry without charging. You choose.',
     dot: 'bg-[#F0A535]',
   },
   {
@@ -24,7 +24,7 @@ const RULES = [
     badgeClass: 'bg-[#0B7A70]/15 text-[#0B7A70]',
     rule: 'Rule 3 · Rescan',
     title: 'Missed a page? Append it.',
-    body: 'Rescan on any section lets you add a missed page directly into an existing exam — seamlessly.',
+    body: 'Rescan on any section lets you add a missed page directly into an existing exam — without starting over.',
     dot: 'bg-[#0B7A70]',
   },
 ];
@@ -41,6 +41,10 @@ export default function FairnessSection() {
           <h2 className="font-serif font-bold text-[#EDE8DB] leading-[1.07] tracking-[-0.02em] mt-3 max-w-[720px] mx-auto text-[clamp(30px,4.2vw,46px)]">
             If the scan fails, <em className="italic text-[#F0A535]">you don&apos;t pay.</em>
           </h2>
+          <p className="font-sans text-[14px] text-[#EDE8DB]/50 leading-[1.7] max-w-[560px] mx-auto mt-4 mb-0">
+            One scan credit is used only when a scan successfully produces an editable result. If
+            extraction fails, you should not lose a credit.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/[0.07] border border-white/[0.07] rounded-2xl overflow-hidden">

@@ -4,9 +4,9 @@ import { useReveal } from './useReveal';
 import PricingCard from './PricingCard';
 
 const NOTES = [
-  { n: '01', label: 'Tokens never expire' },
-  { n: '02', label: 'One token = one successful scan' },
-  { n: '03', label: 'Refunded automatically on failure' },
+  { n: '01', label: 'One credit = one successful scan' },
+  { n: '02', label: 'Failed scans should not use a credit' },
+  { n: '03', label: 'Tokens never expire' },
 ];
 
 export default function PricingSection() {
@@ -21,8 +21,9 @@ export default function PricingSection() {
           <h2 className="font-serif font-bold text-[#0B1825] leading-[1.07] tracking-[-0.02em] mt-3 text-[clamp(30px,4.2vw,46px)]">
             Pay for <em className="italic">successful scans.</em>
           </h2>
-          <p className="font-sans text-[14px] text-[#0B1825]/65 leading-[1.7] mt-5 max-w-[280px]">
-            No subscriptions. No auto-renewals. Buy tokens, use them when you need them.
+          <p className="font-sans text-[14px] text-[#0B1825]/65 leading-[1.7] mt-5 max-w-[300px]">
+            No subscriptions. No auto-renewals. Simple scan credits — designed to reduce payment
+            anxiety around unreliable AI outputs.
           </p>
         </div>
 
