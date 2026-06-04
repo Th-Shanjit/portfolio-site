@@ -15,15 +15,15 @@ const STEPS = [
     n: '02',
     icon: <Sparkles size={26} />,
     iconBg: 'bg-[#0B7A70]/15',
-    title: 'Gemini reads it',
-    body: 'Vision AI identifies questions, MCQs, section headers, chemistry notation, superscripts, equations — all of it.',
+    title: 'Review the extraction',
+    body: 'AI drafts questions, MCQs, section headers, chemistry notation, and equations — you check and edit before export.',
   },
   {
     n: '03',
     icon: <Download size={26} />,
     iconBg: 'bg-[#CF8610]/15',
     title: 'Export your PDF',
-    body: 'A professionally formatted, print-ready PDF is generated instantly. Multi-column, your logo, done.',
+    body: 'Export a formatted, print-ready PDF when you are satisfied with the content. Multi-column layouts supported.',
   },
 ];
 
@@ -37,7 +37,7 @@ export default function HowItWorksSection() {
             How it works
           </span>
           <h2 className="font-serif font-bold text-[#EDE8DB] leading-[1.07] tracking-[-0.02em] mt-3 max-w-[620px] mx-auto text-[clamp(30px,4.2vw,46px)]">
-            Three steps. <em className="italic text-[#F0A535]">Under a minute.</em>
+            Three steps. <em className="italic text-[#F0A535]">Scan, review, export.</em>
           </h2>
         </div>
 

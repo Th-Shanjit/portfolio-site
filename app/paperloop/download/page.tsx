@@ -52,7 +52,7 @@ export default function DownloadPage() {
                 <h2 className="font-serif font-semibold text-[22px] text-white leading-none mb-1.5">Android</h2>
                 <span className="font-mono text-[10px] text-[#0B7A70] tracking-[0.14em] uppercase">
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0B7A70] mr-1.5 align-middle" />
-                  Live on Google Play
+                  Android closed beta on Google Play
                 </span>
               </div>
             </div>

@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import PLNav from './_components/PLNav';
 import HeroSection from './_components/HeroSection';
 import PainSection from './_components/PainSection';
+import DemoSection from './_components/DemoSection';
+import RealWorkflowSection from './_components/RealWorkflowSection';
+import TestingPivotsSection from './_components/TestingPivotsSection';
 import HowItWorksSection from './_components/HowItWorksSection';
 import FeaturesSection from './_components/FeaturesSection';
 import FairnessSection from './_components/FairnessSection';
@@ -11,20 +14,21 @@ import FinalCTASection from './_components/FinalCTASection';
 import PLFooter from './_components/PLFooter';
 
 export const metadata: Metadata = {
-  title: 'PaperLoop — Handwritten to print-ready in seconds',
+  title: 'PaperLoop — Handwritten drafts to PDF-ready papers',
   description:
-    'PaperLoop scans a handwritten exam draft and returns a formatted, print-ready PDF. Powered by Gemini Vision. Live on the Play Store.',
+    'PaperLoop helps teachers turn handwritten question-paper drafts into editable, PDF-ready papers using AI. Android closed beta on Google Play.',
   openGraph: {
-    title: 'PaperLoop — Handwritten to print-ready in seconds',
+    title: 'PaperLoop — Handwritten drafts to PDF-ready papers',
     description:
-      'A Gemini-powered scanner for educators. Scan a draft, get a print-ready PDF. No retyping.',
+      'AI-assisted workflow for educators: scan a draft, review extraction, edit, export. Built and tested with real teacher papers.',
     type: 'website',
     images: ['/og.png'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PaperLoop — Handwritten to print-ready in seconds',
-    description: 'A Gemini-powered scanner for educators. Scan a draft, get a print-ready PDF.',
+    title: 'PaperLoop — Handwritten drafts to PDF-ready papers',
+    description:
+      'Turn handwritten question-paper drafts into editable, PDF-ready papers. Closed beta on Google Play.',
     images: ['/og.png'],
   },
 };
@@ -38,6 +42,9 @@ export default function PaperLoopLanding() {
       <PLNav />
       <HeroSection />
       <PainSection />
+      <DemoSection />
+      <RealWorkflowSection />
+      <TestingPivotsSection />
       <HowItWorksSection />
       <FeaturesSection />
       <FairnessSection />

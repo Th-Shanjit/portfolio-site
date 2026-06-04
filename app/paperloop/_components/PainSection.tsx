@@ -8,7 +8,7 @@ const PAINS = [
     n: '01',
     icon: <FileText size={22} />,
     title: 'Draft → Retype → Repeat',
-    body: 'Write it by hand, then type the entire thing again. 5–10 hours a week lost to pure duplication.',
+    body: 'Write it by hand, then type the entire thing again — hours each week lost to pure duplication.',
   },
   {
     n: '02',

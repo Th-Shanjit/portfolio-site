@@ -34,7 +34,7 @@ export default function FeaturesSection() {
             icon={<BookOpen size={20} />}
             iconBg="bg-[#CF8610]/12 text-[#CF8610]"
             title="Built for exam formats"
-            body="Chemistry subscripts, MCQ grids, section headers, bilingual scripts — PaperLoop was trained on what you actually write."
+            body="Chemistry subscripts, MCQ grids, section headers, bilingual scripts — tested against real teacher-written papers and tuned around exam-paper formats."
             tag="Education-native"
           />
           <FeatureCard
@@ -48,14 +48,14 @@ export default function FeaturesSection() {
             icon={<Layers size={20} />}
             iconBg="bg-[#CF8610]/12 text-[#CF8610]"
             title="Multi-column, multi-page"
-            body="Stitch multiple pages into one exam. Add your school logo. Export as A4 or Letter. Print-ready, first try."
+            body="Stitch multiple pages into one exam. Add your school logo. Export as A4 or Letter when the content is ready."
             tag="Layout engine"
           />
           <FeatureCard
             icon={<Wand2 size={20} />}
             iconBg="bg-[#0B7A70]/12 text-[#0B7A70]"
             title="Manual edit when needed"
-            body="AI gets 95%+ right. For the last mile, tap any question to tweak text, numbering, or marks inline."
+            body="AI handles most of the structure, while teachers can review and edit before export. Tap any question to tweak text, numbering, or marks inline."
             tag="Human-in-the-loop"
           />
 
@@ -68,9 +68,9 @@ export default function FeaturesSection() {
                 Gemini-native. Not <em className="italic">another OCR wrapper.</em>
               </h3>
               <p className="font-sans text-[14px] text-[#EDE8DB]/60 leading-[1.7] max-w-[440px]">
-                We pass the raw page to Gemini Vision, not a pre-processed text blob. It sees your
-                diagrams, your handwriting quirks, your marginalia — and reasons about structure, not
-                just characters.
+                We pass the raw page to Gemini Vision, not a pre-processed text blob. It sees
+                diagrams, handwriting quirks, and marginalia — then you review structure before
+                export.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
