@@ -36,7 +36,7 @@ export default function PaperLoopLanding() {
   return (
     <div
       data-theme="dark"
-      className="paperloop min-h-screen bg-[#0B1825] text-[#EDE8DB] antialiased selection:bg-[#CF8610] selection:text-white"
+      className="paperloop min-h-screen overflow-x-hidden bg-[#0B1825] text-[#EDE8DB] antialiased selection:bg-[#CF8610] selection:text-white"
     >
       <PLNav />
       <HeroSection />

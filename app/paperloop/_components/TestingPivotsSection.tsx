@@ -28,29 +28,34 @@ const PIVOTS = [
 export default function TestingPivotsSection() {
   useReveal();
   return (
-    <section id="pivots" className="py-20 md:py-24 px-[5%] border-t border-white/[0.06]">
-      <div className="max-w-[1160px] mx-auto">
-        <div className="pl-reveal max-w-[680px] mb-10">
-          <span className="font-mono text-[10px] text-[#F0A535] tracking-[0.2em] uppercase">
+    <section id="pivots" className="py-14 sm:py-20 md:py-24 lg:py-28 border-t border-white/[0.06]">
+      <div className="max-w-[1180px] mx-auto w-full px-[clamp(16px,5vw,48px)]">
+        <div className="pl-reveal max-w-[42rem] mb-8 md:mb-10">
+          <span className="font-mono text-[11px] sm:text-[12px] text-[#F0A535] tracking-[0.18em] uppercase">
             Product decisions
           </span>
-          <h2 className="font-serif font-bold text-[#EDE8DB] leading-[1.07] tracking-[-0.02em] mt-3 text-[clamp(28px,4vw,42px)]">
+          <h2 className="font-serif font-bold text-[#EDE8DB] leading-[1.08] tracking-[-0.02em] mt-3 text-[clamp(1.75rem,4vw,2.75rem)]">
             What changed after testing
           </h2>
-          <p className="font-sans text-[14px] text-[#EDE8DB]/55 leading-[1.7] mt-4 m-0">
+          <p className="font-sans text-[16px] text-[#EDE8DB]/55 leading-[1.7] mt-4 m-0">
             The biggest lesson from testing real handwritten papers was that AI document workflows
             need trust, control, and clear fallback behavior.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/[0.07] rounded-2xl overflow-hidden border border-white/[0.07]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-px sm:bg-white/[0.07] sm:border sm:border-white/[0.07] sm:rounded-2xl sm:overflow-hidden">
           {PIVOTS.map((p) => (
-            <div key={p.n} className="pl-reveal bg-[#0B1825] p-6 md:p-7">
-              <span className="font-mono text-[10px] text-[#EDE8DB]/40 tracking-[0.2em]">{p.n}</span>
-              <h3 className="font-serif font-semibold text-[18px] text-[#EDE8DB] mt-3 mb-2 leading-tight">
+            <div
+              key={p.n}
+              className="pl-reveal bg-[#0B1825] border border-white/[0.07] sm:border-0 rounded-2xl sm:rounded-none p-5 sm:p-6 md:p-7"
+            >
+              <span className="font-mono text-[11px] text-[#EDE8DB]/45 tracking-[0.18em]">{p.n}</span>
+              <h3 className="font-serif font-semibold text-[17px] sm:text-[18px] text-[#EDE8DB] mt-3 mb-2 leading-tight">
                 {p.title}
               </h3>
-              <p className="font-sans text-[14px] text-[#EDE8DB]/60 leading-[1.65] m-0">{p.body}</p>
+              <p className="font-sans text-[15px] sm:text-[16px] text-[#EDE8DB]/60 leading-[1.65] m-0">
+                {p.body}
+              </p>
             </div>
           ))}
         </div>

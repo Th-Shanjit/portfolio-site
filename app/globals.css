@@ -187,3 +187,16 @@ html {
   opacity: 1;
   transform: translateY(0);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .motion-safe\:animate-\[pl-pulse_2\.5s_infinite\],
+  .motion-safe\:animate-\[pl-pulse_2s_infinite\] {
+    animation: none;
+  }
+}

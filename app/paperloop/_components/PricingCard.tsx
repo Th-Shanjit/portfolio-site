@@ -23,7 +23,7 @@ export default function PricingCard({
 }: PricingCardProps) {
   return (
     <div
-      className={`relative pl-reveal rounded-2xl p-7 md:p-8 border ${
+      className={`relative pl-reveal rounded-2xl p-6 sm:p-7 md:p-8 border min-w-0 ${
         featured
           ? 'bg-[#0B1825] text-[#EDE8DB] border-[#0B1825] shadow-[0_20px_60px_rgba(11,24,37,0.15)]'
           : 'bg-white text-[#0B1825] border-[#DDD7CB]'
@@ -42,7 +42,7 @@ export default function PricingCard({
         >
           {name}
         </span>
-        <span className="font-serif font-bold text-[64px] md:text-[72px] leading-none tracking-[-0.02em] mb-1">
+        <span className="font-serif font-bold text-[52px] sm:text-[64px] md:text-[72px] leading-none tracking-[-0.02em] mb-1">
           {tokens}
         </span>
         <span

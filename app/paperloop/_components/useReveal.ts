@@ -4,6 +4,13 @@ import { useEffect } from 'react';
 
 export function useReveal() {
   useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reducedMotion) {
+      document.querySelectorAll('.pl-reveal').forEach((el) => el.classList.add('in'));
+      return;
+    }
+
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
