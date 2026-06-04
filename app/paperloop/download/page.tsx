@@ -102,7 +102,7 @@ export default function DownloadPage() {
             {[
               'Unlimited scans during beta',
               'Gemini Vision parsing of handwritten exams',
-              'Multi-column, print-ready PDF export',
+              'Review AI extraction, then export PDF-ready papers',
               'Direct line to me for feature requests',
             ].map((item) => (
               <li key={item} className="flex items-start gap-2.5 text-[13.5px] text-[#EDE8DB]/75 font-sans leading-[1.55]">

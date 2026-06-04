@@ -7,17 +7,17 @@ const PROOF_ITEMS = [
   {
     icon: <Users size={20} />,
     title: '5 teachers/tutors gave input',
-    body: 'Input came from chemistry, high school, tuition, and test-prep contexts — including higher secondary chemistry, tuition, and class 10 test-prep teachers.',
+    body: 'Input came from chemistry, high school, tuition, and test-prep contexts.',
   },
   {
     icon: <ClipboardCheck size={20} />,
     title: '~15 handwritten papers tested',
-    body: 'Testing included real 2025-style handwritten question papers and mixed-format drafts.',
+    body: 'Testing included real handwritten question papers across plain text, chemistry-heavy, and mixed-format drafts.',
   },
   {
     icon: <FlaskConical size={20} />,
-    title: 'Chemistry was the hardest case',
-    body: 'Equations, non-linear expressions, symbols, diagrams, and section formatting exposed where simple OCR broke down.',
+    title: 'Chemistry exposed the hard cases',
+    body: 'Equations, non-linear expressions, symbols, diagrams, section headers, and marks formatting showed where generic OCR workflows struggled.',
   },
   {
     icon: <Sparkles size={20} />,
@@ -31,16 +31,18 @@ export default function RealWorkflowSection() {
   return (
     <section id="proof" className="bg-[#F6F2EB] text-[#0B1825] py-20 md:py-24 px-[5%]">
       <div className="max-w-[1160px] mx-auto">
-        <div className="pl-reveal max-w-[680px] mb-10">
+        <div className="pl-reveal max-w-[720px] mb-10">
           <span className="font-mono text-[10px] text-[#CF8610] tracking-[0.2em] uppercase">
-            Built with educators
+            Early MVP learning
           </span>
           <h2 className="font-serif font-bold text-[#0B1825] leading-[1.07] tracking-[-0.02em] mt-3 text-[clamp(28px,4vw,42px)]">
             Built from real teacher workflows
           </h2>
           <p className="font-sans text-[14px] text-[#0B1825]/65 leading-[1.7] mt-4 m-0">
-            PaperLoop was shaped through real teacher input and handwritten question-paper testing,
-            especially around chemistry and mixed-format exam papers.
+            PaperLoop&apos;s early MVP direction was shaped through input from 5 teachers/tutors and
+            testing against roughly 15 real handwritten papers, especially chemistry-heavy and
+            mixed-format exam drafts. This reflects early product learning — not market-wide
+            validation.
           </p>
         </div>
 

@@ -38,8 +38,8 @@ export default function TestingPivotsSection() {
             What changed after testing
           </h2>
           <p className="font-sans text-[14px] text-[#EDE8DB]/55 leading-[1.7] mt-4 m-0">
-            The product direction changed after testing real handwritten papers. The biggest lesson
-            was that AI document workflows need trust, control, and clear fallback behavior.
+            The biggest lesson from testing real handwritten papers was that AI document workflows
+            need trust, control, and clear fallback behavior.
           </p>
         </div>
 

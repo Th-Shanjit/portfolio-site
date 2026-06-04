@@ -9,7 +9,7 @@ const STEPS = [
     icon: <Camera size={26} />,
     iconBg: 'bg-white/[0.05]',
     title: 'Scan your draft',
-    body: 'Point your camera at any handwritten page. Messy corrections, arrows, crossed-out words — all fine.',
+    body: 'Point your camera at a handwritten page. PaperLoop is designed to handle messy corrections, arrows, and crossed-out words, then lets you review the extraction before export.',
   },
   {
     n: '02',

@@ -26,7 +26,7 @@ const PAINS = [
     n: '04',
     icon: <Wand2 size={22} />,
     title: 'OCR fails on exam content',
-    body: 'Generic OCR chokes on H₂SO₄, MCQ blocks, section headers. It was never built for exam-paper formats.',
+    body: 'Generic OCR struggles with chemistry notation, MCQ blocks, section headers, and marks formatting because it is not designed around exam-paper workflows.',
   },
 ];
 

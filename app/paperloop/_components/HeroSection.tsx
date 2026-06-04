@@ -32,6 +32,7 @@ export default function HeroSection() {
           <p className="pl-reveal font-sans text-[15px] md:text-[17px] text-[#EDE8DB]/60 leading-[1.7] max-w-[520px] mb-9">
             PaperLoop helps teachers scan handwritten exam drafts, review AI-extracted questions,
             fix formatting, and export clean question papers without retyping everything from scratch.
+            Early MVP direction shaped through teacher input and real handwritten-paper testing.
           </p>
 
           <div className="pl-reveal mb-7">

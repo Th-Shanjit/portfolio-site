@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'PaperLoop — Handwritten drafts to PDF-ready papers',
     description:
-      'AI-assisted workflow for educators: scan a draft, review extraction, edit, export. Built and tested with real teacher papers.',
+      'Early MVP shaped by input from 5 teachers/tutors and ~15 handwritten papers. Review-first AI workflow.',
     type: 'website',
     images: ['/og.png'],
   },

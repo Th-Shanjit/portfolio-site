@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "PaperLoop | Scanner for Educators",
     description:
-      "AI-assisted workflow for educators. Built and tested with real teacher papers.",
+      "Early MVP for educators. Shaped by teacher input and handwritten-paper testing.",
     images: ["/public/icon.jpeg"], // <-- Update this to match your uploaded image filename
     type: "website",
   },

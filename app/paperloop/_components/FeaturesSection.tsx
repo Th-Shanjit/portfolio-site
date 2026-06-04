@@ -10,9 +10,9 @@ const ACCURACY_TAGS = [
   '§ Section A',
   'Two-column',
   '∫f(x)dx',
-  'Bilingual',
   'Marks [5]',
   'Diagrams',
+  'Comprehension',
 ];
 
 export default function FeaturesSection() {
@@ -34,14 +34,14 @@ export default function FeaturesSection() {
             icon={<BookOpen size={20} />}
             iconBg="bg-[#CF8610]/12 text-[#CF8610]"
             title="Built for exam formats"
-            body="Chemistry subscripts, MCQ grids, section headers, bilingual scripts — tested with real handwritten question papers and refined around exam-paper workflows."
+            body="Chemistry subscripts, MCQ grids, section headers, and marks formatting — tested against real teacher-written papers and tuned around exam-paper formats."
             tag="Education-native"
           />
           <FeatureCard
             icon={<ShieldCheck size={20} />}
             iconBg="bg-[#0B7A70]/12 text-[#0B7A70]"
-            title="Review-first document AI"
-            body="Designed for review-first document AI, not blind automation. Draft review is local-first; AI scan requires processing via Gemini Vision."
+            title="Review-first privacy"
+            body="Drafts are kept local-first where possible, while AI extraction requires Gemini Vision processing. PaperLoop is designed to avoid storing scans on our own servers unless the user explicitly saves or shares them."
             tag="Teacher in control"
           />
           <FeatureCard

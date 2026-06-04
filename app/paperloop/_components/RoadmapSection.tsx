@@ -5,32 +5,32 @@ import { useReveal } from './useReveal';
 
 const ITEMS = [
   {
-    tag: 'Coming soon',
+    tag: 'Exploring',
     tagClass: 'bg-[#CF8610]/15 text-[#CF8610]',
     icon: <Layers size={20} />,
-    title: 'AI Grading Scanner',
-    body: 'Scan a stack of answered papers and get instant marks, feedback tags, and a class-wide score report in seconds.',
+    title: 'Answered-paper review',
+    body: 'Explore scanning answered papers to draft marks, feedback tags, and class-level summaries for teacher review.',
   },
   {
-    tag: 'Coming soon',
+    tag: 'Exploring',
     tagClass: 'bg-[#CF8610]/15 text-[#CF8610]',
     icon: <Wand2 size={20} />,
-    title: 'Vector Formula Generation',
-    body: 'Sketch a chemistry diagram or physics circuit and get a scaled, editable vector — no more raster crops.',
+    title: 'Cleaner visual drafts',
+    body: 'Explore converting chemistry diagrams or physics circuits into cleaner editable visual drafts.',
   },
   {
-    tag: 'V2',
+    tag: 'Exploring',
     tagClass: 'bg-white/[0.06] text-[#EDE8DB]/70',
     icon: <BookOpen size={20} />,
-    title: 'Multiple Paper Templates',
-    body: "Classic serif, modern sans, bilingual, and institution-branded layouts. Your school's look, built in.",
+    title: 'More paper templates',
+    body: 'Explore additional layout templates and institution-branded PDF themes.',
   },
   {
-    tag: 'V2 · Pro',
+    tag: 'Exploring',
     tagClass: 'bg-[#0B7A70]/15 text-[#0B7A70]',
     icon: <Star size={20} />,
-    title: 'Pro Account',
-    body: 'Unlimited scans, team workspaces, school-branded PDFs, and priority Gemini queue for exam season.',
+    title: 'Bilingual papers',
+    body: 'Explore support for bilingual question papers and mixed-language formatting.',
   },
 ];
 
@@ -44,8 +44,11 @@ export default function RoadmapSection() {
             What&apos;s next
           </span>
           <h2 className="font-serif font-bold text-[#EDE8DB] leading-[1.07] tracking-[-0.02em] mt-3 text-[clamp(30px,4.2vw,46px)]">
-            The roadmap is <em className="italic text-[#F0A535]">ambitious.</em>
+            Future <em className="italic text-[#F0A535]">exploration.</em>
           </h2>
+          <p className="font-sans text-[14px] text-[#EDE8DB]/50 leading-[1.7] max-w-[560px] mt-4 mb-0">
+            Ideas under exploration — not committed roadmap promises.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
