@@ -36,16 +36,10 @@ export default function HeroSection() {
             PDF-ready papers using AI. Scan, review the extraction, edit if needed, then export.
           </p>
 
-          <div className="pl-reveal flex flex-wrap items-center gap-3 mb-7">
-            <a
-              href="#demo"
-              className="inline-flex items-center gap-2 bg-[#CF8610] hover:bg-[#B07610] text-white px-6 py-3.5 rounded-[6px] font-sans text-[14px] font-medium no-underline transition-all hover:-translate-y-[1px] shadow-[0_4px_16px_rgba(207,134,16,0.35)] hover:shadow-[0_8px_24px_rgba(207,134,16,0.45)]"
-            >
-              Watch the demo <ArrowRight size={15} />
-            </a>
+          <div className="pl-reveal mb-7">
             <Link
               href="/paperloop/download"
-              className="inline-flex items-center gap-2 border border-white/15 hover:border-white/30 text-[#EDE8DB]/80 hover:text-[#EDE8DB] px-6 py-3.5 rounded-[6px] font-sans text-[14px] font-medium no-underline transition-colors"
+              className="inline-flex items-center gap-2 bg-[#CF8610] hover:bg-[#B07610] text-white px-6 py-3.5 rounded-[6px] font-sans text-[14px] font-medium no-underline transition-all hover:-translate-y-[1px] shadow-[0_4px_16px_rgba(207,134,16,0.35)] hover:shadow-[0_8px_24px_rgba(207,134,16,0.45)]"
             >
               Request beta access <ArrowRight size={15} />
             </Link>
