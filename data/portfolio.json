@@ -4,8 +4,8 @@
     "role": "Product Manager · Agentic AI",
     "linkedinUrl": "https://www.linkedin.com/in/shanjit-thokchom-7101202b6",
     "dpUrl": "/profile.jpg",
-    "resumeUrl": "https://drive.google.com/file/d/1Md7gHFhfNQJqnDedP64KILjDa_0J8WOG/view?usp=sharing",
-    "email": "contact@shanjitthokchom.xyz"
+    "resumeUrl": "/public/uploads/resume_shanjit_thokchom.pdf",
+    "email": "th.shanjit@gmail.com"
   },
   "socials": [
     {
@@ -18,7 +18,7 @@
     },
     {
       "name": "Resume (PDF)",
-      "url": "https://drive.google.com/file/d/1Md7gHFhfNQJqnDedP64KILjDa_0J8WOG/view?usp=sharing"
+      "url": "/public/uploads/resume_shanjit_thokchom.pdf"
     }
   ],
   "hero": {
@@ -39,7 +39,7 @@
   "contact": {
     "heading": "Let's build something teachers actually use.",
     "subheading": "Whether you're hiring a PM who ships, exploring agentic architectures, or want to exchange notes — my inbox is open.",
-    "email": "contact@shanjitthokchom.xyz"
+    "email": "th.shanjit@gmail.com"
   },
   "about": {
     "heading": "Law, narrative, product.",
