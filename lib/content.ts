@@ -1,12 +1,14 @@
 /**
  * Type definitions for portfolio metadata (data/portfolio.json).
- * Frontend components import the JSON directly; this file has no file-system usage.
  */
 
 export interface Site {
   name: string;
   role: string;
   email: string;
+  linkedinUrl?: string;
+  dpUrl?: string;
+  resumeUrl?: string;
 }
 
 export interface Social {
@@ -15,57 +17,72 @@ export interface Social {
 }
 
 export interface Hero {
-  tag: string;
-  title: string;
-  description: string;
-  link: string;
-  linkText: string;
+  tag?: string;
+  eyebrow?: string;
+  headline?: string;
+  subhead?: string;
+  title?: string;
+  description?: string;
+  link?: string;
+  linkText?: string;
   coverImage?: string;
 }
 
 export interface HighlightedProject {
   id: string;
-  title: string;
-  category: string;
-  year: string;
-  slug: string;
 }
 
 export interface Contact {
-  heading: string;
-  email: string;
+  heading?: string;
+  subheading?: string;
+  email?: string;
+}
+
+export interface ExperienceEntry {
+  role: string;
+  company: string;
+  year: string;
+}
+
+export interface About {
+  heading?: string;
+  subheading?: string;
+  originTitle?: string;
+  originText?: string;
+  location?: string;
+  educationTitle?: string;
+  educationSubtitle?: string;
+  focusTitle?: string;
+  focusText?: string;
+  bio?: string[];
+  tools?: string[];
+  experience?: ExperienceEntry[];
 }
 
 export interface Doc {
   id: string;
   title: string;
   type: string;
-  readTime: string;
-  date: string;
-  content: string[];
-}
-
-export interface Experience {
-  id: string;
-  role: string;
-  company: string;
-  year: string;
-  type: string;
-}
-
-export interface About {
-  title: string;
-  content: string;
-  skills: string[];
-  experience: Experience[];
+  tag?: string;
+  status?: string;
+  published?: boolean;
+  description?: string;
+  thumbnail?: string;
+  coverImage?: string;
+  pdfUrl?: string;
+  date?: string;
+  readTime?: string;
+  views?: number;
+  content?: string[];
+  link?: string;
 }
 
 export interface PortfolioData {
   site: Site;
-  socials: Social[];
-  hero: Hero;
-  highlightedProjects: HighlightedProject[];
-  contact: Contact;
-  docs: Doc[];
+  socials?: Social[];
+  hero?: Hero;
+  highlightedProjects?: HighlightedProject[];
+  contact?: Contact;
   about?: About;
+  docs: Doc[];
 }

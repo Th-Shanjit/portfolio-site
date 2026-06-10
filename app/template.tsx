@@ -1,15 +1,18 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { easeOut, useReducedMotion } from '@/lib/motion';
 
 export default function Template({ children }: { children: React.ReactNode }) {
+  const reduced = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={reduced ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ 
-        duration: 0.8, 
-        ease: [0.16, 1, 0.3, 1] // Custom "Zen" ease
+      transition={{
+        duration: reduced ? 0 : 0.45,
+        ease: easeOut,
       }}
     >
       {children}

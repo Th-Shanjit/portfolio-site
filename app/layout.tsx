@@ -1,22 +1,20 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import Header from "./Header";
-import data from "@/data/portfolio.json";
-import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google';
+import type { Metadata } from 'next';
+import './globals.css';
+import Header from './Header';
+import data from '@/data/portfolio.json';
+import { Geist, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 
-const serif = Fraunces({
+const sans = Geist({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-serif',
+  variable: '--font-sans',
   display: 'swap',
 });
 
-const sans = Inter({
+const heading = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-sans',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-heading',
   display: 'swap',
 });
 
@@ -36,18 +34,18 @@ export const metadata: Metadata = {
     template: `%s — ${data.site.name}`,
   },
   description:
-    "Product manager shipping agentic AI products. Currently: PaperLoop, a Gemini-powered scanner for educators, live on the Play Store.",
+    'Product manager focused on agentic AI, workflow automation, and practical AI tools. Building PaperLoop and shipping user-tested products.',
   openGraph: {
     title: `${data.site.name} — Product · Agentic AI`,
     description:
-      "Product manager shipping agentic AI products. Currently: PaperLoop, live on the Play Store.",
-    type: "website",
+      'Product manager shipping agentic AI products. PaperLoop — handwritten exams to print-ready PDFs.',
+    type: 'website',
     siteName: data.site.name,
   },
   twitter: {
-    card: "summary_large_image",
+    card: 'summary_large_image',
     title: data.site.name,
-    description: "Product · Agentic AI. PaperLoop is live on the Play Store.",
+    description: 'Product · Agentic AI. Building tools where users stay in control.',
   },
   robots: {
     index: true,
@@ -55,18 +53,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`h-full ${serif.variable} ${sans.variable} ${mono.variable}`}>
-      <body className="h-full min-h-screen font-sans selection:bg-[#e6ded4] flex flex-col overflow-x-hidden relative bg-[#f8f4ef] text-[#1c1916]">
-        
-        {/* Global Navigation */}
+    <html
+      lang="en"
+      className={`h-full ${sans.variable} ${heading.variable} ${mono.variable}`}
+    >
+      <body className="h-full min-h-screen font-sans selection:bg-[#FF6B35]/20 flex flex-col overflow-x-hidden relative bg-[#F7F3EA] text-[#161616]">
         <Header />
-        
-        {/* Page Content Injection */}
-        <main className="flex-grow relative z-10 w-full p-0 m-0">
-          {children}
-        </main>
+        <main className="flex-grow relative z-10 w-full p-0 m-0">{children}</main>
         <Analytics />
       </body>
     </html>

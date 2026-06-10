@@ -8,20 +8,20 @@ type Props = {
 };
 
 const tones = {
-  neutral: 'bg-[#f2ede5] text-[#7a7470] border-[#ede8e1]',
-  accent: 'bg-[#c8873c]/10 text-[#c8873c] border-[#c8873c]/20',
-  dark: 'bg-[#1c1916]/5 text-[#1c1916] border-[#e6ded4]',
+  neutral: 'bg-[#F0EBE0] text-[#6F6A61] border-[rgba(22,22,22,0.06)]',
+  accent: 'bg-[#FF6B35]/10 text-[#FF6B35] border-[#FF6B35]/20',
+  dark: 'bg-white/10 text-white/80 border-white/10',
 };
 
 const sizes = {
-  sm: 'text-[9px] px-2 py-[2px]',
-  md: 'text-[10px] px-3 py-[4px]',
+  sm: 'text-[11px] px-2.5 py-0.5',
+  md: 'text-[12px] px-3 py-1',
 };
 
 export default function Tag({ children, tone = 'neutral', size = 'md', className = '' }: Props) {
   return (
     <span
-      className={`inline-flex items-center font-mono uppercase tracking-[0.14em] rounded-full border ${tones[tone]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center font-mono tracking-[0.04em] rounded-full border ${tones[tone]} ${sizes[size]} ${className}`}
     >
       {children}
     </span>

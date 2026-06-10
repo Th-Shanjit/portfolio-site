@@ -17,7 +17,12 @@ export default function ResumeButton({ href, label = 'Resume', source = 'home_he
       external
       variant="ghost"
       size="md"
-      icon={<FileText size={11} />}
+      icon={
+        <FileText
+          size={15}
+          className="motion-safe:group-hover/btn:translate-y-px transition-transform duration-200"
+        />
+      }
       trailingIcon={false}
       onClick={() => track('resume_click', { source })}
     >

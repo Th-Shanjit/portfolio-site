@@ -1,8 +1,16 @@
 import { put } from '@vercel/blob';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
+    // Require admin session cookie (same convention as /admin proxy)
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get('admin_session');
+    if (!adminSession?.value) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
@@ -10,16 +18,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    // 🚀 Uploads the file to Vercel's permanent cloud storage instead of local 'fs'
     const blob = await put(file.name, file, {
-      access: 'public', 
+      access: 'public',
     });
 
-    // Returns the permanent Vercel Cloud URL back to the editor
     return NextResponse.json({ url: blob.url });
-    
-  } catch (error: any) {
-    console.error("Upload Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Upload failed';
+    console.error('Upload Error:', error);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

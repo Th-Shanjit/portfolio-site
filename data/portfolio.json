@@ -24,11 +24,11 @@
   "hero": {
     "tag": "Available for product roles",
     "eyebrow": "Product Manager · Agentic AI",
-    "headline": "I ship AI products that survive contact with real users.",
-    "subhead": "Currently turning handwritten exams into print-ready PDFs with PaperLoop — a Gemini-powered scanner for educators, live on the Play Store.",
-    "description": "Currently turning handwritten exams into print-ready PDFs with PaperLoop — a Gemini-powered scanner for educators, live on the Play Store.",
+    "headline": "Early in my career. Already shipping.",
+    "subhead": "I build scrappy products, test them with real users, and turn messy workflows into usable systems.",
+    "description": "Product Manager focused on Agentic AI, workflow automation, and practical AI tools.",
     "link": "/paperloop",
-    "linkText": "See PaperLoop",
+    "linkText": "View PaperLoop",
     "coverImage": ""
   },
   "highlightedProjects": [
@@ -37,8 +37,8 @@
     { "id": "paperloop-app-store" }
   ],
   "contact": {
-    "heading": "Let's build something teachers actually use.",
-    "subheading": "Whether you're hiring a PM who ships, exploring agentic architectures, or want to exchange notes — my inbox is open.",
+    "heading": "Hiring for product roles, building AI workflow tools, or want to exchange product notes?",
+    "subheading": "My inbox is open for product conversations, collaborations, and thoughtful notes.",
     "email": "th.shanjit@gmail.com"
   },
   "about": {

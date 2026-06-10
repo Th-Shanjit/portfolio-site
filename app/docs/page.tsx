@@ -5,8 +5,8 @@ import DocsArchiveClient from './DocsArchiveClient';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Writing — Shanjit Thokchom',
-  description: 'Notes, case studies, and product decisions written in the open.',
+  title: 'Notes archive — Shanjit Thokchom',
+  description: 'Archive of product notes, case studies, and long-form write-ups.',
 };
 
 export default async function DocsArchive() {

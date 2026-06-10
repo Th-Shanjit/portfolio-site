@@ -43,15 +43,21 @@ export default function DocsArchiveClient({ docs }: { docs: Doc[] }) {
   }, [docs, searchTerm, activeTab]);
 
   return (
-    <main className="bg-[#f8f4ef] min-h-screen text-[#1c1916] max-w-[1040px] mx-auto px-[clamp(20px,5vw,64px)] pt-[120px] pb-[160px]">
+    <main className="bg-[#F7F3EA] min-h-screen text-[#161616] max-w-[1080px] mx-auto px-[clamp(20px,5vw,64px)] pt-[120px] pb-[160px]">
       <div className="mb-16">
         <Reveal>
-          <Label>Writing</Label>
-          <h1 className="font-serif font-normal text-[#1c1916] tracking-[-0.02em] leading-[1.05] mt-4 mb-5 text-[clamp(36px,6vw,60px)]">
-            Notes, case studies, and work in the open.
+          <Link
+            href="/#notes"
+            className="inline-flex items-center gap-1.5 font-sans text-[14px] font-medium text-[#6F6A61] hover:text-[#FF6B35] no-underline transition-colors mb-8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF6B35]"
+          >
+            ← Back to portfolio
+          </Link>
+          <Label>Archive</Label>
+          <h1 className="font-[family-name:var(--font-heading)] font-medium text-[#161616] tracking-[-0.02em] leading-[1.05] mt-4 mb-5 text-[clamp(32px,5vw,48px)]">
+            All product notes
           </h1>
-          <p className="font-sans text-[16px] md:text-[17px] text-[#7a7470] font-light max-w-[620px] leading-[1.65] mb-12">
-            An archive of system design, product decisions, and writing I haven&apos;t cleaned up.
+          <p className="font-sans text-[16px] md:text-[17px] text-[#6F6A61] max-w-[620px] leading-[1.65] mb-12">
+            Long-form case studies and product write-ups. The homepage highlights the strongest notes — this is the full archive.
           </p>
 
           <div className="relative mb-8">
@@ -65,7 +71,7 @@ export default function DocsArchiveClient({ docs }: { docs: Doc[] }) {
               placeholder="Search titles, tags…"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white border border-[#e6ded4] rounded-2xl font-sans text-[15px] text-[#1c1916] py-4 pl-12 pr-6 outline-none focus:border-[#c8873c]/60 transition-colors"
+              className="w-full bg-white border border-[rgba(22,22,22,0.10)] rounded-2xl font-sans text-[15px] text-[#161616] py-4 pl-12 pr-6 outline-none focus:border-[#FF6B35]/50 transition-colors"
             />
           </div>
 
