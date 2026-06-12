@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ResumeButton from './_components/ResumeButton';
+import { HERO_CONTENT } from '@/data/portfolio-static';
 import { scrollToSection } from '@/lib/scroll-to-section';
 
 const SECTIONS = [
@@ -13,8 +14,7 @@ const SECTIONS = [
   { name: 'Contact', id: 'contact' },
 ] as const;
 
-const HIDDEN_PREFIXES = ['/paperloop', '/admin', '/login'];
-const RESUME_URL = '/uploads/resume_shanjit.pdf';
+const HIDDEN_PREFIXES = ['/paperloop'];
 
 function SectionNavLink({
   id,
@@ -143,7 +143,7 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           <div className="hidden sm:block">
-            <ResumeButton href={RESUME_URL} label="Resume" source="header" />
+            <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="header" />
           </div>
 
           <button
@@ -182,7 +182,7 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
-          <ResumeButton href={RESUME_URL} label="Resume" source="header_mobile" />
+          <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="header_mobile" />
         </nav>
       )}
     </header>

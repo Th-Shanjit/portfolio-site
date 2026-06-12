@@ -1,8 +1,8 @@
 import { ImageResponse } from 'next/og';
-import data from '@/data/portfolio.json';
+import { HERO_CONTENT } from '@/data/portfolio-static';
 
 export const runtime = 'edge';
-export const alt = `${data.site.name} — ${data.site.role}`;
+export const alt = `${HERO_CONTENT.title} — ${HERO_CONTENT.subtitle}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -43,7 +43,7 @@ export default async function OGImage() {
               background: '#c8873c',
             }}
           />
-          {data.site.role}
+          {HERO_CONTENT.subtitle}
         </div>
 
         <div
@@ -63,7 +63,7 @@ export default async function OGImage() {
               fontWeight: 400,
             }}
           >
-            I ship AI products that survive contact with real users.
+            {HERO_CONTENT.description.slice(0, 80)}…
           </div>
 
           <div
@@ -89,10 +89,10 @@ export default async function OGImage() {
                 fontWeight: 600,
               }}
             >
-              {data.site.name.charAt(0)}
+              {HERO_CONTENT.title.charAt(0)}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <div style={{ fontSize: 24, color: '#1c1916' }}>{data.site.name}</div>
+              <div style={{ fontSize: 24, color: '#1c1916' }}>{HERO_CONTENT.title}</div>
               <div
                 style={{
                   fontSize: 14,

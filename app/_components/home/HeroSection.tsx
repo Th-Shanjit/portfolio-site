@@ -1,21 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FiLinkedin } from 'react-icons/fi';
+import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import ResumeButton from '../ResumeButton';
+import { HERO_CONTENT } from '@/data/portfolio-static';
 import { easeOut, useReducedMotion } from '@/lib/motion';
-
-type Props = {
-  name: string;
-  role: string;
-  headline: string;
-  subhead: string;
-  availability: string;
-  location: string;
-  linkedinUrl: string;
-  resumeUrl: string;
-};
+import { scrollToSection } from '@/lib/scroll-to-section';
 
 const container = {
   hidden: {},
@@ -29,16 +20,7 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeOut } },
 };
 
-export default function HeroSection({
-  name,
-  role,
-  headline,
-  subhead,
-  availability,
-  location,
-  linkedinUrl,
-  resumeUrl,
-}: Props) {
+export default function HeroSection() {
   const reduced = useReducedMotion();
 
   const Wrapper = reduced ? 'div' : motion.div;
@@ -50,63 +32,61 @@ export default function HeroSection({
 
   const itemProps = reduced ? {} : { variants: item };
 
+  const goToWork = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    scrollToSection('work');
+  };
+
+  const goToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    scrollToSection('contact');
+  };
+
   return (
     <section className="max-w-[1080px] mx-auto px-[clamp(20px,5vw,64px)] pt-[100px] pb-12 md:pt-[128px] md:pb-16">
       <Wrapper {...wrapperProps}>
-        <Item
-          {...itemProps}
-          className="inline-flex items-center gap-2 mb-8 md:mb-10 px-3.5 py-2 rounded-full border border-[rgba(22,22,22,0.10)] bg-white/60 backdrop-blur-sm"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80] shrink-0" aria-hidden />
-          <span className="font-sans text-[13px] text-[#6F6A61]">
-            {availability} · {location} · Remote-friendly
-          </span>
-        </Item>
-
-        <div className="max-w-[720px]">
-          <Item {...itemProps}>
-            <h1 className="font-[family-name:var(--font-heading)] font-medium text-[#161616] tracking-[-0.03em] leading-[1.02] m-0 text-[clamp(40px,7vw,76px)]">
-              {name}
-            </h1>
+        <div className="flex flex-col md:flex-row md:items-start gap-8 md:gap-12">
+          <Item {...itemProps} className="shrink-0">
+            <div className="relative w-[88px] h-[88px] md:w-[104px] md:h-[104px] rounded-2xl overflow-hidden border border-[rgba(22,22,22,0.10)] bg-white">
+              <Image
+                src={HERO_CONTENT.avatarUrl}
+                alt={HERO_CONTENT.title}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
           </Item>
 
-          <Item {...itemProps}>
-            <p className="mt-5 font-[family-name:var(--font-heading)] text-[clamp(20px,2.8vw,28px)] font-medium text-[#161616] tracking-[-0.02em] leading-[1.3] m-0">
-              {role}
-            </p>
-          </Item>
+          <div className="max-w-[720px]">
+            <Item {...itemProps}>
+              <h1 className="font-[family-name:var(--font-heading)] font-medium text-[#161616] tracking-[-0.03em] leading-[1.02] m-0 text-[clamp(40px,7vw,76px)]">
+                {HERO_CONTENT.title}
+              </h1>
+            </Item>
 
-          <Item {...itemProps}>
-            <p className="mt-4 font-[family-name:var(--font-heading)] text-[clamp(18px,2.4vw,24px)] text-[#161616] tracking-[-0.01em] leading-[1.35] m-0">
-              {headline}
-            </p>
-          </Item>
+            <Item {...itemProps}>
+              <p className="mt-5 font-[family-name:var(--font-heading)] text-[clamp(20px,2.8vw,28px)] font-medium text-[#161616] tracking-[-0.02em] leading-[1.3] m-0">
+                {HERO_CONTENT.subtitle}
+              </p>
+            </Item>
 
-          <Item {...itemProps}>
-            <p className="mt-4 font-sans text-[16px] md:text-[17px] text-[#6F6A61] leading-[1.7] m-0">
-              {subhead}
-            </p>
-          </Item>
+            <Item {...itemProps}>
+              <p className="mt-4 font-sans text-[16px] md:text-[17px] text-[#6F6A61] leading-[1.7] m-0">
+                {HERO_CONTENT.description}
+              </p>
+            </Item>
 
-          <Item {...itemProps} className="mt-9 flex flex-wrap gap-3">
-            <Button href="/paperloop" variant="accent" size="md">
-              View PaperLoop
-            </Button>
-            <Button href="/docs/paperloop-problem-space" variant="primary" size="md">
-              Read case notes
-            </Button>
-            <ResumeButton href={resumeUrl} label="Resume" source="home_hero" />
-            <Button
-              href={linkedinUrl}
-              external
-              variant="ghost"
-              size="md"
-              icon={<FiLinkedin size={15} />}
-              trailingIcon={false}
-            >
-              LinkedIn
-            </Button>
-          </Item>
+            <Item {...itemProps} className="mt-9 flex flex-wrap gap-3">
+              <Button href="/#work" variant="accent" size="md" onClick={goToWork}>
+                {HERO_CONTENT.primaryCtaText}
+              </Button>
+              <Button href="/#contact" variant="primary" size="md" onClick={goToContact}>
+                {HERO_CONTENT.secondaryCtaText}
+              </Button>
+              <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="home_hero" />
+            </Item>
+          </div>
         </div>
       </Wrapper>
     </section>

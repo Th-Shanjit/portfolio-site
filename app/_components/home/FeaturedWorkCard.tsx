@@ -4,7 +4,32 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import { Label } from '@/lib/design';
-import { PAPERLOOP_TABS } from '@/lib/home-content';
+const PAPERLOOP_TABS = [
+  {
+    id: 'problem',
+    label: 'Problem',
+    content:
+      'Teachers write question drafts by hand, then retype and format them manually in Word.',
+  },
+  {
+    id: 'testing',
+    label: 'Testing',
+    content:
+      'Input from 5 teachers/tutors and roughly 15 handwritten papers, including chemistry-heavy and mixed-format question papers.',
+  },
+  {
+    id: 'decisions',
+    label: 'Product Decisions',
+    content:
+      'No-login MVP, review-before-export, fair scan credits, simpler editor/PDF themes, chemistry-specific handling.',
+  },
+  {
+    id: 'outcome',
+    label: 'Outcome',
+    content:
+      'Closed beta direction shaped through real teacher workflow testing and public demo.',
+  },
+] as const;
 import { PAPERLOOP_DEMO_WATCH_URL } from '@/app/paperloop/constants';
 import { easeOut, useReducedMotion } from '@/lib/motion';
 

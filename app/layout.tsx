@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Header from './Header';
-import data from '@/data/portfolio.json';
+import { HERO_CONTENT } from '@/data/portfolio-static';
 import { Geist, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -30,22 +30,20 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://shanjitthokchom.xyz
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${data.site.name} — ${data.site.role}`,
-    template: `%s — ${data.site.name}`,
+    default: `${HERO_CONTENT.title} — ${HERO_CONTENT.subtitle}`,
+    template: `%s — ${HERO_CONTENT.title}`,
   },
-  description:
-    'Product manager focused on agentic AI, workflow automation, and practical AI tools. Building PaperLoop and shipping user-tested products.',
+  description: HERO_CONTENT.description,
   openGraph: {
-    title: `${data.site.name} — Product · Agentic AI`,
-    description:
-      'Product manager shipping agentic AI products. PaperLoop — handwritten exams to print-ready PDFs.',
+    title: `${HERO_CONTENT.title} — ${HERO_CONTENT.subtitle}`,
+    description: HERO_CONTENT.description,
     type: 'website',
-    siteName: data.site.name,
+    siteName: HERO_CONTENT.title,
   },
   twitter: {
     card: 'summary_large_image',
-    title: data.site.name,
-    description: 'Product · Agentic AI. Building tools where users stay in control.',
+    title: HERO_CONTENT.title,
+    description: HERO_CONTENT.description,
   },
   robots: {
     index: true,

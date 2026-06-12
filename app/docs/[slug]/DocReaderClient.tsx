@@ -2,12 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-export default function DocReaderClient({ slug }: { slug: string }) {
+export default function DocReaderClient() {
   const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    fetch(`/api/views/${slug}`, { method: 'POST' }).catch(() => {});
-  }, [slug]);
 
   useEffect(() => {
     const update = () => {

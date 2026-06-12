@@ -5,7 +5,7 @@ import { ArrowRight, Search, FileText, Clock } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Reveal, Label, DraftBadge } from '@/lib/design';
 import Tag from '@/components/ui/Tag';
-import type { Doc } from '@/lib/getPortfolio';
+import type { Doc } from '@/lib/docs';
 
 const TABS = [
   { id: 'all', label: 'All' },

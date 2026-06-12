@@ -1,18 +1,18 @@
 import { ImageResponse } from 'next/og';
-import { getPortfolio } from '@/lib/getPortfolio';
+import { getAllDocs, getAuthorMeta } from '@/lib/docs';
 
 export const runtime = 'nodejs';
 export const alt = 'Writing — Shanjit Thokchom';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-export default async function DocOG({ params }: { params: { slug: string } }) {
-  const data = await getPortfolio();
-  const doc = data.docs?.find((d) => d.id === params.slug);
+export default async function DocOG({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const doc = getAllDocs().find((d) => d.id === slug);
   const title = doc?.title || 'Writing';
   const tag = doc?.tag || doc?.type || 'Case study';
   const readTime = doc?.readTime || '';
-  const authorName = data.site?.name || 'Shanjit Thokchom';
+  const author = getAuthorMeta();
 
   return new ImageResponse(
     (
@@ -84,7 +84,7 @@ export default async function DocOG({ params }: { params: { slug: string } }) {
               color: '#7a7470',
             }}
           >
-            <span>{authorName}</span>
+            <span>{author.name}</span>
             <span style={{ color: '#c8bfb2' }}>·</span>
             <span
               style={{

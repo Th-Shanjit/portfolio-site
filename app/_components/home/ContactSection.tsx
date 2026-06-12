@@ -2,39 +2,34 @@
 
 import { useCallback, useState } from 'react';
 import { Mail } from 'lucide-react';
-import { FiLinkedin } from 'react-icons/fi';
+import { FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';
 import { Reveal, SectionHeading } from '@/lib/design';
 import Button from '@/components/ui/Button';
 import ResumeButton from '../ResumeButton';
+import { CONTACT_LINKS, HERO_CONTENT } from '@/data/portfolio-static';
 
-type Props = {
-  name: string;
-  email: string;
-  linkedinUrl: string;
-  resumeUrl: string;
-  heading: string;
-  subheading: string;
-};
+function parseLink(value: string): string {
+  const match = value.match(/\[([^\]]+)\]\(([^)]+)\)/);
+  return match ? match[2] : value;
+}
 
-export default function ContactSection({
-  name,
-  email,
-  linkedinUrl,
-  resumeUrl,
-  heading,
-  subheading,
-}: Props) {
+const emailAddress = CONTACT_LINKS.email.replace(/^mailto:/i, '');
+const linkedinUrl = parseLink(CONTACT_LINKS.linkedin);
+const githubUrl = parseLink(CONTACT_LINKS.github);
+const twitterUrl = parseLink(CONTACT_LINKS.twitter);
+
+export default function ContactSection() {
   const [toast, setToast] = useState(false);
 
   const copyEmail = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText(email);
+      await navigator.clipboard.writeText(emailAddress);
       setToast(true);
       window.setTimeout(() => setToast(false), 2200);
     } catch {
-      window.location.href = `mailto:${email}`;
+      window.location.href = CONTACT_LINKS.email;
     }
-  }, [email]);
+  }, []);
 
   return (
     <section
@@ -49,13 +44,8 @@ export default function ContactSection({
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12 pb-12 border-b border-[rgba(22,22,22,0.10)]">
           <div className="max-w-[560px]">
             <p className="font-[family-name:var(--font-heading)] text-[#161616] font-medium tracking-[-0.02em] leading-[1.25] m-0 text-[clamp(24px,3.5vw,38px)]">
-              {heading}
+              Open to product conversations, collaborations, and thoughtful notes.
             </p>
-            {subheading && (
-              <p className="mt-4 font-sans text-[15px] md:text-[16px] text-[#6F6A61] leading-[1.7] m-0">
-                {subheading}
-              </p>
-            )}
           </div>
 
           <div className="relative shrink-0">
@@ -79,7 +69,27 @@ export default function ContactSection({
               >
                 LinkedIn
               </Button>
-              <ResumeButton href={resumeUrl} label="Resume" source="home_contact" />
+              <Button
+                href={githubUrl}
+                external
+                variant="ghost"
+                size="md"
+                icon={<FiGithub size={15} />}
+                trailingIcon={false}
+              >
+                GitHub
+              </Button>
+              <Button
+                href={twitterUrl}
+                external
+                variant="ghost"
+                size="md"
+                icon={<FiTwitter size={15} />}
+                trailingIcon={false}
+              >
+                Twitter
+              </Button>
+              <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="home_contact" />
             </div>
 
             {toast && (
@@ -96,7 +106,7 @@ export default function ContactSection({
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-7">
           <span className="font-sans text-[13px] text-[#9A9489]">
-            {name} © {new Date().getFullYear()}
+            {HERO_CONTENT.title} © {new Date().getFullYear()}
           </span>
           <span className="font-mono text-[11px] text-[#9A9489]">
             Warm editorial · product accents

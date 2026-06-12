@@ -3,14 +3,11 @@ import type { Metadata } from 'next';
 import { ArrowLeft, ArrowRight, Clock, Calendar, Hash, Download, ChevronLeft } from 'lucide-react';
 import { Reveal } from '@/lib/design';
 import Tag from '@/components/ui/Tag';
-import { getPortfolio, publicDocs, type Doc } from '@/lib/getPortfolio';
+import { getAllDocs, getAuthorMeta, publicDocs, type Doc } from '@/lib/docs';
 import DocReaderClient from './DocReaderClient';
-import fallbackData from '@/data/portfolio.json';
-
-export const dynamic = 'force-dynamic';
 
 export async function generateStaticParams() {
-  return publicDocs((fallbackData as { docs?: Doc[] }).docs).map((d) => ({ slug: d.id }));
+  return publicDocs().map((d) => ({ slug: d.id }));
 }
 
 export async function generateMetadata({
@@ -19,8 +16,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const data = await getPortfolio();
-  const doc = data.docs?.find((d) => d.id === slug);
+  const doc = getAllDocs().find((d) => d.id === slug);
 
   if (!doc) {
     return { title: 'Document' };
@@ -50,9 +46,8 @@ export default async function DocumentReader({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const data = await getPortfolio();
-
-  const docs = publicDocs(data.docs);
+  const allDocs = getAllDocs();
+  const docs = publicDocs(allDocs);
   const idx = docs.findIndex((d) => d.id === slug);
 
   let doc: Doc | undefined;
@@ -60,16 +55,14 @@ export default async function DocumentReader({
   let next: Doc | undefined;
 
   if (idx === -1) {
-    doc = data.docs?.find((d) => d.id === slug);
+    doc = allDocs.find((d) => d.id === slug);
   } else {
     doc = docs[idx];
     prev = idx > 0 ? docs[idx - 1] : undefined;
     next = idx < docs.length - 1 ? docs[idx + 1] : undefined;
   }
 
-  const authorName = data.site?.name || 'Shanjit Thokchom';
-  const authorRole = data.site?.role || 'Product Manager · Agentic AI';
-  const authorImg = data.site?.dpUrl || '/profile.jpg';
+  const author = getAuthorMeta();
 
   if (!doc) {
     return (
@@ -92,7 +85,7 @@ export default async function DocumentReader({
 
   return (
     <main className="bg-[#f8f4ef] min-h-screen text-[#1c1916] max-w-[800px] mx-auto px-[clamp(20px,5vw,64px)] pt-[120px] pb-40">
-      <DocReaderClient slug={slug} />
+      <DocReaderClient />
 
       <article>
         <Reveal>
@@ -142,15 +135,15 @@ export default async function DocumentReader({
               <div className="w-10 h-10 rounded-full overflow-hidden border border-[#e6ded4] shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={authorImg}
-                  alt={`${authorName} profile photo`}
+                  src={author.dpUrl}
+                  alt={`${author.name} profile photo`}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-[15px] text-[#1c1916]">{authorName}</span>
+                <span className="font-serif text-[15px] text-[#1c1916]">{author.name}</span>
                 <span className="font-mono text-[9px] text-[#b8b2aa] tracking-[0.14em] uppercase">
-                  {authorRole}
+                  {author.role}
                 </span>
               </div>
             </div>
