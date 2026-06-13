@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import ResumeButton from '../ResumeButton';
-import { HERO_CONTENT } from '@/data/portfolio-static';
+import { HERO_CONTENT, hasResume } from '@/data/portfolio-static';
 import { easeOut, useReducedMotion } from '@/lib/motion';
 import { scrollToSection } from '@/lib/scroll-to-section';
 
@@ -84,7 +84,9 @@ export default function HeroSection() {
               <Button href="/#contact" variant="primary" size="md" onClick={goToContact}>
                 {HERO_CONTENT.secondaryCtaText}
               </Button>
-              <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="home_hero" />
+              {hasResume() && (
+                <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="home_hero" />
+              )}
             </Item>
           </div>
         </div>

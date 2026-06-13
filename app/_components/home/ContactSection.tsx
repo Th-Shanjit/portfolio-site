@@ -2,21 +2,13 @@
 
 import { useCallback, useState } from 'react';
 import { Mail } from 'lucide-react';
-import { FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';
+import { FiLinkedin } from 'react-icons/fi';
 import { Reveal, SectionHeading } from '@/lib/design';
 import Button from '@/components/ui/Button';
 import ResumeButton from '../ResumeButton';
-import { CONTACT_LINKS, HERO_CONTENT } from '@/data/portfolio-static';
-
-function parseLink(value: string): string {
-  const match = value.match(/\[([^\]]+)\]\(([^)]+)\)/);
-  return match ? match[2] : value;
-}
+import { CONTACT_LINKS, HERO_CONTENT, getSectionNumber, hasResume } from '@/data/portfolio-static';
 
 const emailAddress = CONTACT_LINKS.email.replace(/^mailto:/i, '');
-const linkedinUrl = parseLink(CONTACT_LINKS.linkedin);
-const githubUrl = parseLink(CONTACT_LINKS.github);
-const twitterUrl = parseLink(CONTACT_LINKS.twitter);
 
 export default function ContactSection() {
   const [toast, setToast] = useState(false);
@@ -37,14 +29,14 @@ export default function ContactSection() {
       className="max-w-[1080px] mx-auto px-[clamp(20px,5vw,64px)] pb-24 md:pb-32 scroll-mt-28"
     >
       <Reveal>
-        <SectionHeading number="05" title="Let's talk" />
+        <SectionHeading number={getSectionNumber('contact')} title="Let's talk" />
       </Reveal>
 
       <Reveal delay={60}>
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12 pb-12 border-b border-[rgba(22,22,22,0.10)]">
           <div className="max-w-[560px]">
             <p className="font-[family-name:var(--font-heading)] text-[#161616] font-medium tracking-[-0.02em] leading-[1.25] m-0 text-[clamp(24px,3.5vw,38px)]">
-              Open to product conversations, collaborations, and thoughtful notes.
+              Open to product roles, collaborations, and thoughtful product conversations.
             </p>
           </div>
 
@@ -60,7 +52,7 @@ export default function ContactSection() {
                 Email me
               </Button>
               <Button
-                href={linkedinUrl}
+                href={CONTACT_LINKS.linkedin}
                 external
                 variant="ghost"
                 size="md"
@@ -69,27 +61,9 @@ export default function ContactSection() {
               >
                 LinkedIn
               </Button>
-              <Button
-                href={githubUrl}
-                external
-                variant="ghost"
-                size="md"
-                icon={<FiGithub size={15} />}
-                trailingIcon={false}
-              >
-                GitHub
-              </Button>
-              <Button
-                href={twitterUrl}
-                external
-                variant="ghost"
-                size="md"
-                icon={<FiTwitter size={15} />}
-                trailingIcon={false}
-              >
-                Twitter
-              </Button>
-              <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="home_contact" />
+              {hasResume() && (
+                <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="home_contact" />
+              )}
             </div>
 
             {toast && (

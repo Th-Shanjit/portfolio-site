@@ -6,66 +6,85 @@ export interface ProjectItem {
   link: string;
   borderColor?: string;
   backgroundColor?: string;
+  comingSoon?: boolean;
 }
+
+export type HomeSectionId = 'work' | 'notes' | 'sideQuests' | 'about' | 'contact';
 
 export const HERO_CONTENT = {
   avatarUrl: '/profile.jpg',
   title: 'Shanjit Thokchom',
-  subtitle: 'Aspiring Product Manager & Builder',
+  subtitle: 'Product builder focused on AI-assisted workflow tools',
   description:
-    'Transitioning from a background in law to building digital products. Certified in Product Management & Agentic AI from Masai School & IIT Patna. Actively vibe coding with AI agents and no-code infrastructure.',
+    'Transitioning from law into product management. Building and testing practical product prototypes using AI agents, no-code tools, and lightweight engineering workflows.',
   resumeUrl: '/uploads/resume_shanjit.pdf',
   primaryCtaText: 'View Work',
   secondaryCtaText: "Let's Talk",
 };
 
-export const OVERVIEW_TEXT = {
-  bio: 'I craft minimalist, neo-brutalist digital interfaces and design intuitive product loops. Deeply fascinated by high-level architectural frameworks, Stoicism, Absurdism, and vintage motorcycle restorations.',
-};
-
-export const MOOD_BOARD_BRAND_LOGOS = [
-  { name: 'Cursor', iconPath: '/file.svg' },
-  { name: 'Replit', iconPath: '/window.svg' },
-  { name: 'Vercel', iconPath: '/vercel.svg' },
-  { name: 'Next.js', iconPath: '/next.svg' },
+export const PROOF_POINTS: readonly string[] = [
+  'PaperLoop closed beta',
+  'Tested with 5 teachers/tutors',
+  '~15 handwritten papers tested',
+  'Built with AI-assisted workflows',
 ];
 
+export const OVERVIEW_TEXT = {
+  bio: 'I am transitioning from law into product management, with a focus on user research, workflow mapping, and AI-assisted prototyping. My current work explores how simple tools can reduce repetitive operational work for teachers, small teams, and service businesses. I like products that are practical, low-friction, and built around real behaviour rather than ideal user journeys.',
+};
+
 export const HIGHLIGHTS: { productNotes: ProjectItem[]; sideQuests: ProjectItem[] } = {
-  productNotes: [
-    {
-      id: 'vela',
-      title: 'Vela (Formerly Fluid)',
-      tag: 'SaaS / Tablet Utilities',
-      description:
-        'A stylus-optimized document organization application tailored heavily for Android S-Pen users.',
-      link: '#',
-      borderColor: '#000000',
-      backgroundColor: '#FEF9E7',
-    },
-  ],
-  sideQuests: [
-    {
-      id: 'vintage-restoration',
-      title: 'Vintage Super Cub Logistics',
-      tag: 'Motorcycles / Restorations',
-      description:
-        'Sourcing, restoring, and tracking the engineering blueprints of vintage Honda Super Cub frames in India.',
-      link: '#',
-    },
-    {
-      id: 'cbz-xtreme',
-      title: 'CBZ Xtreme Maintenance Track',
-      tag: 'Hardware Tuning',
-      description:
-        'Custom tinkering, maintenance logs, and spare parts sourcing for the Hero Honda CBZ Xtreme platform.',
-      link: '#',
-    },
-  ],
+  productNotes: [],
+  sideQuests: [],
 };
 
 export const CONTACT_LINKS = {
-  email: 'mailto:shanjit@example.com',
-  linkedin: '[https://linkedin.com/in/shanjitthokchom](https://linkedin.com/in/shanjitthokchom)',
-  github: '[https://github.com/th-shanjit](https://github.com/th-shanjit)',
-  twitter: '[https://twitter.com/shanjit](https://twitter.com/shanjit)',
+  email: 'mailto:th.shanjit@gmail.com',
+  linkedin: 'https://www.linkedin.com/in/shanjit-thokchom-7101202b6',
 };
+
+export function isValidProjectLink(link: string): boolean {
+  const trimmed = link.trim();
+  return trimmed.length > 0 && trimmed !== '#';
+}
+
+export function getRealProductNotes(): ProjectItem[] {
+  return HIGHLIGHTS.productNotes.filter(
+    (item) => !item.comingSoon && isValidProjectLink(item.link)
+  );
+}
+
+export function getRealSideQuests(): ProjectItem[] {
+  return HIGHLIGHTS.sideQuests.filter((item) => isValidProjectLink(item.link));
+}
+
+export function getVisibleHomeSections(): HomeSectionId[] {
+  const sections: HomeSectionId[] = ['work'];
+  if (getRealProductNotes().length > 0) sections.push('notes');
+  if (getRealSideQuests().length > 0) sections.push('sideQuests');
+  sections.push('about', 'contact');
+  return sections;
+}
+
+export function getSectionNumber(id: HomeSectionId): string {
+  const index = getVisibleHomeSections().indexOf(id);
+  return String(index + 1).padStart(2, '0');
+}
+
+export function getHomeNavSections(): { name: string; id: HomeSectionId }[] {
+  return getVisibleHomeSections()
+    .filter((id): id is Exclude<HomeSectionId, 'work'> => id !== 'work')
+    .map((id) => {
+      const labels: Record<Exclude<HomeSectionId, 'work'>, string> = {
+        notes: 'Notes',
+        sideQuests: 'Side Quests',
+        about: 'About',
+        contact: 'Contact',
+      };
+      return { name: labels[id], id };
+    });
+}
+
+export function hasResume(): boolean {
+  return Boolean(HERO_CONTENT.resumeUrl.trim());
+}

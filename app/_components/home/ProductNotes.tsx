@@ -4,7 +4,11 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { Reveal, SectionHeading, cardLinkClass, cardArrowClass } from '@/lib/design';
 import Tag from '@/components/ui/Tag';
-import { HIGHLIGHTS, type ProjectItem } from '@/data/portfolio-static';
+import {
+  getRealProductNotes,
+  getSectionNumber,
+  type ProjectItem,
+} from '@/data/portfolio-static';
 
 function NoteCard({ item }: { item: ProjectItem }) {
   const isExternal = item.link.startsWith('http');
@@ -15,9 +19,11 @@ function NoteCard({ item }: { item: ProjectItem }) {
 
   const inner = (
     <>
-      <Tag tone="accent" size="sm">
-        {item.tag}
-      </Tag>
+      <div className="flex flex-wrap items-center gap-2">
+        <Tag tone="accent" size="sm">
+          {item.tag}
+        </Tag>
+      </div>
       <h3 className="mt-3 font-[family-name:var(--font-heading)] font-medium text-[18px] md:text-[19px] text-[#161616] leading-snug m-0 group-hover:text-[#FF6B35] transition-colors">
         {item.title}
       </h3>
@@ -25,13 +31,13 @@ function NoteCard({ item }: { item: ProjectItem }) {
         {item.description}
       </p>
       <div className="mt-auto pt-5 flex items-center gap-1.5 font-sans text-[14px] text-[#9A9489] group-hover:text-[#FF6B35] transition-colors">
-        <span>View project</span>
+        <span>Read note</span>
         <ArrowUpRight size={15} className={cardArrowClass} />
       </div>
     </>
   );
 
-  const cls = `${cardLinkClass} border-2`;
+  const cls = `${cardLinkClass}${item.borderColor ? ' border-2' : ''}`;
 
   if (isExternal) {
     return (
@@ -55,6 +61,12 @@ function NoteCard({ item }: { item: ProjectItem }) {
 }
 
 export default function ProductNotes() {
+  const notes = getRealProductNotes();
+
+  if (notes.length === 0) {
+    return null;
+  }
+
   return (
     <section
       id="notes"
@@ -63,9 +75,9 @@ export default function ProductNotes() {
       <Reveal>
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-10 md:mb-12">
           <SectionHeading
-            number="03"
+            number={getSectionNumber('notes')}
             title="Product Notes"
-            subtitle="Selected builds and product explorations."
+            subtitle="Short write-ups on product decisions, teardowns, and workflow problems."
             className="mb-0"
           />
           <Link
@@ -78,8 +90,8 @@ export default function ProductNotes() {
         </div>
       </Reveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {HIGHLIGHTS.productNotes.map((item, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {notes.map((item, i) => (
           <Reveal key={item.id} delay={40 + i * 60}>
             <NoteCard item={item} />
           </Reveal>

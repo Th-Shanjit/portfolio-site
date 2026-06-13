@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shanjit Thokchom — Portfolio
 
-## Getting Started
+Personal portfolio site for a junior/entry-level Product Manager and AI product builder. The homepage is designed to help recruiters quickly understand who I am, what product work I do, what proof I have, and how to get in touch.
 
-First, run the development server:
+**Live:** [shanjitthokchom.xyz](https://shanjitthokchom.xyz)
+
+## Featured project
+
+**[PaperLoop](https://shanjitthokchom.xyz/paperloop)** — A tool that turns handwritten exam drafts into editable, PDF-ready papers for teachers. Built and tested with real educator workflows; currently in closed beta.
+
+Case study: [/docs/paperloop-problem-space](https://shanjitthokchom.xyz/docs/paperloop-problem-space)
+
+## Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **Animation:** Framer Motion
+- **Content:** Static TypeScript data (`data/portfolio-static.ts`, `data/docs-static.ts`)
+- **Analytics:** Vercel Analytics
+- **Deploy:** Vercel
+
+## Local setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Production build:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm build
+pnpm start
+```
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/                  # Routes and page components
+  _components/home/   # Homepage sections
+  docs/               # Product notes archive
+  paperloop/          # PaperLoop landing (separate layout)
+data/                 # Static content source
+lib/                  # Shared utilities
+public/               # Static assets
+```

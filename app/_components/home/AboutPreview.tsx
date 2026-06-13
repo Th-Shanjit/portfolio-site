@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Reveal, SectionHeading } from '@/lib/design';
-import { HERO_CONTENT, OVERVIEW_TEXT } from '@/data/portfolio-static';
+import { HERO_CONTENT, OVERVIEW_TEXT, getSectionNumber, hasResume } from '@/data/portfolio-static';
 import HomeAvatar from '../HomeAvatar';
 import ResumeButton from '../ResumeButton';
 import { scrollToSection } from '@/lib/scroll-to-section';
@@ -19,7 +19,7 @@ export default function AboutPreview() {
       className="max-w-[1080px] mx-auto px-[clamp(20px,5vw,64px)] pb-20 md:pb-24 scroll-mt-28"
     >
       <Reveal>
-        <SectionHeading number="04" title="About" />
+        <SectionHeading number={getSectionNumber('about')} title="About" />
       </Reveal>
 
       <Reveal delay={40}>
@@ -39,7 +39,9 @@ export default function AboutPreview() {
           </figure>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="home_about" />
+            {hasResume() && (
+              <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="home_about" />
+            )}
             <Link
               href="/#contact"
               onClick={goToContact}

@@ -4,15 +4,11 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ResumeButton from './_components/ResumeButton';
-import { HERO_CONTENT } from '@/data/portfolio-static';
+import { HERO_CONTENT, getHomeNavSections, hasResume } from '@/data/portfolio-static';
 import { scrollToSection } from '@/lib/scroll-to-section';
 
-const SECTIONS = [
-  { name: 'Work', id: 'work' },
-  { name: 'Notes', id: 'notes' },
-  { name: 'About', id: 'about' },
-  { name: 'Contact', id: 'contact' },
-] as const;
+const WORK_SECTION = { name: 'Work', id: 'work' } as const;
+const NAV_SECTIONS = [{ ...WORK_SECTION }, ...getHomeNavSections()];
 
 const HIDDEN_PREFIXES = ['/paperloop'];
 
@@ -58,7 +54,7 @@ export default function Header() {
   useEffect(() => {
     if (!isHome || hidden) return;
 
-    const ids = SECTIONS.map((s) => s.id);
+    const ids = NAV_SECTIONS.map((s) => s.id);
     const elements = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => !!el);
@@ -131,9 +127,9 @@ export default function Header() {
           aria-label="Main navigation"
           className="hidden md:flex items-center gap-8 font-sans"
         >
-          {SECTIONS.map((link) => (
+          {NAV_SECTIONS.map((link) => (
             <SectionNavLink
-              key={link.name}
+              key={link.id}
               id={link.id}
               name={link.name}
               active={isActive(link.id)}
@@ -142,9 +138,11 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <div className="hidden sm:block">
-            <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="header" />
-          </div>
+          {hasResume() && (
+            <div className="hidden sm:block">
+              <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="header" />
+            </div>
+          )}
 
           <button
             type="button"
@@ -172,9 +170,9 @@ export default function Header() {
           aria-label="Mobile navigation"
           className="md:hidden border-t border-[rgba(22,22,22,0.08)] bg-[#F7F3EA] px-[clamp(20px,5vw,64px)] py-4 flex flex-col gap-4 font-sans text-[14px] font-medium"
         >
-          {SECTIONS.map((link) => (
+          {NAV_SECTIONS.map((link) => (
             <Link
-              key={link.name}
+              key={link.id}
               href={`/#${link.id}`}
               className={mobileLinkClass(link.id)}
               onClick={(e) => handleMobileNav(e, link.id)}
@@ -182,7 +180,9 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
-          <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="header_mobile" />
+          {hasResume() && (
+            <ResumeButton href={HERO_CONTENT.resumeUrl} label="Resume" source="header_mobile" />
+          )}
         </nav>
       )}
     </header>

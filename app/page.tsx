@@ -3,8 +3,8 @@ import HashScroll from './_components/HashScroll';
 import HeroSection from './_components/home/HeroSection';
 import ProofStrip from './_components/home/ProofStrip';
 import FeaturedWorkCard from './_components/home/FeaturedWorkCard';
-import SideQuests from './_components/home/SideQuests';
 import ProductNotes from './_components/home/ProductNotes';
+import SideQuests from './_components/home/SideQuests';
 import AboutPreview from './_components/home/AboutPreview';
 import ContactSection from './_components/home/ContactSection';
 
@@ -14,7 +14,6 @@ export default function Home() {
       <HashScroll />
 
       <HeroSection />
-
       <ProofStrip />
 
       <section
@@ -29,8 +28,8 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <SideQuests />
       <ProductNotes />
+      <SideQuests />
       <AboutPreview />
       <ContactSection />
     </div>
